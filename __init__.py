@@ -80,7 +80,8 @@ def Preprocess( i_sTxt, i_sType = None ) :
             lOut.append( sOutputLine )
       ##  Unknown anchor?
       else :
-        continue
+        ##  Do nothing - leave it in file.
+        pass
     else :
       ##  Has some code already accumulated?
       if [] != lCode :
