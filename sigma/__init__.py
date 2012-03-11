@@ -8,6 +8,8 @@
 import os
 import sys
 import re
+import copy
+import __builtin__
 import StringIO
 
 ABOUT_TYPES = [
@@ -20,7 +22,7 @@ ANCHOR_CODE_BEGIN = "{ "
 ANCHOR_CODE_END   = "}"
 ANCHOR_MULTILINE  = "  "
 
-def PreprocessFile( i_sFilename, i_sEncoding = None ) :
+def PreprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
   oFile = open( i_sFilename )
   sData = oFile.read()
   oFile.close()
@@ -36,13 +38,13 @@ def PreprocessFile( i_sFilename, i_sEncoding = None ) :
   sExt = os.path.splitext( i_sFilename )[ 1 ][ 1 : ]
   sType = sExt if sExt else None
   ##  Preprocess file text, call python code.
-  sData = Preprocess( sData.decode( i_sEncoding ), sType )
+  sData = Preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
   ##  Write back changed text.
   oFile = open( i_sFilename, "w+" )
   oFile.write( sData.encode( i_sEncoding ) )
   oFile.close()
 
-def Preprocess( i_sTxt, i_sType = None ) :
+def Preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
   sAnchor = AnchorForType( i_sType )
   lOut = []
   lCode = []
@@ -68,10 +70,23 @@ def Preprocess( i_sTxt, i_sType = None ) :
         if [] != lCode :
           lCode.append( sCur[ len( ANCHOR_MULTILINE ) : ] )
       elif sCur.startswith( ANCHOR_CODE_END ) :
+        for sName, uVal in kargs.items() :
+          ##! This allows to pass context from script calling Sigma back
+          ##  to script functions called by Sigma.
+          lCode.insert( 0, "{0}.baton = baton".format( sName ) )
+          ##! This allows code executed by sigma to call methods from code
+          ##  importing this module.
+          if hasattr( __builtin__, sName ) :
+            raise Exception( "\"{0}\" already in globals".format( sName ) )
+          setattr( __builtin__, sName, uVal )
         sCode = "\n".join( lCode )
         lCode = []
         sys.stdout = StringIO.StringIO()
-        exec sCode
+        try :
+          exec sCode in dict( globals(), baton = baton )
+        finally :
+          for sName, uVal in kargs.items() :
+            delattr( __builtin__, sName )
         sOutput = sys.stdout.getvalue()
         sys.stdout = sys.__stdout__
         for sOutputLine in sOutput.split( "\n" ) :
