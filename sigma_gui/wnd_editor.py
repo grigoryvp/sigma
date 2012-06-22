@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
-from Tkinter import *
-from ttk import *
+import pu
 
-class WndEditor( Toplevel ) :
+class WndEditor( pu.Wnd ) :
 
   def __init__( self ) :
-    super( WndEditor, self ).__init__( Tk() )
-    self.withdraw()
+    super( WndEditor, self ).__init__()
 
