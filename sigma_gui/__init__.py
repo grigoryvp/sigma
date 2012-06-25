@@ -11,10 +11,14 @@ import pmq
 import pu
 
 from shutdown import Shutdown
+from cfg import Cfg
 from wnd_editor import WndEditor
 
 Shutdown()
+Cfg()
 WndEditor()
+##  Load configuration from file, if any.
+pmq.post( 'm_cfg_load' )
 pmq.post( 'm_wndeditor_show' )
 pmq.start( pu.mainLoop, pu.mainLoopStop )
 
