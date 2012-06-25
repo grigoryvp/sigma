@@ -19,6 +19,8 @@ Cfg()
 WndEditor()
 ##  Load configuration from file, if any.
 pmq.post( 'm_cfg_load' )
+##  Let actors request configuration.
+pmq.post( 'm_startup' )
 pmq.post( 'm_wndeditor_show' )
 pmq.start( pu.mainLoop, pu.mainLoopStop )
 
