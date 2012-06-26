@@ -17,4 +17,3 @@ class WndEditor( pu.Wnd ) :
   def m_shutdown( self ) :
     pmq.post( 'm_geometry_set', 'editor', self.geometry() )
 
-
