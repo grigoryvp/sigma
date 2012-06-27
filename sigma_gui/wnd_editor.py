@@ -21,6 +21,7 @@ class WndEditor( pu.Wnd ) :
       self.geometry( sGeometry )
     else :
       self.setSize( 256, 256 )
+      self.center()
 
   def m_shutdown( self ) :
     pmq.post( 'm_geometry_set', 'editor', self.geometry() )
