@@ -13,11 +13,14 @@ class WndEditor( pu.Wnd ) :
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Grip() : pass
+    self.setCaption( "Sigma: Editor" )
 
   def m_startup( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'editor' )
     if sGeometry :
       self.geometry( sGeometry )
+    else :
+      self.setSize( 256, 256 )
 
   def m_shutdown( self ) :
     pmq.post( 'm_geometry_set', 'editor', self.geometry() )
