@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+import sys
 import argparse
 
 import pmq
@@ -8,16 +9,25 @@ import pmq
 class Commandline( pmq.Actor ) :
 
   def m_commandline_handle( self ) :
+    ##  Without command-line just display editor window.
+    if 1 == len( sys.argv ) :
+      pmq.post( 'm_wndeditor_show' )
+      return
+
     oParser = argparse.ArgumentParser( description = "Sigma" )
     sHelp = "Editor to interact"
     lEditors = [ "vim" ]
     oParser.add_argument( "-editor", help = sHelp, choices = lEditors )
     sHelp = "File to process"
     oParser.add_argument( "-file", help = sHelp )
-    oSubparsers = oParser.add_subparsers()
+    oSubparsers = oParser.add_subparsers( title = "Commands" )
     sHelp = "Display file table of content based on tags"
-    oSubparser = oSubparsers.add_parser( "-toc", help = sHelp )
+    oSubparser = oSubparsers.add_parser( "toc", help = sHelp )
+    oSubparser.set_defaults( handler = self.__toc )
 
     oArgs = oParser.parse_args()
-    pmq.post( 'm_wndeditor_show' )
+    oArgs.handler( oArgs )
+
+  def __toc( self, i_oArgs ) :
+    pass
 
