@@ -9,3 +9,5 @@ sys.dont_write_bytecode = True
 
 import sigma_gui
 
+sigma_gui.start()
+
