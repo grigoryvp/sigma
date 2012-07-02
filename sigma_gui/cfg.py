@@ -12,7 +12,10 @@ class Cfg( pmq.Actor ) :
 
   def __init__( self ) :
     super( Cfg, self ).__init__()
-    self.m_mGeometry = { 'editor' : None }
+    self.m_mGeometry = {
+      'editor' : None,
+      'toc' : None
+    }
 
   def m_cfg_load( self ) :
     sPath = os.path.expanduser( self.CFG_FILE_NAME )

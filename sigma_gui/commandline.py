@@ -29,5 +29,5 @@ class Commandline( pmq.Actor ) :
     oArgs.handler( oArgs )
 
   def __toc( self, i_oArgs ) :
-    pass
+    pmq.post( 'm_wndtoc_show' )
 
