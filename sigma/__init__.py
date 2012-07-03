@@ -108,8 +108,9 @@ def parse( i_sTxt, i_sType = None ) :
           oTags.addRawLine( sLine )
           oTags.completeCurrent()
           continue
+        elif sCur.startswith( ANCHOR_TOC ) :
+          oTags.newCurrent( TagToc( anchor = sAnchor ) )
         elif sCur.startswith( ANCHOR_MULTILINE ) : pass
-        elif sCur.startswith( ANCHOR_TOC ) : pass
         ##  Unknown anchor?
         else :
           oTags.newCurrent( TagUnknown( anchor = sAnchor ) )

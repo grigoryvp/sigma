@@ -7,6 +7,9 @@
 
 ##  Simple tests.
 
+import sys
+sys.dont_write_bytecode = True
+
 import sigma
 
 assert sigma.parse( """
@@ -14,9 +17,11 @@ assert sigma.parse( """
 
 ##{ print( "foo" )
 ##}
+##@ This is TOC.
 """.strip() ) == [
   sigma.TagTxt( anchor = "##", raw = [ "#!/usr/bin/python", "" ] ),
-  sigma.TagCode( anchor = "##", raw = [ "##{ print( \"foo\" )", "##}" ] )
+  sigma.TagCode( anchor = "##", raw = [ "##{ print( \"foo\" )", "##}" ] ),
+  sigma.TagToc( anchor = "##", raw = [ "##@ This is TOC." ] )
 ]
 
 assert sigma.parse( """
