@@ -111,14 +111,17 @@ def parse( i_sTxt, i_sType = None ) :
         elif sCur.startswith( ANCHOR_TOC ) :
           oTags.newCurrent( TagToc( anchor = sAnchor ) )
         elif sCur.startswith( ANCHOR_MULTILINE ) : pass
-        ##  Unknown anchor?
+        ##  Ordinary comment?
         else :
-          oTags.newCurrent( TagUnknown( anchor = sAnchor ) )
+          oTags.noTagInLine()
       else :
         if oTags.current() and oTags.current().isCode() :
           ##  This text is between code begin and end anchor and need to
           ##  be replaced with code output.
           continue
+        ##  Ordinary text?
+        else :
+          oTags.noTagInLine()
     oTags.addRawLine( sLine )
   oTags.completeCurrent()
   return oTags
@@ -166,6 +169,12 @@ class TagAccumulator( list ) :
   def completeCurrent( self ) :
     self.newCurrent( None )
 
+  ##x Line contains no sigma tag - if some non-text tag is set as current -
+  ##  add it to list.
+  def noTagInLine( self ) :
+    if self.m_oTagCur is not None and not self.m_oTagCur.isTxt() :
+      self.append( self.m_oTagCur )
+    self.m_oTagCur = None
 
 class Tag( object ) :
 
