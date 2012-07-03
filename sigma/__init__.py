@@ -169,8 +169,8 @@ class TagAccumulator( list ) :
 
 class Tag( object ) :
 
-  def __init__( self, anchor, value = None, raw = [] ) :
-    self.m_sVal = value
+  def __init__( self, anchor, raw = [] ) :
+    self.m_sVal = ""
     self.m_sAnchor = anchor
     self.m_lRaw = raw[:]
 
@@ -187,6 +187,10 @@ class Tag( object ) :
 
   def addRawLine( self, i_sLine ) :
     self.m_lRaw.append( i_sLine )
+    nOffset = len( self.anchor() ) + len( ANCHOR_MULTILINE )
+    if len( self.m_sVal ) > 0 :
+      self.m_sVal += "\n"
+    self.m_sVal += i_sLine.strip()[ nOffset : ]
 
   def rawLines( self ) :
     return self.m_lRaw
@@ -212,8 +216,8 @@ class TagTxt( Tag ) :
 
 class TagCode( Tag ) :
 
-  def __init__( self, anchor, value = None, raw = [] ) :
-    Tag.__init__( self, anchor, value, raw )
+  def __init__( self, anchor, raw = [] ) :
+    Tag.__init__( self, anchor, raw )
     ##  Lines with code extracted from sigma "code" tag.
     self.m_lCodeLines = []
     ##  Raw lines of sigma "code" tag before generated code.

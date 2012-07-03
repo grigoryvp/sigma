@@ -26,12 +26,22 @@ assert sigma.parse( """
 
 assert sigma.parse( """
 #!/usr/bin/python
-
 ##{ print( "foo" )
 ##}
 """.strip() )[ 1 ].codeLines() == [
   "print( \"foo\" )"
 ]
+
+assert sigma.parse( """
+#!/usr/bin/python
+##@ This is TOC.
+""".strip() )[ 1 ].value() == "This is TOC."
+
+assert sigma.parse( """
+#!/usr/bin/python
+##@ This is
+##  multiline.
+""".strip() )[ 1 ].value() == "This is\nmultiline."
 
 assert sigma.preprocess( """
 #!/usr/bin/python
