@@ -26,6 +26,7 @@ class Commandline( pmq.Actor ) :
     oSubparser.set_defaults( handler = self.__toc )
 
     oArgs = oParser.parse_args()
+    pmq.post( 'm_editor_use', oArgs.editor )
     oArgs.handler( oArgs )
 
   def __toc( self, i_oArgs ) :

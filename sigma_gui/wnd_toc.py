@@ -21,6 +21,7 @@ class WndToc( pu.Wnd ) :
         with pu.Grip() : pass
     self.setCaption( "Sigma: TOC" )
     self.bind( '<Return>', self.__onEnter )
+    self.bind( '<Escape>', self.__onEscape )
 
   def m_startup( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'toc' )
@@ -42,4 +43,8 @@ class WndToc( pu.Wnd ) :
     lItems = self.m_oItems.selection()
     if len( lItems ) :
       pmq.post( 'm_toc_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )
+      pmq.stop()
+
+  def __onEscape( self, i_oEvent ) :
+    pmq.stop()
 

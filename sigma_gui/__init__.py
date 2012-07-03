@@ -8,18 +8,20 @@ import threading
 import pmq
 import pu
 
-from shutdown import Shutdown
-from cfg import Cfg
-from wnd_editor import WndEditor
-from wnd_toc import WndToc
+from shutdown    import Shutdown
+from cfg         import Cfg
+from wnd_editor  import WndEditor
+from wnd_toc     import WndToc
 from commandline import Commandline
-from cmd_toc import CmdToc
+from cmd_toc     import CmdToc
+from editor_vim  import EditorVim
 
 def start() :
   Shutdown()
   Cfg()
   Commandline()
   CmdToc()
+  EditorVim()
   WndEditor()
   WndToc()
   ##  Load configuration from file, if any.
@@ -30,4 +32,6 @@ def start() :
   ##  display different window.
   pmq.post( 'm_commandline_handle' )
   pmq.start( pu.mainLoop, pu.mainLoopStop )
+  ##  If interaction with editor was requested - handle it.
+  EditorVim.TryHandleCommand()
 
