@@ -106,6 +106,10 @@ def Preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
     lOut.append( sLine )
   return "\n".join( lOut )
 
+##x Evaluates to a list of sigma tags found in file.
+def parse( i_sTxt, i_sType = None ) :
+  return [ TagToc( "first" ), TagToc( "second" ) ]
+
 def AnchorForType( i_sType ) :
   for aType in ABOUT_TYPES :
     if aType[ 'TYPE' ] == i_sType :
@@ -117,4 +121,21 @@ def AnchorForShebang( i_sShebang ) :
     if aType[ 'SHEBANG' ] == i_sShebang :
       return aType[ 'ANCHOR' ]
   return None
+
+
+class Tag( object ) :
+
+  def __init__( self, value = None ) :
+    self.m_sVal = value
+
+  def isToc( self ) :
+    return False
+
+  def value( self ) :
+    return self.m_sVal
+
+
+class TagToc( Tag ) :
+
+  def isToc( self ) : return True
 

@@ -30,4 +30,5 @@ class Commandline( pmq.Actor ) :
 
   def __toc( self, i_oArgs ) :
     pmq.post( 'm_wndtoc_show' )
+    pmq.post( 'm_cmd_toc', i_oArgs.file )
 

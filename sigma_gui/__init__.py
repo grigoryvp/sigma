@@ -5,8 +5,6 @@ import sys
 import time
 import threading
 
-sys.dont_write_bytecode = True
-
 import pmq
 import pu
 
@@ -15,11 +13,13 @@ from cfg import Cfg
 from wnd_editor import WndEditor
 from wnd_toc import WndToc
 from commandline import Commandline
+from cmd_toc import CmdToc
 
 def start() :
   Shutdown()
   Cfg()
   Commandline()
+  CmdToc()
   WndEditor()
   WndToc()
   ##  Load configuration from file, if any.
