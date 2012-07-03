@@ -2,6 +2,7 @@
 # coding:utf-8 vi:et:ts=2
 
 import pmq
+import os
 
 ##c Communication with VIM editor.
 class EditorVim( pmq.Actor ) :
@@ -15,17 +16,24 @@ class EditorVim( pmq.Actor ) :
 
   def m_toc_select( self, i_oTag ) :
     if EditorVim.m_fUse :
-      EditorVim.m_oCommand = CommandToc()
+      EditorVim.m_oCommand = CommandToc( i_oTag.line() )
 
   @classmethod
   def TryHandleCommand( self ) :
     if self.m_fUse and self.m_oCommand is not None :
       self.m_oCommand.handle()
 
+
 class Command( object ) :
   pass
 
+
 class CommandToc( Command ) :
+
+  def __init__( self, line ) :
+    self.m_nLine = line
+
   def handle( self ) :
-    print( "TOC command" )
+    sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
+    os.system( sCmd.format( self.m_nLine ) )
 

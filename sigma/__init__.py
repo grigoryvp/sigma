@@ -101,7 +101,8 @@ def parse( i_sTxt, i_sType = None ) :
         if sCur.startswith( ANCHOR_CODE_BEGIN ) :
           if oTags.current().isCode() :
             raise Exception( "Unterminated code block" )
-          oTags.newCurrent( TagCode( anchor = sAnchor ) )
+          nLine = oTags.lastLine() + 1
+          oTags.newCurrent( TagCode( anchor = sAnchor, line = nLine ) )
         elif sCur.startswith( ANCHOR_CODE_END ) :
           if not oTags.current().isCode() :
             raise Exception( "Code block without start" )
@@ -109,7 +110,8 @@ def parse( i_sTxt, i_sType = None ) :
           oTags.completeCurrent()
           continue
         elif sCur.startswith( ANCHOR_TOC ) :
-          oTags.newCurrent( TagToc( anchor = sAnchor ) )
+          nLine = oTags.lastLine() + 1
+          oTags.newCurrent( TagToc( anchor = sAnchor, line = nLine ) )
         elif sCur.startswith( ANCHOR_MULTILINE ) : pass
         ##  Ordinary comment?
         else :
@@ -133,12 +135,17 @@ class TagAccumulator( list ) :
     list.__init__( self )
     self.m_oTagCur = None
     self.m_sAnchor = None
+    ##  1-based line number.
+    self.m_nLastLine = 0
 
   def setAnchor( self, i_sAnchor ) :
     self.m_sAnchor = i_sAnchor
 
   def anchor( self ) :
     return self.m_sAnchor
+
+  def lastLine( self ) :
+    return self.m_nLastLine
 
   def setAnchorForType( self, i_sType ) :
     for aType in ABOUT_TYPES :
@@ -162,8 +169,10 @@ class TagAccumulator( list ) :
     return self.m_oTagCur
 
   def addRawLine( self, i_sLine ) :
+    self.m_nLastLine += 1
     if self.m_oTagCur is None :
-      self.m_oTagCur = TagTxt( anchor = self.m_sAnchor )
+      nLine = self.m_nLastLine
+      self.m_oTagCur = TagTxt( anchor = self.m_sAnchor, line = nLine )
     self.m_oTagCur.addRawLine( i_sLine )
 
   def completeCurrent( self ) :
@@ -178,7 +187,9 @@ class TagAccumulator( list ) :
 
 class Tag( object ) :
 
-  def __init__( self, anchor, raw = [] ) :
+  def __init__( self, anchor, line = None, raw = [] ) :
+    ##  1-based line number of tag start.
+    self.m_nLine = line
     self.m_sVal = ""
     self.m_sAnchor = anchor
     self.m_lRaw = raw[:]
@@ -193,6 +204,9 @@ class Tag( object ) :
 
   def anchor( self ) :
     return self.m_sAnchor
+
+  def line( self ) :
+    return self.m_nLine
 
   def addRawLine( self, i_sLine ) :
     self.m_lRaw.append( i_sLine )
@@ -225,7 +239,7 @@ class TagTxt( Tag ) :
 
 class TagCode( Tag ) :
 
-  def __init__( self, anchor, raw = [] ) :
+  def __init__( self, anchor, line = None, raw = [] ) :
     Tag.__init__( self, anchor, raw )
     ##  Lines with code extracted from sigma "code" tag.
     self.m_lCodeLines = []
