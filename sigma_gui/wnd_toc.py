@@ -20,6 +20,7 @@ class WndToc( pu.Wnd ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: TOC" )
+    self.bind( '<Return>', self.__onEnter )
 
   def m_startup( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'toc' )
@@ -33,7 +34,12 @@ class WndToc( pu.Wnd ) :
 
   def m_toc( self, i_lTags ) :
     for oTag in i_lTags :
-      sId = self.m_oItems.append( text = oTag.value() )
+      self.m_oItems.append( text = oTag.value(), baton = oTag )
     self.m_oStack.setCurrent( 'content' )
     self.m_oItems.focus_set()
+
+  def __onEnter( self, i_oEvent ) :
+    lItems = self.m_oItems.selection()
+    if len( lItems ) :
+      pmq.post( 'm_toc_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )
 
