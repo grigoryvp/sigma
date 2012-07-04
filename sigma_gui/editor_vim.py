@@ -8,6 +8,7 @@ import gc
 if sys.platform == 'linux2' :
   import gtk.gdk
 if sys.platform == 'darwin' :
+  import Cocoa
   import Quartz
 
 import pmq
@@ -70,13 +71,15 @@ class EditorVim( pmq.Actor ) :
             nCx, nCy = oWndApp.get_size()
             return nX, nY, nCx, nCy
     if sys.platform == 'darwin' :
+      oPool = Cocoa.NSAutoreleasePool.alloc().init()
       for mWinInfo in Quartz.CGWindowListCopyWindowInfo( 0, 0 ) :
-        if mWinInfo[ Quartz.kCGWindowOwnerName ].endswith( "- GVIM" ) :
-          nX = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'X' ] )
-          nY = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Y' ] )
-          nCx = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Width' ] )
-          nCx = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Height' ] )
-          print( nX, nY, nCx, nCy )
+        if Quartz.kCGWindowName in mWinInfo :
+          if mWinInfo[ Quartz.kCGWindowName ].endswith( "- VIM" ) :
+            nX = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'X' ] )
+            nY = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Y' ] )
+            nCx = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Width' ] )
+            nCy = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Height' ] )
+            return nX, nY, nCx, nCy
 
   def enumWindowsCallback( self, i_hWindow ) :
     nNameMax = 256
