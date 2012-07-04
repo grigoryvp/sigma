@@ -82,6 +82,9 @@ class CommandToc( Command ) :
     self.m_nLine = line
 
   def handle( self ) :
-    sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
+    if sys.platform == 'win32' :
+      sCmd = "gvim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
+    else :
+      sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
     os.system( sCmd.format( self.m_nLine ) )
 
