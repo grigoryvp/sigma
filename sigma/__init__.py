@@ -12,18 +12,33 @@ import copy
 import __builtin__
 import StringIO
 
+##@ Globals.
+
 ABOUT_TYPES = [
-  { 'TYPE' : 'py',  'SHEBANG' : '/usr/bin/env python',  'ANCHOR' : '##' },
-  { 'TYPE' : 'py',  'SHEBANG' : '/usr/bin/python',      'ANCHOR' : '##' },
-  { 'TYPE' : 'pyw', 'SHEBANG' : '/usr/bin/env pythonw', 'ANCHOR' : '##' },
-  { 'TYPE' : 'pyw', 'SHEBANG' : '/usr/bin/pythonw',     'ANCHOR' : '##' },
-  { 'TYPE' : 'cpp', 'SHEBANG' : None,                   'ANCHOR' : '//' },
-  { 'TYPE' : 'h',   'SHEBANG' : None,                   'ANCHOR' : '//' }
+  { 'TYPE' : 'py',
+    'ANCHOR' : '##',
+    'EXTENSIONS' : [ 'py', 'pyw' ],
+    'FILENAMES' : [],
+    'SHEBANGS' : [
+      '/usr/bin/env python',
+      '/usr/bin/python',
+      '/usr/bin/env pythonw',
+      '/usr/bin/pythonw'
+    ]
+  },
+  { 'TYPE' : 'cpp',
+    'ANCHOR' : '//',
+    'EXTENSIONS' : [ 'cpp', 'h' ],
+    'FILENAMES' : [],
+    'SHEBANGS' : []
+  }
 ]
 ANCHOR_CODE_BEGIN = "{ "
 ANCHOR_CODE_END   = "}"
 ANCHOR_MULTILINE  = "  "
 ANCHOR_TOC        = "@ "
+
+##@ preprocessFile
 
 def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
   oFile = open( i_sFilename )
@@ -38,14 +53,21 @@ def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
     else :
       i_sEncoding = 'utf-8'
   ##  File extension without dot or empty string.
-  sExt = os.path.splitext( i_sFilename )[ 1 ][ 1 : ]
-  sType = sExt if sExt else None
+  sExtFile = os.path.splitext( i_sFilename )[ 1 ][ 1 : ]
+  for mType in ABOUT_TYPES :
+    for sExt in mType[ 'EXTENSIONS' ] :
+      if sExt == sExtFile :
+        sType = mType[ 'TYPE' ]
+  else :
+    sType = None
   ##  Preprocess file text, call python code.
   sData = Preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
   ##  Write back changed text.
   oFile = open( i_sFilename, "w+" )
   oFile.write( sData.encode( i_sEncoding ) )
   oFile.close()
+
+##@ preprocess
 
 def preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
   lOut = []
@@ -79,6 +101,7 @@ def preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
       lOut += oTag.rawLines()
   return "\n".join( lOut )
 
+##@ parse
 
 ##x Evaluates to a list of sigma tags found in file.
 def parse( i_sTxt, i_sType = None ) :
@@ -128,6 +151,7 @@ def parse( i_sTxt, i_sType = None ) :
   oTags.completeCurrent()
   return oTags
 
+##@ Tags
 
 class TagAccumulator( list ) :
 
@@ -148,17 +172,18 @@ class TagAccumulator( list ) :
     return self.m_nLastLine
 
   def setAnchorForType( self, i_sType ) :
-    for aType in ABOUT_TYPES :
-      if aType[ 'TYPE' ] == i_sType :
-        self.m_sAnchor = aType[ 'ANCHOR' ]
-        break
+    for mType in ABOUT_TYPES :
+      if mType[ 'TYPE' ] == i_sType :
+        self.m_sAnchor = mType[ 'ANCHOR' ]
+        return
 
   def setAnchorForShebang( self, i_sShebang ) :
     i_sShebang = i_sShebang[ len( "#!" ) : ]
-    for aType in ABOUT_TYPES :
-      if aType[ 'SHEBANG' ] and i_sShebang.startswith( aType[ 'SHEBANG' ] ) :
-        self.m_sAnchor = aType[ 'ANCHOR' ]
-        break
+    for mType in ABOUT_TYPES :
+      for sShebang in mType[ 'SHEBANGS' ] :
+        if i_sShebang.startswith( sShebang ) :
+          self.m_sAnchor = mType[ 'ANCHOR' ]
+          return
 
   def newCurrent( self, i_oTag ) :
     if self.m_oTagCur is not None :
