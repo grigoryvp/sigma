@@ -33,7 +33,7 @@ ABOUT_TYPES = [
     'SHEBANGS' : []
   },
   { 'TYPE' : 'vim',
-    'ANCHOR' : '\'\'',
+    'ANCHOR' : '""',
     'EXTENSIONS' : [],
     'FILENAMES' : [ '.vimrc', '_vimrc' ],
     'SHEBANGS' : []
@@ -49,6 +49,8 @@ ANCHOR_TOC        = "@ "
 def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
   with open( i_sFilename ) as oFile :
     sData = oFile.read()
+  if i_sEncoding is None :
+    i_sEncoding = tryDetectEncoding( sData )
   sType = tryDetectType( sData, i_sFilename, i_sEncoding )
   ##  Preprocess file text, call python code.
   sNewData = Preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
@@ -60,8 +62,11 @@ def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
 ##@ parseFile
 
 def parseFile( i_sFilename, i_sEncoding = None, ** kargs ) :
+  print( i_sFilename )
   with open( i_sFilename ) as oFile :
     sData = oFile.read()
+  if i_sEncoding is None :
+    i_sEncoding = tryDetectEncoding( sData )
   sType = tryDetectType( sData, i_sFilename, i_sEncoding )
   return parse( sData.decode( i_sEncoding ), sType, ** kargs )
 
@@ -150,17 +155,18 @@ def parse( i_sTxt, i_sType = None ) :
   oTags.completeCurrent()
   return oTags
 
+def tryDetectEncoding( i_sData ) :
+  oMatch = re.search( r'-\*-\s+coding: ([^\s]+)\s+-\*-', i_sData )
+  if oMatch :
+    ##! Match with index 1 is firt captured match.
+    sEncoding = oMatch.group( 1 )
+  else :
+    sEncoding = 'utf-8'
+  return sEncoding
+
 def tryDetectType( i_sData, i_sFilename, i_sEncoding ) :
   ##  File type to detect.
   sType = None
-  ##  Need autodetect file encoding?
-  if not i_sEncoding :
-    oMatch = re.search( r'-\*-\s+coding: ([^\s]+)\s+-\*-', i_sData )
-    if oMatch :
-      ##! Match with index 1 is firt captured match.
-      i_sEncoding = oMatch.group( 1 )
-    else :
-      i_sEncoding = 'utf-8'
   ##  File extension without dot or empty string.
   sExtFile = os.path.splitext( i_sFilename )[ 1 ][ 1 : ]
   ##  Try to detect type from filename.
