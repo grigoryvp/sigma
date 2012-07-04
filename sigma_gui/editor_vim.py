@@ -5,6 +5,11 @@ import sys
 import ctypes
 import gc
 
+if sys.platform == 'linux2' :
+  import gtk.gdk
+if sys.platform == 'darwin' :
+  import Quartz
+
 import pmq
 import os
 
@@ -52,8 +57,7 @@ class EditorVim( pmq.Actor ) :
         nCx = oRect.right - oRect.left
         nCy = oRect.bottom - oRect.top
         return oRect.left, oRect.top, nCx, nCy
-    elif sys.platform == 'linux2' :
-      import gtk.gdk
+    if sys.platform == 'linux2' :
       oWndRoot = gtk.gdk.get_default_root_window()
       _, _, lChildIds = oWndRoot.property_get( '_NET_CLIENT_LIST' )
       for nId in lChildIds :
@@ -65,6 +69,14 @@ class EditorVim( pmq.Actor ) :
             nX, nY = oWndApp.get_origin()
             nCx, nCy = oWndApp.get_size()
             return nX, nY, nCx, nCy
+    if sys.platform == 'darwin' :
+      for mWinInfo in Quartz.CGWindowListCopyWindowInfo( 0, 0 ) :
+        if mWinInfo[ Quartz.kCGWindowOwnerName ].endswith( "- GVIM" ) :
+          nX = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'X' ] )
+          nY = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Y' ] )
+          nCx = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Width' ] )
+          nCx = int( mWinInfo[ Quartz.kCGWindowBounds ][ 'Height' ] )
+          print( nX, nY, nCx, nCy )
 
   def enumWindowsCallback( self, i_hWindow ) :
     nNameMax = 256
