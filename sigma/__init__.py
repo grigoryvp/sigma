@@ -62,7 +62,6 @@ def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
 ##@ parseFile
 
 def parseFile( i_sFilename, i_sEncoding = None, ** kargs ) :
-  print( i_sFilename )
   with open( i_sFilename ) as oFile :
     sData = oFile.read()
   if i_sEncoding is None :

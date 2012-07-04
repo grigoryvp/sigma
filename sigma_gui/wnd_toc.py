@@ -22,6 +22,8 @@ class WndToc( pu.Wnd ) :
     self.setCaption( "Sigma: TOC" )
     self.bind( '<Return>', self.__onEnter )
     self.bind( '<Escape>', self.__onEscape )
+    ##  Used with external editor.
+    self.m_fEditor = False
 
   def m_startup( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'toc' )
@@ -29,6 +31,30 @@ class WndToc( pu.Wnd ) :
       self.geometry( sGeometry )
     else :
       self.center( 256, 256 )
+
+  ##x Overloads |pu.Wnd|.
+  def show( self, i_fShow = True ) :
+    if self.m_fEditor :
+      ##! Can't use |pmq.request()| since this will freeze GUI mainloop
+      ##  and geometry retrieval enumerates HWND and requires main loop
+      ##  to operate.
+      pmq.post( 'm_editor_geometry_get' )
+    else :
+      super( WndToc, self ).show( i_fShow )
+
+  def m_editor_geometry( self, gGeometry ) :
+    if self.m_fEditor :
+      if gGeometry is not None :
+        nParentX, nParentY, nParentCx, nParentCy = gGeometry
+        nCx = nParentCx / 2
+        nCy = nParentCy / 2
+        nX = nParentX + (nParentCx - nCx) / 2
+        nY = nParentY + (nParentCy - nCy) / 2
+        self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
+      super( WndToc, self ).show()
+
+  def m_editor_use( self ) :
+    self.m_fEditor = True
 
   def m_shutdown( self ) :
     pmq.post( 'm_geometry_set', 'toc', self.geometry() )
