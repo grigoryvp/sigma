@@ -21,9 +21,20 @@ ABOUT_TYPES = [
     'FILENAMES' : [],
     'SHEBANGS' : [
       '/usr/bin/env python',
-      '/usr/bin/python',
       '/usr/bin/env pythonw',
+      '/usr/bin/python',
       '/usr/bin/pythonw'
+    ]
+  },
+  { 'TYPE' : 'rb',
+    'ANCHOR' : '##',
+    'EXTENSIONS' : [ 'rb', 'rbw' ],
+    'FILENAMES' : [],
+    'SHEBANGS' : [
+      '/usr/bin/env ruby',
+      '/usr/bin/env rubyw',
+      '/usr/bin/ruby',
+      '/usr/bin/rubyw'
     ]
   },
   { 'TYPE' : 'cpp',
