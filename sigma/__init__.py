@@ -31,6 +31,12 @@ ABOUT_TYPES = [
     'EXTENSIONS' : [ 'cpp', 'h' ],
     'FILENAMES' : [],
     'SHEBANGS' : []
+  },
+  { 'TYPE' : 'vim',
+    'ANCHOR' : '\'\'',
+    'EXTENSIONS' : [],
+    'FILENAMES' : [ '.vimrc', '_vimrc' ],
+    'SHEBANGS' : []
   }
 ]
 ANCHOR_CODE_BEGIN = "{ "
@@ -41,31 +47,23 @@ ANCHOR_TOC        = "@ "
 ##@ preprocessFile
 
 def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
-  oFile = open( i_sFilename )
-  sData = oFile.read()
-  oFile.close()
-  ##  Need autodetect file encoding?
-  if not i_sEncoding :
-    oMatch = re.search( r'-\*-\s+coding: ([^\s]+)\s+-\*-', sData )
-    if oMatch :
-      ##! Match with index 1 is firt captured match.
-      i_sEncoding = oMatch.group( 1 )
-    else :
-      i_sEncoding = 'utf-8'
-  ##  File extension without dot or empty string.
-  sExtFile = os.path.splitext( i_sFilename )[ 1 ][ 1 : ]
-  for mType in ABOUT_TYPES :
-    for sExt in mType[ 'EXTENSIONS' ] :
-      if sExt == sExtFile :
-        sType = mType[ 'TYPE' ]
-  else :
-    sType = None
+  with open( i_sFilename ) as oFile :
+    sData = oFile.read()
+  sType = tryDetectType( sData, i_sFilename, i_sEncoding )
   ##  Preprocess file text, call python code.
-  sData = Preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
+  sNewData = Preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
   ##  Write back changed text.
   oFile = open( i_sFilename, "w+" )
-  oFile.write( sData.encode( i_sEncoding ) )
+  oFile.write( sNewData.encode( i_sEncoding ) )
   oFile.close()
+
+##@ parseFile
+
+def parseFile( i_sFilename, i_sEncoding = None, ** kargs ) :
+  with open( i_sFilename ) as oFile :
+    sData = oFile.read()
+  sType = tryDetectType( sData, i_sFilename, i_sEncoding )
+  return parse( sData.decode( i_sEncoding ), sType, ** kargs )
 
 ##@ preprocess
 
@@ -112,6 +110,7 @@ def parse( i_sTxt, i_sType = None ) :
     ##  Need autodetect file type?
     if not oTags.anchor() :
       ##  Shebang?
+      ##* This must be first check in tryDetectType()
       if sCur.startswith( "#!" ) :
         oTags.setAnchorForShebang( sCur )
     else :
@@ -150,6 +149,33 @@ def parse( i_sTxt, i_sType = None ) :
     oTags.addRawLine( sLine )
   oTags.completeCurrent()
   return oTags
+
+def tryDetectType( i_sData, i_sFilename, i_sEncoding ) :
+  ##  File type to detect.
+  sType = None
+  ##  Need autodetect file encoding?
+  if not i_sEncoding :
+    oMatch = re.search( r'-\*-\s+coding: ([^\s]+)\s+-\*-', i_sData )
+    if oMatch :
+      ##! Match with index 1 is firt captured match.
+      i_sEncoding = oMatch.group( 1 )
+    else :
+      i_sEncoding = 'utf-8'
+  ##  File extension without dot or empty string.
+  sExtFile = os.path.splitext( i_sFilename )[ 1 ][ 1 : ]
+  ##  Try to detect type from filename.
+  sNameOnly = os.path.basename( i_sFilename )
+  for mType in ABOUT_TYPES :
+    for sName in mType[ 'FILENAMES' ] :
+      if sNameOnly == sName :
+        return mType[ 'TYPE' ]
+  ##  Try to detect type from extension.
+  if sType is None :
+    for mType in ABOUT_TYPES :
+      for sExt in mType[ 'EXTENSIONS' ] :
+        if sExt == sExtFile :
+          return mType[ 'TYPE' ]
+  return None
 
 ##@ Tags
 
