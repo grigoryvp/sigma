@@ -11,28 +11,35 @@ import os
 ##c Communication with VIM editor.
 class EditorVim( pmq.Actor ) :
 
-  m_oCommand = None
-  m_fUse = False
+  def __init__( self ) :
+    pmq.Actor.__init__( self )
+    self.m_fUse = False
 
   def m_editor_use( self, i_sEditor ) :
     if i_sEditor is not None and "vim" in i_sEditor.strip() :
-      EditorVim.m_fUse = True
+      self.m_fUse = True
 
   def m_editor_geometry_get( self ) :
-    if EditorVim.m_fUse :
+    if self.m_fUse :
       pmq.post( 'm_editor_geometry', self.__wndGeometry() )
 
   def m_toc_select( self, i_oTag ) :
-    if EditorVim.m_fUse :
-      EditorVim.m_oCommand = CommandToc( i_oTag.line() )
-
-  @classmethod
-  def TryHandleCommand( self ) :
-    if self.m_fUse and self.m_oCommand is not None :
-      self.m_oCommand.handle()
+    if self.m_fUse :
+      if sys.platform == 'win32' :
+        sCmd = "gvim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
+      else :
+        sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
+      os.system( sCmd.format( i_oTag.line() ) )
+      pmq.stop()
 
   def __wndGeometry( self ) :
     if sys.platform == 'win32' :
+      @ctypes.WINFUNCTYPE( ctypes.c_int, ctypes.c_int, ctypes.c_int )
+      def enumWindowsCallback( i_hWindow, i_nBaton ) :
+        for oObject in gc.get_objects() :
+          if id( oObject ) == i_nBaton :
+            oObject.enumWindowsCallback( i_hWindow )
+        return 1
       ##  VIM window handle.
       self.m_hWindow = None
       nId = ctypes.c_int( id( self ) )
@@ -45,6 +52,19 @@ class EditorVim( pmq.Actor ) :
         nCx = oRect.right - oRect.left
         nCy = oRect.bottom - oRect.top
         return oRect.left, oRect.top, nCx, nCy
+    elif sys.platform == 'linux2' :
+      import gtk.gdk
+      oWndRoot = gtk.gdk.get_default_root_window()
+      _, _, lChildIds = oWndRoot.property_get( '_NET_CLIENT_LIST' )
+      for nId in lChildIds :
+        oWndApp = gtk.gdk.window_foreign_new( nId )
+        gName = oWndApp.property_get( '_NET_WM_NAME' )
+        if gName is not None :
+          _, _, sName = gName
+          if sName.endswith( "- GVIM" ) :
+            nX, nY = oWndApp.get_origin()
+            nCx, nCy = oWndApp.get_size()
+            return nX, nY, nCx, nCy
 
   def enumWindowsCallback( self, i_hWindow ) :
     nNameMax = 256
@@ -64,27 +84,4 @@ class WinapiRect( ctypes.Structure ) :
     ( "right",  ctypes.c_int ),
     ( "bottom", ctypes.c_int )
   ]
-
-@ctypes.WINFUNCTYPE( ctypes.c_int, ctypes.c_int, ctypes.c_int )
-def enumWindowsCallback( i_hWindow, i_nBaton ) :
-  oInstance = [ o for o in gc.get_objects() if id( o ) == i_nBaton ][ 0 ]
-  oInstance.enumWindowsCallback( i_hWindow )
-  return 1
-
-
-class Command( object ) :
-  pass
-
-
-class CommandToc( Command ) :
-
-  def __init__( self, line ) :
-    self.m_nLine = line
-
-  def handle( self ) :
-    if sys.platform == 'win32' :
-      sCmd = "gvim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
-    else :
-      sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
-    os.system( sCmd.format( self.m_nLine ) )
 

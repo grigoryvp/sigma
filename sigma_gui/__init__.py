@@ -32,6 +32,4 @@ def start() :
   ##  display different window.
   pmq.post( 'm_commandline_handle' )
   pmq.start( pu.mainLoop, pu.mainLoopStop )
-  ##  If interaction with editor was requested - handle it.
-  EditorVim.TryHandleCommand()
 
