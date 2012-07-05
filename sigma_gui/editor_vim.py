@@ -2,7 +2,9 @@
 # coding:utf-8 vi:et:ts=2
 
 import sys
+import os
 import ctypes
+import subprocess
 import gc
 
 if sys.platform == 'linux2' :
@@ -33,9 +35,15 @@ class EditorVim( pmq.Actor ) :
     if self.m_fUse :
       if sys.platform == 'win32' :
         sCmd = "gvim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
+      elif sys.platform == 'darwin' :
+        ##* Must implement some engine to find executable same way window
+        ##  is searched. Window information has PID that can be used to
+        ##  find a file.
+        sCmd =  "~/apps/MacVim.app/Contents/MacOS/Vim"
+        sCmd += " --servername VIM --remote-send \"<ESC>:{0}<CR>\""
       else :
         sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
-      os.system( sCmd.format( i_oTag.line() ) )
+      subprocess.Popen( sCmd.format( i_oTag.line() ), shell = True )
       pmq.stop()
 
   def __wndGeometry( self ) :
