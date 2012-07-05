@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+import sys
+
+if sys.platform == 'darwin' :
+  import Cocoa
+
 import pu
 import pmq
 
@@ -52,6 +57,12 @@ class WndToc( pu.Wnd ) :
         nY = nParentY + (nParentCy - nCy) / 2
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
       super( WndToc, self ).show()
+      ##  On OSX window will not get focus.
+      if sys.platform == 'darwin' :
+        pmq.post( 'm_wndtoc_activate' )
+
+  def m_wndtoc_activate( self ) :
+    Cocoa.NSApp.activateIgnoringOtherApps_( Cocoa.YES )
 
   def m_editor_use( self ) :
     self.m_fEditor = True
