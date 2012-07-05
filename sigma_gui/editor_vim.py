@@ -5,7 +5,7 @@ import sys
 import os
 import ctypes
 import subprocess
-import gc
+import threading
 
 if sys.platform == 'linux2' :
   import gtk.gdk
@@ -18,6 +18,11 @@ import os
 
 ##c Communication with VIM editor.
 class EditorVim( pmq.Actor ) :
+
+  m_oGuard = threading.Lock()
+  ##  Maps python object ID for object reference to be used as batons in
+  ##  native callback. For performance - where is no fast reverse to |id()|.
+  m_mObjects = {}
 
   def __init__( self ) :
     pmq.Actor.__init__( self )
@@ -50,13 +55,15 @@ class EditorVim( pmq.Actor ) :
     if sys.platform == 'win32' :
       @ctypes.WINFUNCTYPE( ctypes.c_int, ctypes.c_int, ctypes.c_int )
       def enumWindowsCallback( i_hWindow, i_nBaton ) :
-        for oObject in gc.get_objects() :
-          if id( oObject ) == i_nBaton :
-            oObject.enumWindowsCallback( i_hWindow )
+        with EditorVim.m_oLock() :
+          if i_nBaton in EditorVim.m_mObjects :
+            EditorVim.m_mObjects[ i_nBaton ].enumWindowsCallback( i_hWindow )
         return 1
       ##  VIM window handle.
       self.m_hWindow = None
-      nId = ctypes.c_int( id( self ) )
+      with EditorVim.m_oLock() :
+        nId = ctypes.c_int( id( self ) )
+        EditorVim.m_mObjects[ nId ] = self
       ##  |enumWindowsCallback()| will be called for each window.
       ctypes.windll.user32.EnumWindows( enumWindowsCallback, nId )
       if self.m_hWindow is not None :
