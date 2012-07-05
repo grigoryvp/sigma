@@ -8,6 +8,11 @@ class WndEditor( pu.Wnd ) :
 
   def __init__( self ) :
     super( WndEditor, self ).__init__()
+    with pu.Menu( parent = self ) :
+      with pu.Menu() as this :
+        this.setText( "App" )
+        with pu.MenuItem( name = 'exit' ) as this :
+          this.setText( "Exit" )
     with pu.Rack( parent = self ) :
       with pu.Text() : pass
       with pu.Shelf() :
@@ -24,4 +29,7 @@ class WndEditor( pu.Wnd ) :
 
   def m_shutdown( self ) :
     pmq.post( 'm_geometry_set', 'editor', self.geometry() )
+
+  def m_on_exit( self ) :
+    pmq.stop()
 
