@@ -14,7 +14,8 @@ class Cfg( pmq.Actor ) :
     super( Cfg, self ).__init__()
     self.m_mGeometry = {
       'editor' : None,
-      'toc' : None
+      'toc' : None,
+      'settings' : None
     }
 
   def m_cfg_load( self ) :

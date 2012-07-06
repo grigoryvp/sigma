@@ -11,6 +11,8 @@ class WndEditor( pu.Wnd ) :
     with pu.Menu( parent = self ) :
       with pu.Menu() as this :
         this.setText( "App" )
+        with pu.MenuItem( name = 'settings' ) as this :
+          this.setText( "Settings" )
         with pu.MenuItem( name = 'exit' ) as this :
           this.setText( "Exit" )
     with pu.Rack( parent = self ) :

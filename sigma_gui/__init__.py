@@ -8,14 +8,15 @@ import threading
 import pmq
 import pu
 
-from shutdown    import Shutdown
-from cfg         import Cfg
-from wnd_editor  import WndEditor
-from wnd_toc     import WndToc
-from commandline import Commandline
-from cmd_toc     import CmdToc
-from editor_vim  import EditorVim
-from windows     import Windows
+from shutdown     import Shutdown
+from cfg          import Cfg
+from wnd_editor   import WndEditor
+from wnd_toc      import WndToc
+from wnd_settings import WndSettings
+from commandline  import Commandline
+from cmd_toc      import CmdToc
+from editor_vim   import EditorVim
+from windows      import Windows
 
 def start() :
   Shutdown()
@@ -24,8 +25,9 @@ def start() :
   CmdToc()
   EditorVim()
   Windows()
-  WndEditor()
+  oRoot = WndEditor()
   WndToc()
+  WndSettings( oRoot )
   ##  Load configuration from file, if any.
   pmq.post( 'm_cfg_load' )
   ##  Let actors request configuration.
