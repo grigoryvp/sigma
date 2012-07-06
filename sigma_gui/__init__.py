@@ -15,6 +15,7 @@ from wnd_toc     import WndToc
 from commandline import Commandline
 from cmd_toc     import CmdToc
 from editor_vim  import EditorVim
+from windows     import Windows
 
 def start() :
   Shutdown()
@@ -22,6 +23,7 @@ def start() :
   Commandline()
   CmdToc()
   EditorVim()
+  Windows()
   WndEditor()
   WndToc()
   ##  Load configuration from file, if any.
