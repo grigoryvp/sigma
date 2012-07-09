@@ -35,7 +35,8 @@ class WndToc( pu.Wnd ) :
     if sGeometry :
       self.geometry( sGeometry )
     else :
-      self.center( 256, 256 )
+      self.setSize( 256, 256 )
+      self.center()
 
   ##x Overloads |pu.Wnd|.
   def show( self, i_fShow = True ) :

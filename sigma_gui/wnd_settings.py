@@ -20,7 +20,8 @@ class WndSettings( pu.Wnd ) :
     if sGeometry :
       self.geometry( sGeometry )
     else :
-      self.center( 256, 256 )
+      self.setSize( 256, 256 )
+      self.center()
 
   def m_shutdown( self ) :
     pmq.post( 'm_geometry_set', 'settings', self.geometry() )
