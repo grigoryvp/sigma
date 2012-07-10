@@ -27,8 +27,10 @@ class WndSettings( pu.Wnd ) :
     if i_fShow :
       self.center()
       self.grab_set()
+      self.transient( master = self.parent() )
     else :
       self.grab_release()
+      self.transient( master = None )
     super( WndSettings, self ).show( i_fShow )
 
   def m_wndsettings_close( self ) :
