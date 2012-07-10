@@ -21,7 +21,18 @@ class WndSettings( pu.Wnd ) :
       self.geometry( sGeometry )
     else :
       self.setSize( 256, 256 )
+
+  ##x Overrides |pu.Wnd.show()|.
+  def show( self, i_fShow = True ) :
+    if i_fShow :
       self.center()
+      self.grab_set()
+    else :
+      self.grab_release()
+    super( WndSettings, self ).show( i_fShow )
+
+  def m_wndsettings_close( self ) :
+    self.show( False )
 
   def m_shutdown( self ) :
     pmq.post( 'm_geometry_set', 'settings', self.geometry() )
