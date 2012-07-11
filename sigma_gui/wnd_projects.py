@@ -9,10 +9,10 @@ if sys.platform == 'darwin' :
 import pu
 import pmq
 
-class WndToc( pu.Wnd ) :
+class WndProjects( pu.Wnd ) :
 
   def __init__( self ) :
-    WndToc.__init__( self )
+    WndProjects.__init__( self )
     with pu.Rack( parent = self ) :
       with pu.Stack() as this :
         self.m_oStack = this
@@ -24,14 +24,14 @@ class WndToc( pu.Wnd ) :
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Grip() : pass
-    self.setCaption( "Sigma: TOC" )
+    self.setCaption( "Sigma: Projects" )
     self.bind( '<Return>', self.__onEnter )
     self.bind( '<Escape>', self.__onEscape )
     ##  Used with external editor.
     self.m_fEditor = False
 
   def m_startup( self ) :
-    sGeometry = pmq.request( 'm_geometry_get', 'toc' )
+    sGeometry = pmq.request( 'm_geometry_get', 'projects' )
     if sGeometry :
       self.geometry( sGeometry )
     else :
@@ -46,7 +46,7 @@ class WndToc( pu.Wnd ) :
       ##  to operate.
       pmq.post( 'm_editor_geometry_get' )
     else :
-      super( WndToc, self ).show( i_fShow )
+      super( WndProjects, self ).show( i_fShow )
 
   def m_editor_geometry( self, gGeometry ) :
     if self.m_fEditor :
@@ -57,10 +57,10 @@ class WndToc( pu.Wnd ) :
         nX = nParentX + (nParentCx - nCx) / 2
         nY = nParentY + (nParentCy - nCy) / 2
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
-      super( WndToc, self ).show()
+      super( WndProjects, self ).show()
       ##  On OSX window will not get focus.
       if sys.platform == 'darwin' :
-        pmq.post( 'm_wndtoc_activate' )
+        pmq.post( 'm_wndprojects_activate' )
 
   def m_wndtoc_activate( self ) :
     Cocoa.NSApp.activateIgnoringOtherApps_( Cocoa.YES )
@@ -69,18 +69,18 @@ class WndToc( pu.Wnd ) :
     self.m_fEditor = True
 
   def m_shutdown( self ) :
-    pmq.post( 'm_geometry_set', 'toc', self.geometry() )
+    pmq.post( 'm_geometry_set', 'projects', self.geometry() )
 
-  def m_toc( self, i_lTags ) :
-    for oTag in i_lTags :
-      self.m_oItems.append( text = oTag.value(), baton = oTag )
+  def m_projects( self, i_lsProjects ) :
+    for sProject in i_lsProjects :
+      self.m_oItems.append( text = sProject, baton = sProject )
     self.m_oStack.setCurrent( 'content' )
     self.m_oItems.focus_set()
 
   def __onEnter( self, i_oEvent ) :
     lItems = self.m_oItems.selection()
     if len( lItems ) :
-      pmq.post( 'm_toc_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )
+      pmq.post( 'm_projects_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )
       pmq.stop()
 
   def __onEscape( self, i_oEvent ) :
