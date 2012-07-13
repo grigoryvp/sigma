@@ -12,7 +12,7 @@ import pmq
 class WndToc( pu.Wnd ) :
 
   def __init__( self ) :
-    WndToc.__init__( self )
+    pu.Wnd.__init__( self )
     with pu.Rack( parent = self ) :
       with pu.Stack() as this :
         self.m_oStack = this
@@ -29,6 +29,7 @@ class WndToc( pu.Wnd ) :
     self.bind( '<Escape>', self.__onEscape )
     ##  Used with external editor.
     self.m_fEditor = False
+    self.m_fShow = False
 
   def m_startup( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'toc' )
@@ -44,12 +45,13 @@ class WndToc( pu.Wnd ) :
       ##! Can't use |pmq.request()| since this will freeze GUI mainloop
       ##  and geometry retrieval enumerates HWND and requires main loop
       ##  to operate.
+      self.m_fShow = True
       pmq.post( 'm_editor_geometry_get' )
     else :
       super( WndToc, self ).show( i_fShow )
 
   def m_editor_geometry( self, gGeometry ) :
-    if self.m_fEditor :
+    if self.m_fEditor and self.m_fShow :
       if gGeometry is not None :
         nParentX, nParentY, nParentCx, nParentCy = gGeometry
         nCx = nParentCx / 2

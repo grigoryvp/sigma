@@ -13,6 +13,7 @@ from cfg          import Cfg
 from wnd_editor   import WndEditor
 from wnd_toc      import WndToc
 from wnd_settings import WndSettings
+from wnd_projects import WndProjects
 from commandline  import Commandline
 from cmd_toc      import CmdToc
 from editor_vim   import EditorVim
@@ -27,6 +28,7 @@ def start() :
   Windows()
   oRoot = WndEditor()
   WndToc()
+  WndProjects()
   WndSettings( oRoot )
   ##  Load configuration from file, if any.
   pmq.post( 'm_cfg_load' )

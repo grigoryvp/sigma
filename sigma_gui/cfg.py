@@ -15,6 +15,7 @@ class Cfg( pmq.Actor ) :
     self.m_mGeometry = {
       'editor' : None,
       'toc' : None,
+      'projects' : None,
       'settings' : None
     }
 

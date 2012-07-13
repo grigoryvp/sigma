@@ -24,6 +24,8 @@ class Commandline( pmq.Actor ) :
     sHelp = "Display file table of content based on tags"
     oSubparser = oSubparsers.add_parser( "toc", help = sHelp )
     oSubparser.set_defaults( handler = self.__toc )
+    oSubparser = oSubparsers.add_parser( "projects", help = sHelp )
+    oSubparser.set_defaults( handler = self.__projects )
 
     oArgs = oParser.parse_args()
     pmq.post( 'm_editor_use', oArgs.editor )
@@ -32,4 +34,8 @@ class Commandline( pmq.Actor ) :
   def __toc( self, i_oArgs ) :
     pmq.post( 'm_wndtoc_show' )
     pmq.post( 'm_cmd_toc', i_oArgs.file )
+
+  def __projects( self, i_oArgs ) :
+    pmq.post( 'm_wndprojects_show' )
+    pmq.post( 'm_cmd_projects', i_oArgs.file )
 
