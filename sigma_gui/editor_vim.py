@@ -27,6 +27,7 @@ class EditorVim( pmq.Actor ) :
   def __init__( self ) :
     pmq.Actor.__init__( self )
     self.m_fUse = False
+    self.m_gEditorGeometry = None
 
   def m_editor_use( self, i_sEditor ) :
     if i_sEditor is not None and "vim" in i_sEditor.strip() :
@@ -34,7 +35,7 @@ class EditorVim( pmq.Actor ) :
 
   def m_editor_geometry_get( self ) :
     if self.m_fUse :
-      pmq.post( 'm_editor_geometry', self.__wndGeometry() )
+      pmq.response( self.m_gEditorGeometry )
 
   def m_toc_select( self, i_oTag ) :
     if self.m_fUse :
@@ -50,6 +51,10 @@ class EditorVim( pmq.Actor ) :
         sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
       subprocess.Popen( sCmd.format( i_oTag.line() ), shell = True )
       pmq.stop()
+
+  def m_startup( self ) :
+    ##  Get window geometry here - it blocks GUI mainloop.
+    self.m_gEditorGeometry = self.__wndGeometry()
 
   def __wndGeometry( self ) :
     if sys.platform == 'win32' :

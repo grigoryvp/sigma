@@ -15,7 +15,7 @@ class WndSettings( pu.Wnd ) :
         with pu.Grip() : pass
     self.setCaption( "Sigma: Settings" )
 
-  def m_startup( self ) :
+  def m_star( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'settings' )
     if sGeometry :
       self.geometry( sGeometry )

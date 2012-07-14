@@ -8,7 +8,7 @@ import pmq
 
 class Commandline( pmq.Actor ) :
 
-  def m_commandline_handle( self ) :
+  def m_start( self ) :
     ##  Without command-line just display editor window.
     if 1 == len( sys.argv ) :
       pmq.post( 'm_wndeditor_show' )

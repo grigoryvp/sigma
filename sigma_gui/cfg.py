@@ -19,7 +19,7 @@ class Cfg( pmq.Actor ) :
       'settings' : None
     }
 
-  def m_cfg_load( self ) :
+  def m_startup( self ) :
     sPath = os.path.expanduser( self.CFG_FILE_NAME )
     if os.path.exists( sPath ) :
       with open( sPath ) as this :

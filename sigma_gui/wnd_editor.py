@@ -22,7 +22,7 @@ class WndEditor( pu.Wnd ) :
         with pu.Grip() : pass
     self.setCaption( "Sigma: Editor" )
 
-  def m_startup( self ) :
+  def m_start( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'editor' )
     if sGeometry :
       self.geometry( sGeometry )

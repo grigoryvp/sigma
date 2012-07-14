@@ -30,12 +30,5 @@ def start() :
   WndToc()
   WndProjects()
   WndSettings( oRoot )
-  ##  Load configuration from file, if any.
-  pmq.post( 'm_cfg_load' )
-  ##  Let actors request configuration.
-  pmq.post( 'm_startup' )
-  ##  Depends on command-line args perform different commands and
-  ##  display different window.
-  pmq.post( 'm_commandline_handle' )
   pmq.start( pu.mainLoop, pu.mainLoopStop )
 

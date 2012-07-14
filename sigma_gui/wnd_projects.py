@@ -29,9 +29,8 @@ class WndProjects( pu.Wnd ) :
     self.bind( '<Escape>', self.__onEscape )
     ##  Used with external editor.
     self.m_fEditor = False
-    self.m_fShow = False
 
-  def m_startup( self ) :
+  def m_star( self ) :
     sGeometry = pmq.request( 'm_geometry_get', 'projects' )
     if sGeometry :
       self.geometry( sGeometry )
@@ -42,16 +41,7 @@ class WndProjects( pu.Wnd ) :
   ##x Overloads |pu.Wnd|.
   def show( self, i_fShow = True ) :
     if self.m_fEditor :
-      ##! Can't use |pmq.request()| since this will freeze GUI mainloop
-      ##  and geometry retrieval enumerates HWND and requires main loop
-      ##  to operate.
-      self.m_fShow = True
-      pmq.post( 'm_editor_geometry_get' )
-    else :
-      super( WndProjects, self ).show( i_fShow )
-
-  def m_editor_geometry( self, gGeometry ) :
-    if self.m_fEditor and self.m_fShow :
+      gGeometry = pmq.request( 'm_editor_geometry_get' )
       if gGeometry is not None :
         nParentX, nParentY, nParentCx, nParentCy = gGeometry
         nCx = nParentCx / 2
@@ -59,10 +49,10 @@ class WndProjects( pu.Wnd ) :
         nX = nParentX + (nParentCx - nCx) / 2
         nY = nParentY + (nParentCy - nCy) / 2
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
-      super( WndProjects, self ).show()
-      ##  On OSX window will not get focus.
-      if sys.platform == 'darwin' :
-        pmq.post( 'm_wndprojects_activate' )
+    super( WndProjects, self ).show( i_fShow )
+    ##  On OSX window will not get focus.
+    if i_fShow and sys.platform == 'darwin' :
+      pmq.post( 'm_wndprojects_activate' )
 
   def m_wndprojects_activate( self ) :
     Cocoa.NSApp.activateIgnoringOtherApps_( Cocoa.YES )
