@@ -10,3 +10,8 @@ class Project( object ) :
     ##  folder name in |dir|, ex '.hg'.
     self.vcs = None
 
+  def __eq__( self, other ) :
+    return self.name == other.name and \
+           self.dir == other.dir and \
+           self.vcs == other.vcs
+

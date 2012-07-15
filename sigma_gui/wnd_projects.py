@@ -64,6 +64,7 @@ class WndProjects( pu.Wnd ) :
     pmq.post( 'm_cfg_set', 'geometry_projects', self.geometry() )
 
   def m_projects( self, i_lProjects ) :
+    oCurrent = pmq.request( 'm_project_get' )
     for oProject in i_lProjects :
       self.m_oItems.append( text = oProject.name, baton = oProject )
     self.m_oStack.setCurrent( 'content' )

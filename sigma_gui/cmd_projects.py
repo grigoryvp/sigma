@@ -37,10 +37,13 @@ class CmdProjects( pmq.Actor ) :
     self.m_oProject = i_oProject
 
   def m_project_get( self ) :
-    if m_oProject :
+    if self.m_oProject :
       pmq.response( self.m_oProject )
       return
     sName = pmq.request( 'm_cfg_get', 'current_project' )
+    if not sName :
+      pmq.response( None )
+      return
     oProject = Project()
     oProject.name = sName
     oProject.dir = os.path.join( os.path.expanduser( "~/Documents" ), sName )
