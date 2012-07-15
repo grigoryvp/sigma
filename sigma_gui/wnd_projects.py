@@ -72,7 +72,7 @@ class WndProjects( pu.Wnd ) :
   def __onEnter( self, i_oEvent ) :
     lItems = self.m_oItems.selection()
     if len( lItems ) :
-      pmq.post( 'm_project_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )
+      pmq.post( 'm_project_set', self.m_oItems.idToBaton( lItems[ 0 ] ) )
       pmq.stop()
 
   def __onEscape( self, i_oEvent ) :

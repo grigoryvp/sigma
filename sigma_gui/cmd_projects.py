@@ -19,6 +19,9 @@ class CmdProjects( pmq.Actor ) :
       break
     pmq.post( 'm_projects', lProjects )
 
-  def m_project_select( self, i_sName ) :
-    pass
+  def m_project_set( self, i_sName ) :
+    pmq.post( 'm_cfg_set', 'current_project', i_sName )
+
+  def m_project_get( self ) :
+    pmq.response( pmq.request( 'm_cfg_get', 'current_project' ) )
 
