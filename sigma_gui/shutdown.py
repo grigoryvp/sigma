@@ -19,3 +19,8 @@ class Shutdown( pmq.Actor ) :
   def m_wndprojects_close( self ) :
     pmq.stop()
 
+  ##* If Project files window is displayed as part of complex GUI, closing it
+  ##  will close app.
+  def m_wndprojectfiles_close( self ) :
+    pmq.stop()
+

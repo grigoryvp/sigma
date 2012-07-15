@@ -24,8 +24,12 @@ class Commandline( pmq.Actor ) :
     sHelp = "Display file table of content based on tags"
     oSubparser = oSubparsers.add_parser( "toc", help = sHelp )
     oSubparser.set_defaults( handler = self.__toc )
+    sHelp = "Display list of projects in workspace directory"
     oSubparser = oSubparsers.add_parser( "projects", help = sHelp )
     oSubparser.set_defaults( handler = self.__projects )
+    sHelp = "Display list of files in current project"
+    oSubparser = oSubparsers.add_parser( "projectfiles", help = sHelp )
+    oSubparser.set_defaults( handler = self.__projectfiles )
 
     oArgs = oParser.parse_args()
     pmq.post( 'm_editor_use', oArgs.editor )
@@ -38,4 +42,8 @@ class Commandline( pmq.Actor ) :
   def __projects( self, i_oArgs ) :
     pmq.post( 'm_wndprojects_show' )
     pmq.post( 'm_cmd_projects' )
+
+  def __projectfiles( self, i_oArgs ) :
+    pmq.post( 'm_wndprojectfiles_show' )
+    pmq.post( 'm_cmd_project_files' )
 
