@@ -63,9 +63,9 @@ class WndProjects( pu.Wnd ) :
   def m_shutdown( self ) :
     pmq.post( 'm_cfg_set', 'geometry_projects', self.geometry() )
 
-  def m_projects( self, i_lsProjects ) :
-    for sProject in i_lsProjects :
-      self.m_oItems.append( text = sProject, baton = sProject )
+  def m_projects( self, i_lProjects ) :
+    for oProject in i_lProjects :
+      self.m_oItems.append( text = oProject.name, baton = oProject )
     self.m_oStack.setCurrent( 'content' )
     self.m_oItems.focus_set()
 
