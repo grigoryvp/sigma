@@ -65,16 +65,12 @@ class WndProjects( pu.Wnd ) :
 
   def m_projects( self, i_lProjects ) :
     oCurrent = pmq.request( 'm_project_get' )
-    uToSelect = None
     for oProject in i_lProjects :
       self.m_oItems.append( text = oProject.name, baton = oProject )
       if oProject == oCurrent :
-        uToSelect = self.m_oItems.batonToId( oProject )
+        self.m_oItems.selectByBaton( oProject )
     self.m_oStack.setCurrent( 'content' )
     self.m_oItems.setFocus()
-    if uToSelect is not None :
-      self.m_oItems.selection_set( uToSelect )
-      self.m_oItems.focus( uToSelect )
 
   def __onEnter( self, i_oEvent ) :
     lItems = self.m_oItems.selection()
