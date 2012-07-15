@@ -23,7 +23,7 @@ class WndEditor( pu.Wnd ) :
     self.setCaption( "Sigma: Editor" )
 
   def m_start( self ) :
-    sGeometry = pmq.request( 'm_geometry_get', 'editor' )
+    sGeometry = pmq.request( 'm_cfg_get', 'geometry_editor' )
     if sGeometry :
       self.geometry( sGeometry )
     else :
@@ -31,7 +31,7 @@ class WndEditor( pu.Wnd ) :
       self.center()
 
   def m_shutdown( self ) :
-    pmq.post( 'm_geometry_set', 'editor', self.geometry() )
+    pmq.post( 'm_cfg_set', 'geometry_editor', self.geometry() )
 
   def m_on_exit( self ) :
     pmq.stop()

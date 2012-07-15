@@ -31,7 +31,7 @@ class WndToc( pu.Wnd ) :
     self.m_fEditor = False
 
   def m_startup( self ) :
-    sGeometry = pmq.request( 'm_geometry_get', 'toc' )
+    sGeometry = pmq.request( 'm_cfg_get', 'geometry_toc' )
     if sGeometry :
       self.geometry( sGeometry )
     else :
@@ -61,7 +61,7 @@ class WndToc( pu.Wnd ) :
     self.m_fEditor = True
 
   def m_shutdown( self ) :
-    pmq.post( 'm_geometry_set', 'toc', self.geometry() )
+    pmq.post( 'm_cfg_set', 'geometry_toc', self.geometry() )
 
   def m_toc( self, i_lTags ) :
     for oTag in i_lTags :

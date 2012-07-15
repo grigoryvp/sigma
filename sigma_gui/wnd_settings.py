@@ -16,7 +16,7 @@ class WndSettings( pu.Wnd ) :
     self.setCaption( "Sigma: Settings" )
 
   def m_star( self ) :
-    sGeometry = pmq.request( 'm_geometry_get', 'settings' )
+    sGeometry = pmq.request( 'm_cfg_get', 'geometry_settings' )
     if sGeometry :
       self.geometry( sGeometry )
     else :
@@ -37,5 +37,5 @@ class WndSettings( pu.Wnd ) :
     self.show( False )
 
   def m_shutdown( self ) :
-    pmq.post( 'm_geometry_set', 'settings', self.geometry() )
+    pmq.post( 'm_cfg_set', 'geometry_settings', self.geometry() )
 

@@ -31,7 +31,7 @@ class WndProjects( pu.Wnd ) :
     self.m_fEditor = False
 
   def m_star( self ) :
-    sGeometry = pmq.request( 'm_geometry_get', 'projects' )
+    sGeometry = pmq.request( 'm_cfg_get', 'geometry_projects' )
     if sGeometry :
       self.geometry( sGeometry )
     else :
@@ -61,7 +61,7 @@ class WndProjects( pu.Wnd ) :
     self.m_fEditor = True
 
   def m_shutdown( self ) :
-    pmq.post( 'm_geometry_set', 'projects', self.geometry() )
+    pmq.post( 'm_cfg_set', 'geometry_projects', self.geometry() )
 
   def m_projects( self, i_lsProjects ) :
     for sProject in i_lsProjects :
