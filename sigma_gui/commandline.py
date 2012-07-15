@@ -37,5 +37,5 @@ class Commandline( pmq.Actor ) :
 
   def __projects( self, i_oArgs ) :
     pmq.post( 'm_wndprojects_show' )
-    pmq.post( 'm_cmd_projects', i_oArgs.file )
+    pmq.post( 'm_cmd_projects' )
 

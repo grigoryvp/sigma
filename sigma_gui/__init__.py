@@ -16,6 +16,7 @@ from wnd_settings import WndSettings
 from wnd_projects import WndProjects
 from commandline  import Commandline
 from cmd_toc      import CmdToc
+from cmd_projects import CmdProjects
 from editor_vim   import EditorVim
 from windows      import Windows
 
@@ -24,6 +25,7 @@ def start() :
   Cfg()
   Commandline()
   CmdToc()
+  CmdProjects()
   EditorVim()
   Windows()
   oRoot = WndEditor()
