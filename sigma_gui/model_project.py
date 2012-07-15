@@ -11,6 +11,8 @@ class Project( object ) :
     self.vcs = None
 
   def __eq__( self, other ) :
+    if other is None :
+      return False
     return self.name == other.name and \
            self.dir == other.dir and \
            self.vcs == other.vcs
