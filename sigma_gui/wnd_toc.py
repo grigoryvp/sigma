@@ -3,16 +3,15 @@
 
 import sys
 
-if sys.platform == 'darwin' :
-  import Cocoa
+from base_wnd_editor_integrated import WndEditorIntegrated
 
 import pu
 import pmq
 
-class WndToc( pu.Wnd ) :
+class WndToc( WndEditorIntegrated  ) :
 
   def __init__( self ) :
-    pu.Wnd.__init__( self )
+    WndEditorIntegrated.__init__( self )
     with pu.Rack( parent = self ) :
       with pu.Stack() as this :
         self.m_oStack = this
@@ -26,42 +25,6 @@ class WndToc( pu.Wnd ) :
         with pu.Grip() : pass
     self.setCaption( "Sigma: TOC" )
     self.bind( '<Return>', self.__onEnter )
-    self.bind( '<Escape>', self.__onEscape )
-    ##  Used with external editor.
-    self.m_fEditor = False
-
-  def m_startup( self ) :
-    sGeometry = pmq.request( 'm_cfg_get', 'geometry_toc' )
-    if sGeometry :
-      self.geometry( sGeometry )
-    else :
-      self.setSize( 256, 256 )
-      self.center()
-
-  ##x Overloads |pu.Wnd|.
-  def show( self, i_fShow = True ) :
-    if self.m_fEditor :
-      gGeometry = pmq.request( 'm_editor_geometry_get' )
-      if gGeometry is not None :
-        nParentX, nParentY, nParentCx, nParentCy = gGeometry
-        nCx = nParentCx / 2
-        nCy = nParentCy / 2
-        nX = nParentX + (nParentCx - nCx) / 2
-        nY = nParentY + (nParentCy - nCy) / 2
-        self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
-    super( WndToc, self ).show( i_fShow )
-    ##  On OSX window will not get focus.
-    if i_fShow and sys.platform == 'darwin' :
-      pmq.post( 'm_wndtoc_activate' )
-
-  def m_wndtoc_activate( self ) :
-    Cocoa.NSApp.activateIgnoringOtherApps_( Cocoa.YES )
-
-  def m_editor_use( self ) :
-    self.m_fEditor = True
-
-  def m_shutdown( self ) :
-    pmq.post( 'm_cfg_set', 'geometry_toc', self.geometry() )
 
   def m_toc( self, i_lTags ) :
     for oTag in i_lTags :
@@ -74,7 +37,4 @@ class WndToc( pu.Wnd ) :
     if len( lItems ) :
       pmq.post( 'm_toc_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )
       pmq.stop()
-
-  def __onEscape( self, i_oEvent ) :
-    pmq.stop()
 

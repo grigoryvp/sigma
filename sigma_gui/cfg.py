@@ -12,13 +12,7 @@ class Cfg( pmq.Actor ) :
 
   def __init__( self ) :
     super( Cfg, self ).__init__()
-    self.m_mCfg = {
-      'geometry_editor' : None,
-      'geometry_toc' : None,
-      'geometry_projects' : None,
-      'geometry_settings' : None,
-      'current_project' : None
-    }
+    self.m_mCfg = {}
 
   def m_startup( self ) :
     sPath = os.path.expanduser( self.CFG_FILE_NAME )
@@ -30,7 +24,10 @@ class Cfg( pmq.Actor ) :
     self.m_mCfg[ i_sKey ] = i_sVal
 
   def m_cfg_get( self, i_sKey ) :
-    pmq.response( self.m_mCfg[ i_sKey ] )
+    if i_sKey in self.m_mCfg :
+      pmq.response( self.m_mCfg[ i_sKey ] )
+    else :
+      pmq.response( None )
 
   def m_stop( self ) :
     with open( os.path.expanduser( self.CFG_FILE_NAME ), 'w' ) as this :
