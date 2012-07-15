@@ -19,3 +19,6 @@ class CmdProjects( pmq.Actor ) :
       break
     pmq.post( 'm_projects', lProjects )
 
+  def m_project_select( self, i_sName ) :
+    pass
+
