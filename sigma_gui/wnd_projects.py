@@ -71,7 +71,7 @@ class WndProjects( pu.Wnd ) :
       if oProject == oCurrent :
         uToSelect = self.m_oItems.batonToId( oProject )
     self.m_oStack.setCurrent( 'content' )
-    self.m_oItems.focus_set()
+    self.m_oItems.setFocus()
     if uToSelect is not None :
       self.m_oItems.selection_set( uToSelect )
       self.m_oItems.focus( uToSelect )

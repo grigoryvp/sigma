@@ -67,7 +67,7 @@ class WndToc( pu.Wnd ) :
     for oTag in i_lTags :
       self.m_oItems.append( text = oTag.value(), baton = oTag )
     self.m_oStack.setCurrent( 'content' )
-    self.m_oItems.focus_set()
+    self.m_oItems.setFocus()
 
   def __onEnter( self, i_oEvent ) :
     lItems = self.m_oItems.selection()
