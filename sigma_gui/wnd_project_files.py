@@ -31,11 +31,11 @@ class WndProjectFiles( WndEditorIntegrated ) :
     self.m_oLabel.setText( "Current project not selected" )
 
   def m_project_files( self, i_lFiles ) :
-    oCurrent = pmq.request( 'm_project_file_get' )
-    for oProject in i_lFiles :
-      self.m_oItems.append( text = oProject.name, baton = oProject )
-      if oProject == oCurrent :
-        self.m_oItems.selectByBaton( oProject )
+    sCurrent = pmq.request( 'm_project_file_get' )
+    for sFile in i_lFiles :
+      self.m_oItems.append( text = sFile, baton = sFile )
+      if sFile == sCurrent :
+        self.m_oItems.selectByBaton( sFile )
     self.m_oStack.setCurrent( 'content' )
     self.m_oItems.setFocus()
 

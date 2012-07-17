@@ -14,7 +14,17 @@ class CmdProjectFiles( pmq.Actor ) :
   def m_cmd_project_files( self ) :
     oProject = pmq.request( 'm_project_get' )
     if oProject is not None :
-      pmq.post( 'm_project_files', [] )
+      lFiles = []
+      sRoot = os.path.normpath( oProject.dir )
+      for sDir, lSubdirs, lSubfiles in os.walk( sRoot ) :
+        for sFile in lSubfiles :
+          sPath = os.path.normpath( sDir )
+          assert sPath.startswith( sRoot )
+          lSubpath = sPath[ len( sRoot ) : ].split( os.sep )
+          ##  Skip VCS paths.
+          if not [ s for s in lSubpath if s in [ ".hg", ".git", ".svn" ] ] :
+            lFiles.append( os.path.join( sDir, sFile ) )
+      pmq.post( 'm_project_files', lFiles )
     else :
       pmq.post( 'm_no_project_set' )
 
