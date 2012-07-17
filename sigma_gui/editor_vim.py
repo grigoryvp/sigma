@@ -60,14 +60,15 @@ class EditorVim( pmq.Actor ) :
     if sys.platform == 'win32' :
       @ctypes.WINFUNCTYPE( ctypes.c_int, ctypes.c_int, ctypes.c_int )
       def enumWindowsCallback( i_hWindow, i_nBaton ) :
-        with EditorVim.m_oLock() :
+        with EditorVim.m_oGuard :
           if i_nBaton in EditorVim.m_mObjects :
-            EditorVim.m_mObjects[ i_nBaton ].enumWindowsCallback( i_hWindow )
+            nId = int( i_nBaton )
+            EditorVim.m_mObjects[ nId ].enumWindowsCallback( i_hWindow )
         return 1
       ##  VIM window handle.
       self.m_hWindow = None
-      with EditorVim.m_oLock() :
-        nId = ctypes.c_int( id( self ) )
+      nId = id( self )
+      with EditorVim.m_oGuard :
         EditorVim.m_mObjects[ nId ] = self
       ##  |enumWindowsCallback()| will be called for each window.
       ctypes.windll.user32.EnumWindows( enumWindowsCallback, nId )

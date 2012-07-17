@@ -2,6 +2,7 @@
 # coding:utf-8 vi:et:ts=2
 
 import os
+import sys
 
 import pmq
 from model_project import Project
@@ -17,7 +18,8 @@ class CmdProjects( pmq.Actor ) :
 
   def m_cmd_projects( self ) :
     lProjects = []
-    sPath = os.path.expanduser( "~/Documents" )
+    sEncoding = sys.getfilesystemencoding()
+    sPath = os.path.expanduser( "~/Documents" ).decode( sEncoding )
     for _, lSubdirs, _ in os.walk( sPath ) :
       for sSubdir in lSubdirs :
         for sVcs in ABOUT_VCS :
@@ -46,7 +48,9 @@ class CmdProjects( pmq.Actor ) :
       return
     oProject = Project()
     oProject.name = sName
-    oProject.dir = os.path.join( os.path.expanduser( "~/Documents" ), sName )
+    sEncoding = sys.getfilesystemencoding()
+    sDocuments = os.path.expanduser( "~/Documents" ).decode( sEncoding )
+    oProject.dir = os.path.join( sDocuments, sName )
     for sVcs in ABOUT_VCS :
       if os.path.isdir( os.path.join( oProject.dir, "." + sVcs ) ) :
         oProject.vcs = sVcs
