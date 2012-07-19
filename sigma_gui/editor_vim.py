@@ -39,17 +39,41 @@ class EditorVim( pmq.Actor ) :
 
   def m_toc_select( self, i_oTag ) :
     if self.m_fUse :
+      sVimCode = "<ESC>:{0}<CR>".format( i_oTag.line() )
       if sys.platform == 'win32' :
-        sCmd = "gvim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
+        sCmd = "gvim --servername GVIM --remote-send \"{0}\""
       elif sys.platform == 'darwin' :
         ##* Must implement some engine to find executable same way window
         ##  is searched. Window information has PID that can be used to
         ##  find a file.
         sCmd =  "~/apps/MacVim.app/Contents/MacOS/Vim"
-        sCmd += " --servername VIM --remote-send \"<ESC>:{0}<CR>\""
+        sCmd += " --servername VIM --remote-send \"{0}\""
       else :
-        sCmd = "vim --servername GVIM --remote-send \"<ESC>:{0}<CR>\""
-      subprocess.Popen( sCmd.format( i_oTag.line() ), shell = True )
+        sCmd = "vim --servername GVIM --remote-send \"{0}\""
+      subprocess.Popen( sCmd.format( sVimCode ), shell = True )
+      pmq.stop()
+
+  def m_project_file_set( self, i_sFile ) :
+    sFile = os.path.join( pmq.request( 'm_project_get' ).dir, i_sFile )
+    sVimCode = "".join( [ s.strip() for s in """
+      <ESC>
+      :let i = bufname( '%' ) != '' ? bufnr('%') : -1<CR>
+      :e {file}<CR>
+      :silent! exec 'bd ' . i<CR>
+      :<CR>
+      """.split( "\n" ) ] ).format( file = sFile )
+    if self.m_fUse :
+      if sys.platform == 'win32' :
+        sCmd = "gvim --servername GVIM --remote-send \"{0}\""
+      elif sys.platform == 'darwin' :
+        ##* Must implement some engine to find executable same way window
+        ##  is searched. Window information has PID that can be used to
+        ##  find a file.
+        sCmd =  "~/apps/MacVim.app/Contents/MacOS/Vim"
+        sCmd += " --servername VIM --remote-send \"{0}\""
+      else :
+        sCmd = "vim --servername GVIM --remote-send \"{0}\""
+      subprocess.Popen( sCmd.format( sVimCode ), shell = True )
       pmq.stop()
 
   def m_startup( self ) :
