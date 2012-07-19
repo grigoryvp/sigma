@@ -17,7 +17,7 @@ class CmdProjectFiles( pmq.Actor ) :
     oProject = pmq.request( 'm_project_get' )
     if oProject is not None :
       ##! subprocess can't handle unicode.
-      sDir = oProject.dir.decode( sys.getfilesystemencoding() )
+      sDir = oProject.dir.encode( sys.getfilesystemencoding() )
       for _, lSubdirs, _ in os.walk( oProject.dir ) :
         break
       if ".hg" in lSubdirs :
