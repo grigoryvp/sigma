@@ -21,12 +21,13 @@ class CmdProjectFiles( pmq.Actor ) :
       for _, lSubdirs, _ in os.walk( oProject.dir ) :
         break
       if ".hg" in lSubdirs :
-        lCmd = [ "hg", "status", "-A", sDir ]
+        lCmd = [ "hg", "status", "-A", "-R", sDir ]
         try :
           sOut = subprocess.check_output( lCmd )
         except subprocess.CalledProcessError :
           return
-        lFiles = sOut.split( "\n" )
+        ##  First two characters are modification status flag.
+        lFiles = [ s[ 2: ] for s in sOut.split( "\n" ) ]
       else :
         return pmq.post( 'm_project_no_vcs' )
       pmq.post( 'm_project_files', lFiles )
