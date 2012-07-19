@@ -5,10 +5,24 @@ class Project( object ) :
 
   def __init__( self ) :
     self.name = None
-    self.dir = None
+    self.m_sDir = None
     ##  Version Control System type: 'hg', 'git' or 'svn', same as
     ##  folder name in |dir|, ex '.hg'.
     self.vcs = None
+
+  ##@ Project directory. None or non-empty unicode path.
+  @property
+  def dir( self ) :
+    return self.m_sDir
+
+  @dir.setter
+  def dir( self, i_sDir ) :
+    assert type( i_sDir ) is unicode
+    i_sDir = i_sDir.strip().rstrip( u"\\/" )
+    if not i_sDir :
+      self.m_sDir = None
+    else :
+      self.m_sDir = i_sDir
 
   def __eq__( self, other ) :
     if other is None :
