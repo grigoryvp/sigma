@@ -30,6 +30,9 @@ class WndProjectFiles( WndEditorIntegrated ) :
   def m_no_project_set( self ) :
     self.m_oLabel.setText( "Current project not selected" )
 
+  def m_project_no_vcs( self ) :
+    self.m_oLabel.setText( "Current project not under VCS" )
+
   def m_project_files( self, i_lFiles ) :
     sCurrent = pmq.request( 'm_project_file_get' )
     for sFile in i_lFiles :

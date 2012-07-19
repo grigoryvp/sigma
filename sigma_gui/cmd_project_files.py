@@ -2,6 +2,8 @@
 # coding:utf-8 vi:et:ts=2
 
 import os
+import sys
+import subprocess
 
 import pmq
 
@@ -14,16 +16,19 @@ class CmdProjectFiles( pmq.Actor ) :
   def m_cmd_project_files( self ) :
     oProject = pmq.request( 'm_project_get' )
     if oProject is not None :
-      lFiles = []
-      sRoot = os.path.normpath( oProject.dir )
-      for sDir, lSubdirs, lSubfiles in os.walk( sRoot ) :
-        for sFile in lSubfiles :
-          sPath = os.path.normpath( sDir )
-          assert sPath.startswith( sRoot )
-          lSubpath = sPath[ len( sRoot ) : ].split( os.sep )
-          ##  Skip VCS paths.
-          if not [ s for s in lSubpath if s in [ ".hg", ".git", ".svn" ] ] :
-            lFiles.append( os.path.join( sDir, sFile ) )
+      ##! subprocess can't handle unicode.
+      sDir = oProject.dir.decode( sys.getfilesystemencoding() )
+      for _, lSubdirs, _ in os.walk( oProject.dir ) :
+        break
+      if ".hg" in lSubdirs :
+        lCmd = [ "hg", "status", "-A", sDir ]
+        try :
+          sOut = subprocess.check_output( lCmd )
+        except subprocess.CalledProcessError :
+          return
+        lFiles = sOut.split( "\n" )
+      else :
+        return pmq.post( 'm_project_no_vcs' )
       pmq.post( 'm_project_files', lFiles )
     else :
       pmq.post( 'm_no_project_set' )
