@@ -57,10 +57,7 @@ class EditorVim( pmq.Actor ) :
     sFile = os.path.join( pmq.request( 'm_project_get' ).dir, i_sFile )
     sVimCode = u"".join( [ s.strip() for s in u"""
       <ESC>
-      :let i = bufname( '%' ) != '' ? bufnr('%') : -1<CR>
       :e {file}<CR>
-      :silent! exec 'bd ' . i<CR>
-      :<CR>
       """.split( u"\n" ) ] ).format( file = sFile )
     if self.m_fUse :
       if sys.platform == 'win32' :
