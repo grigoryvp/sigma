@@ -27,7 +27,7 @@ class CmdProjectFiles( pmq.Actor ) :
         except subprocess.CalledProcessError :
           return
         ##  First two characters are modification status flag.
-        lFiles = [ s[ 2: ] for s in sOut.split( "\n" ) ]
+        lFiles = [ s[ 2: ] for s in sOut.split( "\n" ) if s.strip() ]
       else :
         return pmq.post( 'm_project_no_vcs' )
       pmq.post( 'm_project_files', lFiles )
