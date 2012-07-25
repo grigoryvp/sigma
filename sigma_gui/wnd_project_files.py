@@ -22,6 +22,8 @@ class WndProjectFiles( WndEditorIntegrated ) :
         with pu.List( name = 'content' ) as this :
           self.m_oItems = this
       with pu.Shelf() :
+        with pu.Label() as this :
+          self.m_oStatus = this
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Project files" )
@@ -35,6 +37,7 @@ class WndProjectFiles( WndEditorIntegrated ) :
 
   def m_project_files( self, i_lFiles ) :
     sCurrent = pmq.request( 'm_project_file_get' )
+    self.m_oStatus.setText( "Files: {0}".format( len( i_lFiles ) ) )
     for sFile in i_lFiles :
       self.m_oItems.append( text = sFile, baton = sFile )
       if sFile == sCurrent :
