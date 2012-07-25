@@ -54,12 +54,12 @@ class EditorVim( pmq.Actor ) :
       pmq.stop()
 
   def m_project_file_set( self, i_sFile ) :
-    sFile = os.path.join( pmq.request( 'm_project_get' ).dir, i_sFile )
-    sVimCode = u"".join( [ s.strip() for s in u"""
-      <ESC>
-      :e {file}<CR>
-      """.split( u"\n" ) ] ).format( file = sFile )
     if self.m_fUse :
+      sFile = os.path.join( pmq.request( 'm_project_get' ).dir, i_sFile )
+      sVimCode = u"".join( [ s.strip() for s in u"""
+        <ESC>
+        :e {file}<CR>
+        """.split( u"\n" ) ] ).format( file = sFile )
       if sys.platform == 'win32' :
         sCmd = u"gvim --servername GVIM --remote-send \"{0}\""
       elif sys.platform == 'darwin' :
