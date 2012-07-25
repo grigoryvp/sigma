@@ -39,7 +39,10 @@ class EditorVim( pmq.Actor ) :
 
   def m_toc_select( self, i_oTag ) :
     if self.m_fUse :
-      sVimCode = "<ESC>:{0}<CR>".format( i_oTag.line() )
+      sVimCode = u"".join( [ s.strip() for s in u"""
+        <ESC>
+        :{line}<CR>
+        """.split( u"\n" ) ] ).format( line = i_oTag.line() )
       if sys.platform == 'win32' :
         sCmd = "gvim --servername GVIM --remote-send \"{0}\""
       elif sys.platform == 'darwin' :
@@ -50,7 +53,8 @@ class EditorVim( pmq.Actor ) :
         sCmd += " --servername VIM --remote-send \"{0}\""
       else :
         sCmd = "vim --servername GVIM --remote-send \"{0}\""
-      subprocess.Popen( sCmd.format( sVimCode ), shell = True )
+      sCmd = sCmd.format( sVimCode ).encode( sys.getfilesystemencoding() )
+      subprocess.Popen( sCmd, shell = True )
       pmq.stop()
 
   def m_project_file_set( self, i_sFile ) :
