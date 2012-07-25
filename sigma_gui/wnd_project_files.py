@@ -8,10 +8,19 @@ from base_wnd_editor_integrated import WndEditorIntegrated
 import pu
 import pmq
 
-class WndProjectFiles( WndEditorIntegrated ) :
+class Find( object ) :
+
+  def __init__( self ) :
+    self.bind( '<Control-f>', self.__onFind )
+
+  def __onFind( self, i_oEvent ) :
+    pass
+
+class WndProjectFiles( WndEditorIntegrated, Find ) :
 
   def __init__( self ) :
     WndEditorIntegrated.__init__( self )
+    Find.__init__( self )
     with pu.Rack( parent = self ) :
       with pu.Stack() as this :
         self.m_oStack = this
