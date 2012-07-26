@@ -11,10 +11,23 @@ import pmq
 class Find( object ) :
 
   def __init__( self ) :
+    self.m_sPattern  = ""
     self.bind( '<Control-f>', self.__onFind )
+    self.bind( '<Key>', self.__onKey )
 
   def __onFind( self, i_oEvent ) :
-    pass
+    self.m_sPattern  = ""
+    self.m_oStatus.setText( "/" )
+
+  def __onKey( self, i_oEvent ) :
+    if i_oEvent.char :
+      self.m_sPattern += i_oEvent.char
+      self.m_oStatus.setText( "/{0}".format( self.m_sPattern ) )
+      for sFile in self.m_lFiles :
+        if self.m_sPattern in sFile :
+          self.m_oItems.selectByBaton( sFile )
+          break
+
 
 class WndProjectFiles( WndEditorIntegrated, Find ) :
 
@@ -45,9 +58,10 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     self.m_oLabel.setText( "Current project not under VCS" )
 
   def m_project_files( self, i_lFiles ) :
+    self.m_lFiles = i_lFiles
     sCurrent = pmq.request( 'm_project_file_get' )
-    self.m_oStatus.setText( "Files: {0}".format( len( i_lFiles ) ) )
-    for sFile in i_lFiles :
+    self.m_oStatus.setText( "Files: {0}".format( len( self.m_lFiles ) ) )
+    for sFile in self.m_lFiles :
       self.m_oItems.append( text = sFile, baton = sFile )
       if sFile == sCurrent :
         self.m_oItems.selectByBaton( sFile )
