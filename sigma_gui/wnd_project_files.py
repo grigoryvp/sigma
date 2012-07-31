@@ -11,23 +11,32 @@ import pmq
 class Find( object ) :
 
   def __init__( self ) :
-    self.m_sPattern  = ""
+    self.m_sPattern  = None
     self.bind( '<Control-f>', self.__onFind )
+    self.bind( '<BackSpace>', self.__onBackspace )
     self.bind( '<Key>', self.__onKey )
 
   def __onFind( self, i_oEvent ) :
     self.m_sPattern  = ""
     self.m_oStatus.setText( "/" )
 
-  def __onKey( self, i_oEvent ) :
-    if i_oEvent.char :
-      self.m_sPattern += i_oEvent.char
-      self.m_oStatus.setText( "/{0}".format( self.m_sPattern ) )
-      for sFile in self.m_lFiles :
-        if self.m_sPattern in sFile :
-          self.m_oItems.selectByBaton( sFile )
-          break
+  def __onBackspace( self, i_oEvent ) :
+    self.m_sPattern = self.m_sPattern[ : -1 ]
+    self.__redrawList()
 
+  def __onKey( self, i_oEvent ) :
+    if self.m_sPattern is not None and i_oEvent.char :
+      self.m_sPattern += i_oEvent.char
+      self.__redrawList()
+
+  def __redrawList( self ) :
+    self.m_oStatus.setText( "/{0}".format( self.m_sPattern ) )
+    self.m_oItems.clear()
+    for sFile in self.m_lFiles :
+      if self.m_sPattern in sFile :
+        self.m_oItems.append( text = sFile, baton = sFile )
+        if not self.m_oItems.selection() :
+          self.m_oItems.selectByBaton( sFile )
 
 class WndProjectFiles( WndEditorIntegrated, Find ) :
 
