@@ -3,6 +3,9 @@
 
 import sys
 import os
+if sys.platform == 'linux2' :
+  ##! Import before Tkinter, otherwise warnings will arise.
+  import gtk.gdk
 
 sys.path.append( "{0}{1}vendor".format( sys.path[ 0 ], os.sep ) )
 sys.dont_write_bytecode = True
