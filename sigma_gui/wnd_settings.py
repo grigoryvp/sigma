@@ -15,7 +15,8 @@ class WndSettings( pu.Wnd ) :
           this.selectByBaton( 'keybindings' )
         with pu.Stack() as this :
           with pu.Rack( 'keybindings') :
-            with pu.Label( "VIM" ) : pass
+            with pu.Label() as this :
+              this.setText( "VIM" )
           this.setCurrent( 'keybindings' )
       with pu.Spacer() : pass
       with pu.Shelf() :
