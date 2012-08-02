@@ -12,6 +12,12 @@ class WndSettings( pu.Wnd ) :
       with pu.Spacer() : pass
       with pu.Shelf() :
         with pu.Spacer() : pass
+        with pu.Button( 'settings_cancel' ) as this :
+          this.setText( "Cancel" )
+        with pu.Button( 'settings_apply' ) as this :
+          this.setText( "Apply" )
+      with pu.Shelf() :
+        with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Settings" )
 
@@ -40,4 +46,10 @@ class WndSettings( pu.Wnd ) :
   def m_shutdown( self ) :
     sName = "geometry_{0}".format( self.name() )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
+
+  def m_on_settings_cancel( self ) :
+    self.show( False )
+
+  def m_on_settings_apply( self ) :
+    self.show( False )
 

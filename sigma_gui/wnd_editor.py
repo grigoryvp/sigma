@@ -28,7 +28,7 @@ class WndEditor( pu.Wnd ) :
     if sGeometry :
       self.geometry( sGeometry )
     else :
-      self.setSize( 256, 256 )
+      self.setSize( 512, 384 )
       self.center()
 
   def m_shutdown( self ) :
