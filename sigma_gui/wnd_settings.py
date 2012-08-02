@@ -9,6 +9,14 @@ class WndSettings( pu.Wnd ) :
   def __init__( self, parent = None ) :
     pu.Wnd.__init__( self, parent = parent )
     with pu.Rack( parent = self ) :
+      with pu.Shelf() :
+        with pu.List() as this :
+          this.append( "keybindings", 'keybindings' )
+          this.selectByBaton( 'keybindings' )
+        with pu.Stack() as this :
+          with pu.Rack( 'keybindings') :
+            with pu.Label( "VIM" ) : pass
+          this.setCurrent( 'keybindings' )
       with pu.Spacer() : pass
       with pu.Shelf() :
         with pu.Spacer() : pass
