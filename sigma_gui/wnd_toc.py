@@ -13,13 +13,13 @@ class WndToc( WndEditorIntegrated  ) :
   def __init__( self ) :
     WndEditorIntegrated.__init__( self )
     with pu.Rack( parent = self ) :
-      with pu.Stack() as this :
-        self.m_oStack = this
-        with pu.Label( name = 'info' ) as this :
-          this.setText( "Loading ..." )
-          this.alignCenter()
-        with pu.List( name = 'content' ) as this :
-          self.m_oItems = this
+      with pu.Stack() :
+        self.m_oStack = pu.o
+        with pu.Label( name = 'info' ) :
+          pu.o.setText( "Loading ..." )
+          pu.o.alignCenter()
+        with pu.List( name = 'content' ) :
+          self.m_oItems = pu.o
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Grip() : pass

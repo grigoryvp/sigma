@@ -44,17 +44,17 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     WndEditorIntegrated.__init__( self )
     Find.__init__( self )
     with pu.Rack( parent = self ) :
-      with pu.Stack() as this :
-        self.m_oStack = this
-        with pu.Label( name = 'info' ) as this :
-          self.m_oLabel = this
-          this.setText( "Loading ..." )
-          this.alignCenter()
-        with pu.List( name = 'content' ) as this :
-          self.m_oItems = this
+      with pu.Stack() :
+        self.m_oStack = pu.o
+        with pu.Label( name = 'info' ) :
+          self.m_oLabel = pu.o
+          pu.o.setText( "Loading ..." )
+          pu.o.alignCenter()
+        with pu.List( name = 'content' ) :
+          self.m_oItems = pu.o
       with pu.Shelf() :
-        with pu.Label() as this :
-          self.m_oStatus = this
+        with pu.Label() :
+          self.m_oStatus = pu.o
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Project files" )

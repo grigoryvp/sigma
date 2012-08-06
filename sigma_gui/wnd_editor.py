@@ -9,12 +9,12 @@ class WndEditor( pu.Wnd ) :
   def __init__( self ) :
     super( WndEditor, self ).__init__()
     with pu.Menu( parent = self ) :
-      with pu.Menu() as this :
-        this.setText( "App" )
-        with pu.MenuItem( name = 'settings' ) as this :
-          this.setText( "Settings" )
-        with pu.MenuItem( name = 'exit' ) as this :
-          this.setText( "Exit" )
+      with pu.Menu() :
+        pu.o.setText( "App" )
+        with pu.MenuItem( name = 'settings' ) :
+          pu.o.setText( "Settings" )
+        with pu.MenuItem( name = 'exit' ) :
+          pu.o.setText( "Exit" )
     with pu.Rack( parent = self ) :
       with pu.Text() : pass
       with pu.Shelf() :
