@@ -19,7 +19,6 @@ class WndSettings( pu.Wnd ) :
             with pu.Label() :
               pu.o.setText( "VIM" )
           pu.o.setCurrent( 'keybindings' )
-      with pu.Spacer() : pass
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Button( 'settings_cancel' ) :
