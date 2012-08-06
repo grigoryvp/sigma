@@ -11,6 +11,7 @@ class WndSettings( pu.Wnd ) :
     with pu.Rack( parent = self ) :
       with pu.Shelf() :
         with pu.List() :
+          pu.o.setGrow( pu.Grow( cx = False, cy = True ) )
           pu.o.append( "keybindings", 'keybindings' )
           pu.o.selectByBaton( 'keybindings' )
         with pu.Stack() :

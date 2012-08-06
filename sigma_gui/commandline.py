@@ -10,7 +10,7 @@ class Commandline( pmq.Actor ) :
 
   def m_start( self ) :
     ##  Without command-line just display editor window.
-    if 1 == len( sys.argv ) :
+    if 1 == len( sys.argv ) or (2 == len( sys.argv ) and '-d' in sys.argv) :
       pmq.post( 'm_wndeditor_show' )
       return
 
