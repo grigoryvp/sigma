@@ -12,6 +12,7 @@ class WndSettings( pu.Wnd ) :
       with pu.Shelf() :
         with pu.List() :
           pu.o.setGrow( pu.Grow( cx = False, cy = True ) )
+          pu.o.setWidth( pixels = 100 )
           pu.o.append( "keybindings", 'keybindings' )
           pu.o.selectByBaton( 'keybindings' )
         with pu.Stack() :
@@ -36,7 +37,7 @@ class WndSettings( pu.Wnd ) :
     if sGeometry :
       self.geometry( sGeometry )
     else :
-      self.setSize( 256, 256 )
+      self.setSize( 256 + 128, 256 )
 
   ##x Overrides |pu.Wnd.show()|.
   def show( self, i_fShow = True ) :
