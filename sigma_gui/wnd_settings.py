@@ -11,10 +11,10 @@ class WndSettings( pu.Wnd ) :
     with pu.Rack( parent = self ) :
       with pu.Shelf() :
         with pu.List() :
-          pu.o.setGrow( pu.Grow( cx = False, cy = True ) )
-          pu.o.setWidth( pixels = 100 )
           pu.o.append( "keybindings", 'keybindings' )
           pu.o.selectByBaton( 'keybindings' )
+          pu.o.setGrow( pu.Grow( cx = False, cy = True ) )
+          pu.o.setWidth( pixels = pu.o.maxWidth() )
         with pu.Stack() :
           with pu.Rack( 'keybindings') :
             with pu.Label() :
