@@ -17,8 +17,10 @@ class WndSettings( pu.Wnd ) :
           pu.o.setWidth( pixels = pu.o.maxWidth() )
         with pu.Stack() :
           with pu.Rack( 'keybindings') :
-            with pu.Label() :
-              pu.o.setText( "VIM" )
+            with pu.Radio() :
+              pu.o.setText( "Emacs" )
+            with pu.Radio() :
+              pu.o.setText( "Vim" )
           pu.o.setCurrent( 'keybindings' )
       with pu.Shelf() :
         with pu.Spacer() : pass
