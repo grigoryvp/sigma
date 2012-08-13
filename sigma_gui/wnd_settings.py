@@ -20,6 +20,7 @@ class WndSettings( pu.Wnd ) :
             with pu.Radio() :
               pu.o.setText( "Emacs" )
             with pu.Radio() :
+              self.m_oVim = pu.o
               pu.o.setText( "Vim" )
           pu.o.setCurrent( 'keybindings' )
       with pu.Shelf() :
@@ -63,5 +64,6 @@ class WndSettings( pu.Wnd ) :
     self.show( False )
 
   def m_on_settings_apply( self ) :
+    pmq.post( 'm_cfg_set', 'keys_vim', self.m_oVim.isSelected() )
     self.show( False )
 
