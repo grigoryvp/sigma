@@ -12,7 +12,10 @@ class Cfg( pmq.Actor ) :
 
   def __init__( self ) :
     super( Cfg, self ).__init__()
-    self.m_mCfg = {}
+    self.m_mCfg = {
+      ##  Keybindings.
+      'keys' : 'emacs'
+      }
 
   def m_startup( self ) :
     sPath = os.path.expanduser( self.CFG_FILE_NAME )

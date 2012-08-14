@@ -17,9 +17,9 @@ class WndSettings( pu.Wnd ) :
           pu.o.setWidth( pixels = pu.o.maxWidth() )
         with pu.Stack() :
           with pu.Rack( 'keybindings') :
-            with pu.Radio( name = 'key_emacs' ) :
+            with pu.Radio( name = 'keys_emacs' ) :
               pu.o.setText( "Emacs" )
-            with pu.Radio( name = 'key_vim' ) :
+            with pu.Radio( name = 'keys_vim' ) :
               pu.o.setText( "Vim" )
           pu.o.setCurrent( 'keybindings' )
       with pu.Shelf() :
@@ -40,6 +40,10 @@ class WndSettings( pu.Wnd ) :
       self.geometry( sGeometry )
     else :
       self.setSize( 256 + 128, 256 )
+    if 'vim' == pmq.request( 'm_cfg_get', 'keys' ) :
+      self.o[ 'keys_vim' ].setSelected()
+    else :
+      self.o[ 'keys_emacs' ].setSelected()
 
   ##x Overrides |pu.Wnd.show()|.
   def show( self, i_fShow = True ) :
@@ -63,6 +67,9 @@ class WndSettings( pu.Wnd ) :
     self.show( False )
 
   def m_on_settings_apply( self ) :
-    pmq.post( 'm_cfg_set', 'keys_vim', self.o[ 'key_vim' ].isSelected() )
+    if self.o[ 'keys_vim' ].isSelected() :
+      pmq.post( 'm_cfg_set', 'keys', 'vim' )
+    else :
+      pmq.post( 'm_cfg_set', 'keys', 'emacs' )
     self.show( False )
 
