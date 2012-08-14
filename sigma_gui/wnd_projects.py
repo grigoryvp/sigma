@@ -26,6 +26,7 @@ class WndProjects( WndEditorIntegrated ) :
     self.bind( '<Return>', self.__onEnter )
 
   def m_start( self ) :
+    ##  Set keybindings mode (VIM, Emacs etc).
     self.o[ 'content' ].setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
   def m_projects( self, i_lProjects ) :

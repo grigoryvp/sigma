@@ -17,26 +17,38 @@ class Find( object ) :
     self.bind( '<Key>', self.__onKey )
 
   def __onFind( self, i_oEvent ) :
-    self.m_sPattern  = ""
-    self.m_oStatus.setText( "/" )
+    ##  Not VIM keybindings?
+    if pmq.request( 'm_cfg_get', 'keys' ) != 'vim' :
+      self.m_sPattern  = ""
+      self.o[ 'status' ].setText( "/" )
 
   def __onBackspace( self, i_oEvent ) :
     self.m_sPattern = self.m_sPattern[ : -1 ]
     self.__redrawList()
 
   def __onKey( self, i_oEvent ) :
-    if self.m_sPattern is not None and i_oEvent.char :
-      self.m_sPattern += i_oEvent.char
-      self.__redrawList()
+    ##  Not in find mode?
+    if self.m_sPattern is None :
+      ##  VIM keybindings?
+      if pmq.request( 'm_cfg_get', 'keys' ) == 'vim' :
+        ##  In VIM mode '/' char enters search mode.
+        if i_oEvent.char == '/' :
+          self.m_sPattern  = ""
+          self.o[ 'status' ].setText( "/" )
+    ##  In find mode?
+    else :
+      if i_oEvent.char :
+        self.m_sPattern += i_oEvent.char
+        self.__redrawList()
 
   def __redrawList( self ) :
-    self.m_oStatus.setText( "/{0}".format( self.m_sPattern ) )
-    self.m_oItems.clear()
+    self.o[ 'status' ].setText( "/{0}".format( self.m_sPattern ) )
+    self.o[ 'content' ].clear()
     for sFile in self.m_lFiles :
       if self.m_sPattern in sFile :
-        self.m_oItems.append( text = sFile, baton = sFile )
-        if not self.m_oItems.selection() :
-          self.m_oItems.selectByBaton( sFile )
+        self.o[ 'content' ].append( text = sFile, baton = sFile )
+        if not self.o[ 'content' ].selection() :
+          self.o[ 'content' ].selectByBaton( sFile )
 
 class WndProjectFiles( WndEditorIntegrated, Find ) :
 
@@ -44,42 +56,50 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     WndEditorIntegrated.__init__( self )
     Find.__init__( self )
     with pu.Rack( parent = self ) :
-      with pu.Stack() :
-        self.m_oStack = pu.o
+      with pu.Stack( name = 'switch' ) :
         with pu.Label( name = 'info' ) :
-          self.m_oLabel = pu.o
           pu.o.setText( "Loading ..." )
           pu.o.alignCenter()
-        with pu.List( name = 'content' ) :
-          self.m_oItems = pu.o
+        with pu.List( name = 'content' ) : pass
       with pu.Shelf() :
-        with pu.Label() :
-          self.m_oStatus = pu.o
+        with pu.Label( name = 'status' ) : pass
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Project files" )
     self.bind( '<Return>', self.__onEnter )
 
+  def m_start( self ) :
+    ##  Set keybindings mode (VIM, Emacs etc).
+    self.o[ 'content' ].setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
+
   def m_no_project_set( self ) :
-    self.m_oLabel.setText( "Current project not selected" )
+    self.o[ 'info' ].setText( "Current project not selected" )
 
   def m_project_no_vcs( self ) :
-    self.m_oLabel.setText( "Current project not under VCS" )
+    self.o[ 'info' ].setText( "Current project not under VCS" )
 
   def m_project_files( self, i_lFiles ) :
     self.m_lFiles = i_lFiles
     sCurrent = pmq.request( 'm_project_file_get' )
-    self.m_oStatus.setText( "Files: {0}".format( len( self.m_lFiles ) ) )
+    self.o[ 'status' ].setText( "Files: {0}".format( len( self.m_lFiles ) ) )
     for sFile in self.m_lFiles :
-      self.m_oItems.append( text = sFile, baton = sFile )
+      self.o[ 'content' ].append( text = sFile, baton = sFile )
       if sFile == sCurrent :
-        self.m_oItems.selectByBaton( sFile )
-    self.m_oStack.setCurrent( 'content' )
-    self.m_oItems.setFocus()
+        self.o[ 'content' ].selectByBaton( sFile )
+    self.o[ 'switch' ].setCurrent( 'content' )
+    self.o[ 'content' ].setFocus()
 
   def __onEnter( self, i_oEvent ) :
-    lItems = self.m_oItems.selection()
-    if len( lItems ) :
-      pmq.post( 'm_project_file_set', self.m_oItems.idToBaton( lItems[ 0 ] ) )
+    ##  VIM keybindings?
+    if pmq.request( 'm_cfg_get', 'keys' ) == 'vim' :
+      ##  In search mode?
+      if self.m_sPattern is not None :
+        ##  If search mode, Enter exits it.
+        self.m_sPattern  = None
+        self.o[ 'status' ].setText( "" )
+        return
+    nId = (self.o[ 'content' ].selection() + [ None ])[ 0 ]
+    if nId is not None :
+      pmq.post( 'm_project_file_set', self.o[ 'content' ].idToBaton( nId ) )
       pmq.stop()
 
