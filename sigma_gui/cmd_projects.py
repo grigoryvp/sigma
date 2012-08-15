@@ -30,6 +30,20 @@ class CmdProjects( pmq.Actor ) :
             oProject.dir = sProjectDir
             oProject.vcs = sVcs
             lProjects.append( oProject )
+            ##  Read mercurial subrepos, if any.
+            if 'hg'  == sVcs :
+              sHgsub = os.path.join( sProjectDir, ".hgsub" )
+              if os.path.isfile( sHgsub ) :
+                with open( sHgsub ) as oFile :
+                  for sLine in oFile :
+                    sSubPath = (sLine.split( "=" ) + [ "" ])[ 0 ].strip()
+                    if sSubPath :
+                      oProject = Project()
+                      sName = "{0}{1}{2}".format( sSubdir, os.sep, sSubPath )
+                      oProject.name = sName
+                      oProject.dir = os.path.join( sProjectDir, sSubPath )
+                      oProject.vcs = sVcs
+                      lProjects.append( oProject )
             break
       break
     pmq.post( 'm_projects', lProjects )
