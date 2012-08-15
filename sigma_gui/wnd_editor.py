@@ -15,6 +15,10 @@ class WndEditor( pu.Wnd ) :
           pu.o.setText( "Settings" )
         with pu.MenuItem( name = 'exit' ) :
           pu.o.setText( "Exit" )
+      with pu.Menu() :
+        pu.o.setText( "File" )
+        with pu.MenuItem( name = 'fopen' ) :
+          pu.o.setText( "Open" )
     with pu.Rack( parent = self ) :
       with pu.Text() : pass
       with pu.Shelf() :
@@ -37,4 +41,7 @@ class WndEditor( pu.Wnd ) :
 
   def m_on_exit( self ) :
     pmq.stop()
+
+  def m_on_fopen( self ) :
+    sName = pu.askOpenFileName()
 
