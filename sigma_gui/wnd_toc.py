@@ -26,6 +26,10 @@ class WndToc( WndEditorIntegrated  ) :
     self.setCaption( "Sigma: TOC" )
     self.bind( '<Return>', self.__onEnter )
 
+  def m_start( self ) :
+    ##  Set keybindings mode (VIM, Emacs etc).
+    self.o[ 'content' ].setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
+
   def m_toc( self, i_lTags ) :
     for oTag in i_lTags :
       self.m_oItems.append( text = oTag.value(), baton = oTag )
