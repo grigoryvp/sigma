@@ -277,7 +277,7 @@ class Tag( object ) :
 
   def addRawLine( self, i_sLine ) :
     self.m_lRaw.append( i_sLine )
-    nOffset = len( self.anchor() ) + len( ANCHOR_MULTILINE )
+    nOffset = len( self.anchor() or "" ) + len( ANCHOR_MULTILINE )
     if len( self.m_sVal ) > 0 :
       self.m_sVal += "\n"
     self.m_sVal += i_sLine.strip()[ nOffset : ]
