@@ -18,13 +18,14 @@ class WndEditor( pu.Wnd ) :
       with pu.Menu() :
         pu.o.setText( "File" )
         with pu.MenuItem( name = 'fopen' ) :
-          pu.o.setText( "Open" )
+          pu.o.setText( "Open (ctl-o)" )
     with pu.Rack( parent = self ) :
-      with pu.Text() : pass
+      with pu.Text( name = 'text' ) : pass
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Grip() : pass
-    self.setCaption( "Sigma: Editor" )
+    self.__updateCaption()
+    self.bind( '<Control-o>', lambda _ : self.m_on_fopen() )
 
   def m_start( self ) :
     sName = "geometry_{0}".format( self.name() )
@@ -42,6 +43,18 @@ class WndEditor( pu.Wnd ) :
   def m_on_exit( self ) :
     pmq.stop()
 
+  def __updateCaption( self, file = None ) :
+    if file is None :
+      self.setCaption( "Sigma: Editor" )
+    else :
+      self.setCaption( "Sigma: Editor: \"{0}\"".format( file ) )
+
   def m_on_fopen( self ) :
     sName = pu.askOpenFileName()
+    try :
+      with open( sName ) as oFile :
+        self.o[ 'text' ].setText( oFile.read() )
+        self.__updateCaption( sName )
+    except IOError :
+      pu.showMessage( "Failed to open file", type = 'error' )
 
