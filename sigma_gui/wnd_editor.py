@@ -32,6 +32,8 @@ class WndEditor( pu.Wnd ) :
     self.__updateCaption()
     self.bind( '<Control-o>', lambda _ : self.m_on_fopen() )
     self.bind( '<Control-Shift-F3>', lambda _ : self.m_on_toc() )
+    ##  Name of last opened file.
+    self.m_sFilename = None
 
   def m_start( self ) :
     sName = "geometry_{0}".format( self.name() )
@@ -41,10 +43,16 @@ class WndEditor( pu.Wnd ) :
     else :
       self.setSize( 512, 384 )
       self.center()
+    ##  Try to reopen last file.
+    self.m_sFilename = pmq.request( 'm_cfg_get', 'editor_file' )
+    if self.m_sFilename is not None :
+      pmq.post( 'm_fopen', self.m_sFilename )
 
   def m_shutdown( self ) :
     sName = "geometry_{0}".format( self.name() )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
+    if self.m_sFilename is not None :
+      pmq.post( 'm_cfg_set', 'editor_file', self.m_sFilename )
 
   def m_on_exit( self ) :
     pmq.stop()
@@ -72,6 +80,7 @@ class WndEditor( pu.Wnd ) :
       with open( i_sFilename ) as oFile :
         self.o[ 'text' ].setText( oFile.read() )
         self.__updateCaption( i_sFilename )
+        self.m_sFilename = i_sFilename
     except IOError :
       pu.showMessage( "Failed to open file", type = 'error' )
 
