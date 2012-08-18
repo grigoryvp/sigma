@@ -42,8 +42,12 @@ class WndEditorIntegrated( pu.Wnd ) :
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
     else :
       if i_fShow :
-        self.center()
+        nCx = self.parent().width() / 2
+        nCy = self.parent().height() / 2
+        nX = self.parent().x() + (self.parent().width() - nCx) / 2
+        nY = self.parent().y() + (self.parent().height() - nCy) / 2
         self.transient( master = self.parent() )
+        self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
       else :
         self.transient( master = None )
     super( WndEditorIntegrated, self ).show( i_fShow )
