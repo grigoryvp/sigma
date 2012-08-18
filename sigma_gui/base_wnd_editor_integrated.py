@@ -16,7 +16,7 @@ class WndEditorIntegrated( pu.Wnd ) :
 
   def __init__( self, parent = None ) :
     pu.Wnd.__init__( self, parent = parent )
-    self.bind( '<Escape>', self.__onEscape )
+    self.bind( '<Escape>', lambda _ : self.close() )
     ##  Used with external editor.
     self.m_fEditor = False
 
@@ -62,8 +62,4 @@ class WndEditorIntegrated( pu.Wnd ) :
   def m_shutdown( self ) :
     sName = "geometry_{0}".format( self.name() )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
-
-  def __onEscape( self, i_oEvent ) :
-    self.show( False )
-    pmq.post( 'm_{0}_close'.format( self.name() ), self )
 

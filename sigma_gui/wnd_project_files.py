@@ -101,5 +101,6 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     nId = (self.o[ 'content' ].selection() + [ None ])[ 0 ]
     if nId is not None :
       pmq.post( 'm_project_file_set', self.o[ 'content' ].idToBaton( nId ) )
-      pmq.stop()
+      ##! This will stop app in editor integration mode, see |shutdown|.
+      self.close()
 

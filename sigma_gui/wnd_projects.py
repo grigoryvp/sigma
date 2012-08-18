@@ -43,5 +43,6 @@ class WndProjects( WndEditorIntegrated ) :
     if len( lItems ) :
       sName = self.o[ 'content' ].idToBaton( lItems[ 0 ] )
       pmq.post( 'm_project_set', sName )
-      pmq.stop()
+      ##! This will stop app in editor integration mode, see |shutdown|.
+      self.close()
 

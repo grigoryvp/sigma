@@ -41,5 +41,6 @@ class WndToc( WndEditorIntegrated  ) :
     lItems = self.m_oItems.selection()
     if len( lItems ) :
       pmq.post( 'm_toc_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )
-      pmq.stop()
+      ##! This will stop app in editor integration mode, see |shutdown|.
+      self.close()
 
