@@ -8,5 +8,6 @@ class CmdToc( pmq.Actor ) :
 
   def m_cmd_toc( self, i_sFile ) :
     lTags = [ o for o in sigma.parseFile( i_sFile ) if o.isToc() ]
+    print( lTags )
     pmq.post( 'm_toc', lTags )
 
