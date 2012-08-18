@@ -14,8 +14,8 @@ import pmq
 ##  third-party editor (like 'toc' or 'projects').
 class WndEditorIntegrated( pu.Wnd ) :
 
-  def __init__( self ) :
-    pu.Wnd.__init__( self )
+  def __init__( self, parent = None ) :
+    pu.Wnd.__init__( self, parent = parent )
     self.bind( '<Escape>', self.__onEscape )
     ##  Used with external editor.
     self.m_fEditor = False
@@ -40,6 +40,12 @@ class WndEditorIntegrated( pu.Wnd ) :
         nX = nParentX + (nParentCx - nCx) / 2
         nY = nParentY + (nParentCy - nCy) / 2
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
+    else :
+      if i_fShow :
+        self.center()
+        self.transient( master = self.parent() )
+      else :
+        self.transient( master = None )
     super( WndEditorIntegrated, self ).show( i_fShow )
     ##  On OSX window will not get focus.
     if i_fShow and sys.platform == 'darwin' :

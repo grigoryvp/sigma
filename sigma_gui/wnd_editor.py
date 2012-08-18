@@ -3,6 +3,7 @@
 
 import pu
 import pmq
+import sigma
 
 class WndEditor( pu.Wnd ) :
 
@@ -19,6 +20,10 @@ class WndEditor( pu.Wnd ) :
         pu.o.setText( "File" )
         with pu.MenuItem( name = 'fopen' ) :
           pu.o.setText( "Open (ctl-o)" )
+      with pu.Menu() :
+        pu.o.setText( "Tools" )
+        with pu.MenuItem( name = 'toc' ) :
+          pu.o.setText( "TOC (ctrl-alt-F3)" )
     with pu.Rack( parent = self ) :
       with pu.Text( name = 'text' ) : pass
       with pu.Shelf() :
@@ -57,4 +62,9 @@ class WndEditor( pu.Wnd ) :
         self.__updateCaption( sName )
     except IOError :
       pu.showMessage( "Failed to open file", type = 'error' )
+
+  def m_on_toc( self ) :
+    sText = self.o[ 'text' ].getText()
+    lTags = [ o for o in sigma.parse( sText ) if o.isToc() ]
+    pmq.post( 'm_toc', lTags )
 

@@ -10,8 +10,8 @@ import pmq
 
 class WndToc( WndEditorIntegrated  ) :
 
-  def __init__( self ) :
-    WndEditorIntegrated.__init__( self )
+  def __init__( self, parent = None ) :
+    WndEditorIntegrated.__init__( self, parent = parent )
     with pu.Rack( parent = self ) :
       with pu.Stack() :
         self.m_oStack = pu.o
@@ -31,6 +31,7 @@ class WndToc( WndEditorIntegrated  ) :
     self.o[ 'content' ].setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
   def m_toc( self, i_lTags ) :
+    self.show()
     for oTag in i_lTags :
       self.m_oItems.append( text = oTag.value(), baton = oTag )
     self.m_oStack.setCurrent( 'content' )

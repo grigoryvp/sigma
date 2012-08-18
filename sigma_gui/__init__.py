@@ -32,7 +32,7 @@ def start() :
   EditorVim()
   Windows()
   oRoot = WndEditor()
-  WndToc()
+  WndToc( oRoot )
   WndProjects()
   WndProjectFiles()
   WndSettings( oRoot )
