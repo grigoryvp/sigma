@@ -36,12 +36,14 @@ class CmdProjects( pmq.Actor ) :
               if os.path.isfile( sHgsub ) :
                 with open( sHgsub ) as oFile :
                   for sLine in oFile :
-                    sSubPath = (sLine.split( "=" ) + [ "" ])[ 0 ].strip()
-                    if sSubPath :
+                    sSubpath = (sLine.split( "=" ) + [ "" ])[ 0 ].strip()
+                    if sSubpath :
+                      ##! Mercurial always outputs with '/' separatpr.
+                      sSubpath = sSubpath.replace( "/", os.sep )
                       oProject = Project()
-                      sName = "{0}{1}{2}".format( sSubdir, os.sep, sSubPath )
+                      sName = "{0}{1}{2}".format( sSubdir, os.sep, sSubpath )
                       oProject.name = sName
-                      oProject.dir = os.path.join( sProjectDir, sSubPath )
+                      oProject.dir = os.path.join( sProjectDir, sSubpath )
                       oProject.vcs = sVcs
                       lProjects.append( oProject )
             break
