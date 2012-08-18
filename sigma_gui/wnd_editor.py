@@ -69,3 +69,6 @@ class WndEditor( pu.Wnd ) :
     lTags = [ o for o in sigma.parse( sText ) if o.isToc() ]
     pmq.post( 'm_toc', lTags )
 
+  def m_toc_select( self, i_oTag ) :
+    self.o[ 'text' ].mark_set( "insert", "{0}.1".format( i_oTag.line() ) )
+
