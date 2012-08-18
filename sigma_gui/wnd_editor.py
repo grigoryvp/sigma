@@ -19,11 +19,11 @@ class WndEditor( pu.Wnd ) :
       with pu.Menu() :
         pu.o.setText( "File" )
         with pu.MenuItem( name = 'fopen' ) :
-          pu.o.setText( "Open (ctl-o)" )
+          pu.o.setText( "Open (C-O)" )
       with pu.Menu() :
         pu.o.setText( "Tools" )
         with pu.MenuItem( name = 'toc' ) :
-          pu.o.setText( "TOC (ctrl-alt-F3)" )
+          pu.o.setText( "TOC (C-S-F3)" )
     with pu.Rack( parent = self ) :
       with pu.Text( name = 'text' ) : pass
       with pu.Shelf() :
@@ -31,6 +31,7 @@ class WndEditor( pu.Wnd ) :
         with pu.Grip() : pass
     self.__updateCaption()
     self.bind( '<Control-o>', lambda _ : self.m_on_fopen() )
+    self.bind( '<Control-Shift-F3>', lambda _ : self.m_on_toc() )
 
   def m_start( self ) :
     sName = "geometry_{0}".format( self.name() )
