@@ -31,6 +31,7 @@ class WndToc( WndEditorIntegrated  ) :
     self.o[ 'content' ].setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
   def m_toc( self, i_lTags ) :
+    self.m_oItems.clear()
     self.show()
     for oTag in i_lTags :
       self.m_oItems.append( text = oTag.value(), baton = oTag )
