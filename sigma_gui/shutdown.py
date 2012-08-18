@@ -6,21 +6,26 @@ import pmq
 
 class Shutdown( pmq.Actor ) :
 
+  def __init__( self ) :
+    pmq.Actor.__init__( self )
+    ##  True if working as GUI for some external editor.
+    self.m_fEditor = False
+
   def m_wndeditor_close( self ) :
     pmq.stop()
 
-  ##* If TOC window is displayed as part of complex GUI, closing it
-  ##  will close app.
   def m_wndtoc_close( self ) :
-    pmq.stop()
+    if self.m_fEditor :
+      pmq.stop()
 
-  ##* If Projects window is displayed as part of complex GUI, closing it
-  ##  will close app.
   def m_wndprojects_close( self ) :
-    pmq.stop()
+    if self.m_fEditor :
+      pmq.stop()
 
-  ##* If Project files window is displayed as part of complex GUI, closing it
-  ##  will close app.
   def m_wndprojectfiles_close( self ) :
-    pmq.stop()
+    if self.m_fEditor :
+      pmq.stop()
+
+  def m_editor_use( self ) :
+    self.m_fEditor = True
 

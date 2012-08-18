@@ -64,5 +64,6 @@ class WndEditorIntegrated( pu.Wnd ) :
     pmq.post( 'm_cfg_set', sName, self.geometry() )
 
   def __onEscape( self, i_oEvent ) :
-    pmq.stop()
+    self.show( False )
+    pmq.post( 'm_{0}_close'.format( self.name() ), self )
 
