@@ -57,12 +57,7 @@ class WndEditor( pu.Wnd ) :
 
   def m_on_fopen( self ) :
     sName = pu.askOpenFileName()
-    try :
-      with open( sName ) as oFile :
-        self.o[ 'text' ].setText( oFile.read() )
-        self.__updateCaption( sName )
-    except IOError :
-      pu.showMessage( "Failed to open file", type = 'error' )
+    pmq.post( 'm_fopen', sName )
 
   def m_on_toc( self ) :
     sText = self.o[ 'text' ].getText()
@@ -71,4 +66,12 @@ class WndEditor( pu.Wnd ) :
 
   def m_toc_select( self, i_oTag ) :
     self.o[ 'text' ].mark_set( "insert", "{0}.1".format( i_oTag.line() ) )
+
+  def m_fopen( self, i_sFilename ) :
+    try :
+      with open( i_sFilename ) as oFile :
+        self.o[ 'text' ].setText( oFile.read() )
+        self.__updateCaption( i_sFilename )
+    except IOError :
+      pu.showMessage( "Failed to open file", type = 'error' )
 
