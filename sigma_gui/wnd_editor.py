@@ -65,7 +65,8 @@ class WndEditor( pu.Wnd ) :
 
   def m_on_fopen( self ) :
     sName = pu.askOpenFileName()
-    pmq.post( 'm_fopen', sName )
+    if sName :
+      pmq.post( 'm_fopen', sName )
 
   def m_on_toc( self ) :
     sText = self.o[ 'text' ].getText()
