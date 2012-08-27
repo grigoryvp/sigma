@@ -64,7 +64,7 @@ def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
     i_sEncoding = tryDetectEncoding( sData )
   sType = tryDetectType( sData, i_sFilename, i_sEncoding )
   ##  Preprocess file text, call python code.
-  sNewData = Preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
+  sNewData = preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
   ##  Write back changed text.
   oFile = open( i_sFilename, "w+" )
   oFile.write( sNewData.encode( i_sEncoding ) )
@@ -153,6 +153,7 @@ def parse( i_sTxt, i_sType = None ) :
         ##  Ordinary comment?
         else :
           oTags.noTagInLine()
+      ##  String don't start with anchor comment,
       else :
         if oTags.current() and oTags.current().isCode() :
           ##  This text is between code begin and end anchor and need to
@@ -250,7 +251,7 @@ class TagAccumulator( list ) :
   def noTagInLine( self ) :
     if self.m_oTagCur is not None and not self.m_oTagCur.isTxt() :
       self.append( self.m_oTagCur )
-    self.m_oTagCur = None
+      self.m_oTagCur = None
 
 class Tag( object ) :
 
