@@ -98,6 +98,9 @@ def preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
           raise Exception( "\"{0}\" already in globals".format( sName ) )
         setattr( __builtin__, sName, uVal )
       sys.stdout = StringIO.StringIO()
+      ##! Also save |stderr| so running script can't do strange things
+      ##  like redirect it to stdout that will persist after its termination.
+      sys.stderr = StringIO.StringIO()
       try :
         exec "\n".join( lCode ) in dict( globals(), baton = baton )
       finally :
@@ -105,6 +108,7 @@ def preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
           delattr( __builtin__, sName )
       sOutput = sys.stdout.getvalue()
       sys.stdout = sys.__stdout__
+      sys.stderr = sys.__stderr__
       for sOutputLine in sOutput.split( "\n" ) :
         ##  Append only non-empty lines.
         if sOutputLine :
