@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+import os
+
 import pu
 import pmq
 import sigma
@@ -46,7 +48,10 @@ class WndEditor( pu.Wnd ) :
     ##  Try to reopen last file.
     self.m_sFilename = pmq.request( 'm_cfg_get', 'editor_file' )
     if self.m_sFilename is not None :
-      pmq.post( 'm_fopen', self.m_sFilename )
+      if os.path.isfile( self.m_sFilename ) :
+        pmq.post( 'm_fopen', self.m_sFilename )
+      else :
+        pmq.post( 'm_cfg_set', 'editor_file', None )
 
   def m_shutdown( self ) :
     sName = "geometry_{0}".format( self.name() )
