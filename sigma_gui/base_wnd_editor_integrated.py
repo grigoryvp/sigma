@@ -21,7 +21,7 @@ class WndEditorIntegrated( pu.Wnd ) :
     self.m_fEditor = False
 
   def m_start( self ) :
-    sName = "geometry_{0}".format( self.name() )
+    sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :
       self.geometry( sGeometry )
@@ -42,11 +42,11 @@ class WndEditorIntegrated( pu.Wnd ) :
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
     else :
       if i_fShow :
-        nCx = self.parent().width() / 2
-        nCy = self.parent().height() / 2
-        nX = self.parent().x() + (self.parent().width() - nCx) / 2
-        nY = self.parent().y() + (self.parent().height() - nCy) / 2
-        self.transient( master = self.parent() )
+        nCx = self.dparent.width() / 2
+        nCy = self.dparent.height() / 2
+        nX = self.dparent.x() + (self.dparent.width() - nCx) / 2
+        nY = self.dparent.y() + (self.dparent.height() - nCy) / 2
+        self.transient( master = self.dparent )
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
       else :
         self.transient( master = None )
@@ -60,6 +60,6 @@ class WndEditorIntegrated( pu.Wnd ) :
     self.m_fEditor = True
 
   def m_shutdown( self ) :
-    sName = "geometry_{0}".format( self.name() )
+    sName = "geometry_{0}".format( self.dname )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
 

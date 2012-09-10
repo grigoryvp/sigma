@@ -7,19 +7,19 @@ from base_wnd_editor_integrated import WndEditorIntegrated
 
 import pu
 import pmq
+from pd import pd
 
 class WndToc( WndEditorIntegrated  ) :
 
   def __init__( self, parent = None ) :
     WndEditorIntegrated.__init__( self, parent = parent )
     with pu.Rack( parent = self ) :
-      with pu.Stack() :
-        self.m_oStack = pu.o
+      with pu.Stack() as self.m_oStack :
         with pu.Label( name = 'info' ) :
-          pu.o.setText( "Loading ..." )
-          pu.o.alignCenter()
+          pd.o.setText( "Loading ..." )
+          pd.o.alignCenter()
         with pu.List( name = 'content' ) :
-          self.m_oItems = pu.o
+          self.m_oItems = pd.o
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Grip() : pass
@@ -28,7 +28,7 @@ class WndToc( WndEditorIntegrated  ) :
 
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
-    self.o[ 'content' ].setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
+    self.o( 'content' ).setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
   def m_toc( self, i_lTags ) :
     self.m_oItems.clear()

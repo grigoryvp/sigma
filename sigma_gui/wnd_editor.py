@@ -6,6 +6,7 @@ import os
 import pu
 import pmq
 import sigma
+from pd import pd
 
 class WndEditor( pu.Wnd ) :
 
@@ -13,19 +14,19 @@ class WndEditor( pu.Wnd ) :
     super( WndEditor, self ).__init__()
     with pu.Menu( parent = self ) :
       with pu.Menu() :
-        pu.o.setText( "App" )
+        pd.o.setText( "App" )
         with pu.MenuItem( name = 'settings' ) :
-          pu.o.setText( "Settings" )
+          pd.o.setText( "Settings" )
         with pu.MenuItem( name = 'exit' ) :
-          pu.o.setText( "Exit" )
+          pd.o.setText( "Exit" )
       with pu.Menu() :
-        pu.o.setText( "File" )
+        pd.o.setText( "File" )
         with pu.MenuItem( name = 'fopen' ) :
-          pu.o.setText( "Open (C-O)" )
+          pd.o.setText( "Open (C-O)" )
       with pu.Menu() :
-        pu.o.setText( "Tools" )
+        pd.o.setText( "Tools" )
         with pu.MenuItem( name = 'toc' ) :
-          pu.o.setText( "TOC (C-S-F3)" )
+          pd.o.setText( "TOC (C-S-F3)" )
     with pu.Rack( parent = self ) :
       with pu.Text( name = 'text' ) : pass
       with pu.Shelf() :
@@ -38,7 +39,7 @@ class WndEditor( pu.Wnd ) :
     self.m_sFilename = None
 
   def m_start( self ) :
-    sName = "geometry_{0}".format( self.name() )
+    sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :
       self.geometry( sGeometry )
@@ -54,7 +55,7 @@ class WndEditor( pu.Wnd ) :
         pmq.post( 'm_cfg_set', 'editor_file', None )
 
   def m_shutdown( self ) :
-    sName = "geometry_{0}".format( self.name() )
+    sName = "geometry_{0}".format( self.dname )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
     if self.m_sFilename is not None :
       pmq.post( 'm_cfg_set', 'editor_file', self.m_sFilename )
@@ -74,17 +75,17 @@ class WndEditor( pu.Wnd ) :
       pmq.post( 'm_fopen', sName )
 
   def m_on_toc( self ) :
-    sText = self.o[ 'text' ].getText()
+    sText = self.o( 'text' ).getText()
     lTags = [ o for o in sigma.parse( sText ) if o.isToc() ]
     pmq.post( 'm_toc', lTags )
 
   def m_toc_select( self, i_oTag ) :
-    self.o[ 'text' ].mark_set( "insert", "{0}.1".format( i_oTag.line() ) )
+    self.o( 'text' ).mark_set( "insert", "{0}.1".format( i_oTag.line() ) )
 
   def m_fopen( self, i_sFilename ) :
     try :
       with open( i_sFilename ) as oFile :
-        self.o[ 'text' ].setText( oFile.read() )
+        self.o( 'text' ).setText( oFile.read() )
         self.__updateCaption( i_sFilename )
         self.m_sFilename = i_sFilename
     except IOError :

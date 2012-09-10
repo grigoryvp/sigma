@@ -7,6 +7,7 @@ from base_wnd_editor_integrated import WndEditorIntegrated
 
 import pu
 import pmq
+from pd import pd
 
 class Find( object ) :
 
@@ -20,7 +21,7 @@ class Find( object ) :
     ##  Not VIM keybindings?
     if pmq.request( 'm_cfg_get', 'keys' ) != 'vim' :
       self.m_sPattern  = ""
-      self.o[ 'status' ].setText( "/" )
+      self.o( 'status' ).setText( "/" )
 
   def __onBackspace( self, i_oEvent ) :
     self.m_sPattern = self.m_sPattern[ : -1 ]
@@ -34,7 +35,7 @@ class Find( object ) :
         ##  In VIM mode '/' char enters search mode.
         if i_oEvent.char == '/' :
           self.m_sPattern  = ""
-          self.o[ 'status' ].setText( "/" )
+          self.o( 'status' ).setText( "/" )
     ##  In find mode?
     else :
       if i_oEvent.char :
@@ -42,13 +43,13 @@ class Find( object ) :
         self.__redrawList()
 
   def __redrawList( self ) :
-    self.o[ 'status' ].setText( "/{0}".format( self.m_sPattern ) )
-    self.o[ 'content' ].clear()
+    self.o( 'status' ).setText( "/{0}".format( self.m_sPattern ) )
+    self.o( 'content' ).clear()
     for sFile in self.m_lFiles :
       if self.m_sPattern in sFile :
-        self.o[ 'content' ].append( text = sFile, baton = sFile )
-        if not self.o[ 'content' ].selection() :
-          self.o[ 'content' ].selectByBaton( sFile )
+        self.o( 'content' ).append( text = sFile, baton = sFile )
+        if not self.o( 'content' ).selection() :
+          self.o( 'content' ).selectByBaton( sFile )
 
 class WndProjectFiles( WndEditorIntegrated, Find ) :
 
@@ -58,8 +59,8 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     with pu.Rack( parent = self ) :
       with pu.Stack( name = 'switch' ) :
         with pu.Label( name = 'info' ) :
-          pu.o.setText( "Loading ..." )
-          pu.o.alignCenter()
+          pd.o.setText( "Loading ..." )
+          pd.o.alignCenter()
         with pu.List( name = 'content' ) : pass
       with pu.Shelf() :
         with pu.Label( name = 'status' ) : pass
@@ -70,24 +71,24 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
 
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
-    self.o[ 'content' ].setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
+    self.o( 'content' ).setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
   def m_no_project_set( self ) :
-    self.o[ 'info' ].setText( "Current project not selected" )
+    self.o( 'info' ).setText( "Current project not selected" )
 
   def m_project_no_vcs( self ) :
-    self.o[ 'info' ].setText( "Current project not under VCS" )
+    self.o( 'info' ).setText( "Current project not under VCS" )
 
   def m_project_files( self, i_lFiles ) :
     self.m_lFiles = i_lFiles
     sCurrent = pmq.request( 'm_project_file_get' )
-    self.o[ 'status' ].setText( "Files: {0}".format( len( self.m_lFiles ) ) )
+    self.o( 'status' ).setText( "Files: {0}".format( len( self.m_lFiles ) ) )
     for sFile in self.m_lFiles :
-      self.o[ 'content' ].append( text = sFile, baton = sFile )
+      self.o( 'content' ).append( text = sFile, baton = sFile )
       if sFile == sCurrent :
-        self.o[ 'content' ].selectByBaton( sFile )
-    self.o[ 'switch' ].setCurrent( 'content' )
-    self.o[ 'content' ].setFocus()
+        self.o( 'content' ).selectByBaton( sFile )
+    self.o( 'switch' ).setCurrent( 'content' )
+    self.o( 'content' ).setFocus()
 
   def __onEnter( self, i_oEvent ) :
     ##  VIM keybindings?
@@ -96,11 +97,11 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
       if self.m_sPattern is not None :
         ##  If search mode, Enter exits it.
         self.m_sPattern  = None
-        self.o[ 'status' ].setText( "" )
+        self.o( 'status' ).setText( "" )
         return
-    nId = (self.o[ 'content' ].selection() + [ None ])[ 0 ]
+    nId = (self.o( 'content' ).selection() + [ None ])[ 0 ]
     if nId is not None :
-      pmq.post( 'm_project_file_set', self.o[ 'content' ].idToBaton( nId ) )
+      pmq.post( 'm_project_file_set', self.o( 'content' ).idToBaton( nId ) )
       ##! This will stop app in editor integration mode, see |shutdown|.
       self.close()
 

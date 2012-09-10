@@ -3,6 +3,7 @@
 
 import pu
 import pmq
+from pd import pd
 
 class WndSettings( pu.Wnd ) :
 
@@ -11,46 +12,46 @@ class WndSettings( pu.Wnd ) :
     with pu.Rack( parent = self ) :
       with pu.Shelf() :
         with pu.List() :
-          pu.o.append( "keybindings", 'keybindings' )
-          pu.o.selectByBaton( 'keybindings' )
-          pu.o.setGrow( pu.Grow( cx = False, cy = True ) )
-          pu.o.setWidth( pixels = pu.o.maxWidth() )
+          pd.o.append( "keybindings", 'keybindings' )
+          pd.o.selectByBaton( 'keybindings' )
+          pd.o.setGrow( pu.Grow( cx = False, cy = True ) )
+          pd.o.setWidth( pixels = pd.o.maxWidth() )
         with pu.Stack() :
           with pu.Rack( 'keybindings') :
             with pu.Radio( name = 'keys_emacs' ) :
-              pu.o.setText( "Emacs" )
+              pd.o.setText( "Emacs" )
             with pu.Radio( name = 'keys_vim' ) :
-              pu.o.setText( "Vim" )
-          pu.o.setCurrent( 'keybindings' )
+              pd.o.setText( "Vim" )
+          pd.o.setCurrent( 'keybindings' )
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Button( 'settings_cancel' ) :
-          pu.o.setText( "Cancel" )
+          pd.o.setText( "Cancel" )
         with pu.Button( 'settings_apply' ) :
-          pu.o.setText( "Apply" )
+          pd.o.setText( "Apply" )
       with pu.Shelf() :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Settings" )
 
   def m_start( self ) :
-    sName = "geometry_{0}".format( self.name() )
+    sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :
       self.geometry( sGeometry )
     else :
       self.setSize( 256 + 128, 256 )
     if 'vim' == pmq.request( 'm_cfg_get', 'keys' ) :
-      self.o[ 'keys_vim' ].setSelected()
+      self.o( 'keys_vim' ).setSelected()
     else :
-      self.o[ 'keys_emacs' ].setSelected()
+      self.o( 'keys_emacs' ).setSelected()
 
   ##x Overrides |pu.Wnd.show()|.
   def show( self, i_fShow = True ) :
     if i_fShow :
       self.center()
       self.grab_set()
-      self.transient( master = self.parent() )
+      self.transient( master = self.dparent )
     else :
       self.grab_release()
       self.transient( master = None )
@@ -60,14 +61,14 @@ class WndSettings( pu.Wnd ) :
     self.show( False )
 
   def m_shutdown( self ) :
-    sName = "geometry_{0}".format( self.name() )
+    sName = "geometry_{0}".format( self.dname )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
 
   def m_on_settings_cancel( self ) :
     self.show( False )
 
   def m_on_settings_apply( self ) :
-    if self.o[ 'keys_vim' ].isSelected() :
+    if self.o( 'keys_vim' ).isSelected() :
       pmq.post( 'm_cfg_set', 'keys', 'vim' )
     else :
       pmq.post( 'm_cfg_set', 'keys', 'emacs' )
