@@ -5,9 +5,9 @@ import sys
 
 from base_wnd_editor_integrated import WndEditorIntegrated
 
-import pu
 import pmq
-from pd import pd
+from pyedsl import pd
+import pyuser as pu
 
 class WndProjects( WndEditorIntegrated ) :
 

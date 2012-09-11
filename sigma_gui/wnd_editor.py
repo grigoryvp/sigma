@@ -3,10 +3,10 @@
 
 import os
 
-import pu
 import pmq
 import sigma
-from pd import pd
+from pyedsl import pd
+import pyuser as pu
 
 class WndEditor( pu.Wnd ) :
 

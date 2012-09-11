@@ -7,7 +7,7 @@ import Tkinter
 if sys.platform == 'darwin' :
   import Cocoa
 
-import pu
+import pyuser as pu
 import pmq
 
 ##c Code that is shared among windows that can be used as pop-up atop

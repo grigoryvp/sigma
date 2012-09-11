@@ -6,7 +6,7 @@ import time
 import threading
 
 import pmq
-import pu
+import pyuser as pu
 
 from shutdown          import Shutdown
 from cfg               import Cfg

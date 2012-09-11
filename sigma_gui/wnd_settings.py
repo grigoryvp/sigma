@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
-import pu
 import pmq
-from pd import pd
+from pyedsl import pd
+import pyuser as pu
 
 class WndSettings( pu.Wnd ) :
 

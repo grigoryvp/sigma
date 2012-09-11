@@ -7,13 +7,8 @@ if sys.platform == 'linux2' :
   ##! Import before Tkinter, otherwise warnings will arise.
   import gtk.gdk
 
+##! Compatible with install from source code.
 sys.path.append( "{0}{1}vendor".format( sys.path[ 0 ], os.sep ) )
-sys.dont_write_bytecode = True
-
-##  Import all local libs here while |dont_write_bytecode| is active.
-import sigma
-import pmq
-import pu
 
 import sigma_gui
 
