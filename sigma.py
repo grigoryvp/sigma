@@ -5,13 +5,15 @@
 # Copyright 2011-2012 Grigory Petrov
 # See LICENSE for details.
 
-import argparse
+from sigma_impl import *
 
-import sigma
+def main() :
+  import argparse
+  oParser = argparse.ArgumentParser( description = "Sigma" )
+  oParser.add_argument( 'file', help = "File to preprocess." )
+  oArgs = oParser.parse_args()
+  preprocessFile( oArgs.file )
 
-oParser = argparse.ArgumentParser( description = "Sigma" )
-oParser.add_argument( 'file', help = "File to preprocess." )
-oArgs = oParser.parse_args()
-
-sigma.preprocessFile( oArgs.file )
+if __name__ == '__main__' :
+  main()
 

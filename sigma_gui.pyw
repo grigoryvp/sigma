@@ -10,7 +10,7 @@ if sys.platform == 'linux2' :
 ##! Compatible with install from source code.
 sys.path.append( "{0}{1}vendor".format( sys.path[ 0 ], os.sep ) )
 
-import sigma_gui
+import sigma_gui_impl
 
-sigma_gui.start()
+sigma_gui_impl.start()
 
