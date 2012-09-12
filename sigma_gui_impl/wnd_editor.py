@@ -27,6 +27,8 @@ class WndEditor( pu.Wnd ) :
         pd.o.setText( "Tools" )
         with pu.MenuItem( name = 'toc' ) :
           pd.o.setText( "TOC (C-S-F3)" )
+        with pu.MenuItem( name = 'projects' ) :
+          pd.o.setText( "Projects (C-S-F9)" )
     with pu.Rack( parent = self ) :
       with pu.Text( name = 'text' ) : pass
       with pu.Shelf() :
@@ -35,6 +37,7 @@ class WndEditor( pu.Wnd ) :
     self.__updateCaption()
     self.bind( '<Control-o>', lambda _ : self.m_on_fopen() )
     self.bind( '<Control-Shift-F3>', lambda _ : self.m_on_toc() )
+    self.bind( '<Control-Shift-F9>', lambda _ : self.m_on_projects() )
     ##  Name of last opened file.
     self.m_sFilename = None
 
@@ -78,6 +81,9 @@ class WndEditor( pu.Wnd ) :
     sText = self.o( 'text' ).getText()
     lTags = [ o for o in sigma.parse( sText ) if o.isToc() ]
     pmq.post( 'm_toc', lTags )
+
+  def m_on_projects( self ) :
+    pmq.post( 'm_cmd_projects' )
 
   def m_toc_select( self, i_oTag ) :
     self.o( 'text' ).mark_set( "insert", "{0}.1".format( i_oTag.line() ) )
