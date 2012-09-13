@@ -5,6 +5,12 @@ import sys
 import time
 import threading
 
+import sys
+import os
+if sys.platform == 'linux2' :
+  ##! Import before Tkinter, otherwise warnings will arise.
+  import gtk.gdk
+
 import pmq
 import pyuser as pu
 
