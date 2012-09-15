@@ -2,6 +2,9 @@
 # coding:utf-8 vi:et:ts=2
 
 import sys
+import os
+import itertools
+import Tkinter
 
 from base_wnd_editor_integrated import WndEditorIntegrated
 
@@ -14,7 +17,7 @@ class WndProjects( WndEditorIntegrated ) :
   def __init__( self, parent = None ) :
     WndEditorIntegrated.__init__( self, parent = parent )
     with pu.Rack( parent = self ) :
-      with pu.Stack() as self.m_oStack :
+      with pu.Stack( name = 'stack' ) :
         with pu.Label( name = 'info' ) :
           pd.o.setText( "Loading ..." )
           pd.o.alignCenter()
@@ -24,6 +27,15 @@ class WndProjects( WndEditorIntegrated ) :
         with pu.Grip() : pass
     self.setCaption( "Sigma: Projects" )
     self.bind( '<Return>', self.__onEnter )
+    self.m_mImg = {}
+    lStatesOut = [ 'pushed', 'unpushed', 'uncommited' ]
+    lStatesIn = [ 'pulled', 'unpulled' ]
+    for lCombination in itertools.product( lStatesOut, lStatesIn ) :
+      sId = '_'.join( lCombination )
+      sFile = os.path.join( sys.path[ -1 ], 'res', '{0}.gif'.format( sId ) )
+      oImg = Tkinter.PhotoImage( file = sFile )
+      self.m_mImg[ sId ] = oImg
+      self.o( 'content' ).tag_configure( sId, image = oImg )
 
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
@@ -32,12 +44,14 @@ class WndProjects( WndEditorIntegrated ) :
   def m_projects( self, i_lProjects ) :
     self.show()
     oCurrent = pmq.request( 'm_project_get' )
+    oContent = self.o( 'content' )
     for oProject in i_lProjects :
-      self.o( 'content' ).append( text = oProject.name, baton = oProject )
+      oContent.append( text = oProject.name, baton = oProject )
+      oContent.itemTagAdd( baton = oProject, tag = 'pushed_pulled' )
       if oProject == oCurrent :
-        self.o( 'content' ).selectByBaton( oProject )
-    self.m_oStack.setCurrent( 'content' )
-    self.o( 'content' ).setFocus()
+        oContent.selectByBaton( oProject )
+    self.o( 'stack' ).setCurrent( 'content' )
+    oContent.setFocus()
 
   def __onEnter( self, i_oEvent ) :
     lItems = self.o( 'content' ).selection()
