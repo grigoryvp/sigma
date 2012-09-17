@@ -47,7 +47,7 @@ class WndProjects( WndEditorIntegrated ) :
     oContent = self.o( 'content' )
     for oProject in i_lProjects :
       oContent.append( text = oProject.name, baton = oProject )
-      oContent.itemTagAdd( baton = oProject, tag = 'pushed_pulled' )
+      oContent.itemTagSet( baton = oProject, tag = 'pushed_pulled' )
       if oProject == oCurrent :
         oContent.selectByBaton( oProject )
     self.o( 'stack' ).setCurrent( 'content' )

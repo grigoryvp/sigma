@@ -14,19 +14,20 @@ if sys.platform == 'linux2' :
 import pmq
 import pyuser as pu
 
-from shutdown          import Shutdown
-from cfg               import Cfg
-from wnd_editor        import WndEditor
-from wnd_toc           import WndToc
-from wnd_settings      import WndSettings
-from wnd_projects      import WndProjects
-from wnd_project_files import WndProjectFiles
-from commandline       import Commandline
-from cmd_toc           import CmdToc
-from cmd_projects      import CmdProjects
-from cmd_project_files import CmdProjectFiles
-from editor_vim        import EditorVim
-from windows           import Windows
+from shutdown             import Shutdown
+from cfg                  import Cfg
+from wnd_editor           import WndEditor
+from wnd_toc              import WndToc
+from wnd_settings         import WndSettings
+from wnd_projects         import WndProjects
+from wnd_project_files    import WndProjectFiles
+from commandline          import Commandline
+from cmd_toc              import CmdToc
+from cmd_projects         import CmdProjects
+from cmd_project_files    import CmdProjectFiles
+from editor_vim           import EditorVim
+from windows              import Windows
+from project_status_scan  import ProjectStatusScan
 
 def start() :
   Shutdown()
@@ -37,6 +38,7 @@ def start() :
   CmdProjectFiles()
   EditorVim()
   Windows()
+  ProjectStatusScan()
   oRoot = WndEditor()
   WndToc( oRoot )
   WndProjects( oRoot )
