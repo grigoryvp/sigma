@@ -13,7 +13,8 @@ class ProjectStatusScan( pmq.Actor ) :
   def __init__( self ) :
     pmq.Actor.__init__( self )
     self.m_lProjects = []
-    self.m_nCurrentProject = 0
+    ##  Current project index in |m_lProjects|.
+    self.m_nCurrentProject = None
 
   def m_startup( self ) :
     pmq.post( 'm_project_status_scan', delay = 1.0 )
@@ -48,7 +49,10 @@ class ProjectStatusScan( pmq.Actor ) :
 
   ##  Round robin next project pickup.
   def __nextProject( self ) :
-    self.m_nCurrentProject += 1
+    if self.m_nCurrentProject is None :
+      self.m_nCurrentProject = 0
+    else :
+      self.m_nCurrentProject += 1
     if self.m_nCurrentProject >= len( self.m_lProjects ) :
       self.m_nCurrentProject = 0
     if self.m_nCurrentProject < len( self.m_lProjects ) :
