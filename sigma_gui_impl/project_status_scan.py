@@ -33,13 +33,13 @@ class ProjectStatusScan( pmq.Actor ) :
         try :
           sOut = subprocess.check_output( lCmd )
           if len( sOut.strip() ) > 0 :
-            oProject.commited = False
+            oProject.commited = 'no'
           else :
-            oProject.commited = True
+            oProject.commited = 'yes'
         except subprocess.CalledProcessError :
-          oProject.commited = None
+          oProject.commited = 'error'
       else :
-        oProject.commited = None
+        oProject.commited = 'error'
       pmq.post( 'm_project_status_updated', oProject )
     pmq.post( 'm_project_status_scan', delay = 1.0 )
 

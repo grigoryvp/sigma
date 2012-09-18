@@ -55,7 +55,7 @@ class WndProjects( WndEditorIntegrated ) :
 
   def m_project_status_updated( self, i_oProject ) :
     oContent = self.o( 'content' )
-    if i_oProject.commited == False :
+    if i_oProject.commited == 'no' :
       oContent.itemTagSet( baton = i_oProject, tag = 'uncommited_pulled' )
     else :
       oContent.itemTagSet( baton = i_oProject, tag = 'pushed_pulled' )
