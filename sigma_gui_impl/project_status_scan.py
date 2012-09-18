@@ -35,6 +35,10 @@ class ProjectStatusScan( pmq.Actor ) :
     pmq.post( 'm_project_status_scan', delay = 1.0 )
 
   def __statusScanHg( self, b_oProject ) :
+    self.__statusScanHgCommit( b_oProject )
+    self.__statusScanHgPush( b_oProject )
+
+  def __statusScanHgCommit( self, b_oProject ) :
     ##! subprocess can't handle unicode.
     sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
     lCmd = [ "hg", "diff", "-R", sDir ]
@@ -46,6 +50,20 @@ class ProjectStatusScan( pmq.Actor ) :
         b_oProject.commited = 'yes'
     except subprocess.CalledProcessError :
       b_oProject.commited = 'error'
+
+  def __statusScanHgPush( self, b_oProject ) :
+    ##! subprocess can't handle unicode.
+    sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
+    lCmd = [ "hg", "outgoing", "-R", sDir ]
+    try :
+      sOut = subprocess.check_output( lCmd )
+      lOut = sOut.split( "\n" )
+      if len( lOut ) >= 3 and "no changes found" not in lOut[ 2 ] :
+        b_oProject.pushed = 'yes'
+      else :
+        b_oProject.pushed = 'no'
+    except subprocess.CalledProcessError :
+      b_oProject.pushed = 'error'
 
   ##  Round robin next project pickup.
   def __nextProject( self ) :

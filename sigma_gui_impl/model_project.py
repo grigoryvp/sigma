@@ -11,6 +11,8 @@ class Project( object ) :
     self.vcs = None
     ##  'yes', 'no', 'unknown' or 'error'.
     self.commited = 'unknown'
+    ##  'yes', 'no', 'unknown' or 'error'.
+    self.pushed = 'unknown'
 
   ##@ Project directory. None or non-empty unicode path.
   @property
