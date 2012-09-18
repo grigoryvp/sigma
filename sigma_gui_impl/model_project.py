@@ -13,6 +13,8 @@ class Project( object ) :
     self.commited = 'unknown'
     ##  'yes', 'no', 'unknown' or 'error'.
     self.pushed = 'unknown'
+    ##  'yes', 'no', 'unknown' or 'error'.
+    self.pulled = 'unknown'
 
   ##@ Project directory. None or non-empty unicode path.
   @property
