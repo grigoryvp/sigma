@@ -45,7 +45,7 @@ class ProjectStatusScan( pmq.Actor ) :
     sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
     lCmd = [ "hg", "diff", "-R", sDir ]
     try :
-      sOut = subprocess.check_output( lCmd )
+      sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
       if len( sOut.strip() ) > 0 :
         b_oProject.commited = 'no'
       else :
@@ -58,7 +58,7 @@ class ProjectStatusScan( pmq.Actor ) :
     sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
     lCmd = [ "hg", "outgoing", "-R", sDir ]
     try :
-      sOut = subprocess.check_output( lCmd )
+      sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
       lOut = sOut.split( "\n" )
       if len( lOut ) >= 3 and "no changes found" not in lOut[ 2 ] :
         b_oProject.pushed = 'yes'
@@ -72,7 +72,7 @@ class ProjectStatusScan( pmq.Actor ) :
     sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
     lCmd = [ "hg", "incoming", "-R", sDir ]
     try :
-      sOut = subprocess.check_output( lCmd )
+      sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
       lOut = sOut.split( "\n" )
       if len( lOut ) >= 3 and "no changes found" not in lOut[ 2 ] :
         b_oProject.pulled = 'yes'
