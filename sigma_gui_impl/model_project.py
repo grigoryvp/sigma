@@ -9,6 +9,8 @@ class Project( object ) :
     ##  Version Control System type: 'hg', 'git' or 'svn', same as
     ##  folder name in |dir|, ex '.hg'.
     self.vcs = None
+    ##  
+    self.commited = 'unknown'
 
   ##@ Project directory. None or non-empty unicode path.
   @property

@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+import sys
+import os
+import subprocess
+
 import pmq
 
 
@@ -20,7 +24,23 @@ class ProjectStatusScan( pmq.Actor ) :
   def m_project_status_scan( self ) :
     oProject = self.__nextProject()
     if oProject is not None :
-      print( "Processing {0}".format( oProject.name ) )
+      ##! subprocess can't handle unicode.
+      sDir = oProject.dir.encode( sys.getfilesystemencoding() )
+      for _, lSubdirs, _ in os.walk( oProject.dir ) :
+        break
+      if ".hg" in lSubdirs :
+        lCmd = [ "hg", "diff", "-R", sDir ]
+        try :
+          sOut = subprocess.check_output( lCmd )
+          if len( sOut.strip() ) > 0 :
+            oProject.commited = False
+          else :
+            oProject.commited = True
+        except subprocess.CalledProcessError :
+          oProject.commited = None
+      else :
+        oProject.commited = None
+      pmq.post( 'm_project_status_updated', oProject )
     pmq.post( 'm_project_status_scan', delay = 1.0 )
 
   ##  Round robin next project pickup.

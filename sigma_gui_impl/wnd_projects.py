@@ -53,6 +53,13 @@ class WndProjects( WndEditorIntegrated ) :
     self.o( 'stack' ).setCurrent( 'content' )
     oContent.setFocus()
 
+  def m_project_status_updated( self, i_oProject ) :
+    oContent = self.o( 'content' )
+    if i_oProject.commited == False :
+      oContent.itemTagSet( baton = i_oProject, tag = 'uncommited_pulled' )
+    else :
+      oContent.itemTagSet( baton = i_oProject, tag = 'pushed_pulled' )
+
   def __onEnter( self, i_oEvent ) :
     lItems = self.o( 'content' ).selection()
     if len( lItems ) :
