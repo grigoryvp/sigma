@@ -40,6 +40,7 @@ class WndEditor( pu.Wnd ) :
     self.bind( '<Control-Shift-F9>', lambda _ : self.m_on_projects() )
     ##  Name of last opened file.
     self.m_sFilename = None
+    self.o( 'text' ).setFocus()
 
   def m_startup( self ) :
     sName = "geometry_{0}".format( self.dname )
