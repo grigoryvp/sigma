@@ -60,12 +60,14 @@ class ProjectStatusScan( pmq.Actor ) :
     lCmd = [ "hg", "outgoing", "-R", sDir ]
     try :
       sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
-      lOut = sOut.split( "\n" )
-      if len( lOut ) >= 3 and "no changes found" not in lOut[ 2 ] :
-        b_oProject.pushed = 'yes'
-      else :
-        b_oProject.pushed = 'no'
-    except subprocess.CalledProcessError :
+    except subprocess.CalledProcessError as oEx :
+      sOut = oEx.output
+    lOut = sOut.split( "\n" )
+    if len( lOut ) >= 3 and "no changes found" in lOut[ 2 ] :
+      b_oProject.pushed = 'yes'
+    elif len( lOut ) > 3 :
+      b_oProject.pushed = 'no'
+    else :
       b_oProject.pushed = 'error'
 
   def __statusScanHgPull( self, b_oProject ) :
@@ -74,12 +76,14 @@ class ProjectStatusScan( pmq.Actor ) :
     lCmd = [ "hg", "incoming", "-R", sDir ]
     try :
       sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
-      lOut = sOut.split( "\n" )
-      if len( lOut ) >= 3 and "no changes found" not in lOut[ 2 ] :
-        b_oProject.pulled = 'yes'
-      else :
-        b_oProject.pulled = 'no'
-    except subprocess.CalledProcessError :
+    except subprocess.CalledProcessError as oEx :
+      sOut = oEx.output
+    lOut = sOut.split( "\n" )
+    if len( lOut ) >= 3 and "no changes found" in lOut[ 2 ] :
+      b_oProject.pulled = 'yes'
+    elif len( lOut ) > 3 :
+      b_oProject.pulled = 'no'
+    else :
       b_oProject.pulled = 'error'
 
   ##  Round robin next project pickup.
