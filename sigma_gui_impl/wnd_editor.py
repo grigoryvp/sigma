@@ -95,12 +95,19 @@ class WndEditor( pu.Wnd ) :
   def m_toc_select( self, i_oTag ) :
     self.o( 'text' ).mark_set( "insert", "{0}.1".format( i_oTag.line() ) )
 
+  def m_project_file_set( self, subpath ) :
+    oProject = pmq.request( 'm_project_get' )
+    if oProject is not None :
+      self.m_fopen( os.path.join( oProject.dir, subpath ) )
+      self.o( 'text' ).setFocus()
+
   def m_fopen( self, i_sFilename ) :
     try :
       with open( i_sFilename ) as oFile :
         self.o( 'text' ).setText( oFile.read() )
         self.__updateCaption( i_sFilename )
         self.m_sFilename = i_sFilename
+        self.o( 'text' ).setFocus()
     except IOError :
       pu.showMessage( "Failed to open file", type = 'error' )
 
