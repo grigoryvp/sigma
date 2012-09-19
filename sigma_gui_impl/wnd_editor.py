@@ -41,7 +41,7 @@ class WndEditor( pu.Wnd ) :
     ##  Name of last opened file.
     self.m_sFilename = None
 
-  def m_start( self ) :
+  def m_startup( self ) :
     sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :

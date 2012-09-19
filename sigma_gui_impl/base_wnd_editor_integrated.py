@@ -20,7 +20,7 @@ class WndEditorIntegrated( pu.Wnd ) :
     ##  Used with external editor.
     self.m_fEditor = False
 
-  def m_start( self ) :
+  def m_startup( self ) :
     sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :

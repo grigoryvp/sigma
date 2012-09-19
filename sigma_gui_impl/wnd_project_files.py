@@ -69,7 +69,7 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     self.setCaption( "Sigma: Project files" )
     self.bind( '<Return>', self.__onEnter )
 
-  def m_start( self ) :
+  def m_startup( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
     self.o( 'content' ).setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 

@@ -44,7 +44,7 @@ class WndProjects( WndEditorIntegrated ) :
       self.m_mImg[ sId ] = oImg
       self.o( 'content' ).tag_configure( sId, image = oImg )
 
-  def m_start( self ) :
+  def m_startup( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
     self.o( 'content' ).setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
