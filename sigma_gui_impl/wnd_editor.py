@@ -106,6 +106,7 @@ class WndEditor( pu.Wnd ) :
         self.o( 'text' ).setText( oFile.read() )
         self.__updateCaption( i_sFilename )
         self.m_sFilename = i_sFilename
+        self.o( 'text' ).setCaret( 0, 0 )
         self.o( 'text' ).setFocus()
     except IOError :
       pu.showMessage( "Failed to open file", type = 'error' )
