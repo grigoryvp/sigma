@@ -26,8 +26,13 @@ class CmdProjectFiles( pmq.Actor ) :
           sOut = subprocess.check_output( lCmd )
         except subprocess.CalledProcessError :
           return
-        ##  First two characters are modification status flag.
-        lFiles = [ s[ 2: ] for s in sOut.split( "\n" ) if s.strip() ]
+        lFiles = []
+        for sLine in [ s.strip() for s in sOut.split( "\n" ) ] :
+          ##  First two characters are modification status flag.
+          if len( sLine ) > 2 :
+            ##  Not ignored?
+            if 'I' != sLine[ 0 ] :
+              lFiles.append( sLine[ 2 : ] )
       else :
         return pmq.post( 'm_project_no_vcs' )
       pmq.post( 'm_project_files', lFiles )
