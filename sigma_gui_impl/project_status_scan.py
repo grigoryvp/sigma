@@ -16,7 +16,7 @@ class ProjectStatusScan( pmq.Actor ) :
     ##  Current project index in |m_lProjects|.
     self.m_nCurrentProject = None
 
-  def m_startup( self ) :
+  def m_start( self ) :
     pmq.post( 'm_project_status_scan', delay = 1.0 )
 
   def m_projects( self, i_lProjects ) :
