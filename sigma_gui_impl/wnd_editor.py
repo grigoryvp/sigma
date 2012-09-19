@@ -42,7 +42,7 @@ class WndEditor( pu.Wnd ) :
     self.m_sFilename = None
     self.o( 'text' ).setFocus()
 
-  def m_startup( self ) :
+  def m_start( self ) :
     sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :

@@ -34,7 +34,7 @@ class WndSettings( pu.Wnd ) :
         with pu.Grip() : pass
     self.setCaption( "Sigma: Settings" )
 
-  def m_startup( self ) :
+  def m_start( self ) :
     sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :

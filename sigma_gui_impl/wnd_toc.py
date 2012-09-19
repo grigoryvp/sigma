@@ -26,7 +26,7 @@ class WndToc( WndEditorIntegrated  ) :
     self.setCaption( "Sigma: TOC" )
     self.bind( '<Return>', self.__onEnter )
 
-  def m_startup( self ) :
+  def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
     self.o( 'content' ).setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
