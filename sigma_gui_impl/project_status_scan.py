@@ -23,15 +23,16 @@ class ProjectStatusScan( pmq.Actor ) :
     self.m_lProjects = i_lProjects
 
   def m_project_status_scan( self ) :
-    oProject = self.__nextProject()
-    if oProject is not None :
-      for _, lSubdirs, _ in os.walk( oProject.dir ) :
-        break
-      if ".hg" in lSubdirs :
-        self.__statusScanHg( oProject )
-      else :
-        oProject.commited = 'error'
-      pmq.post( 'm_project_status_updated', oProject )
+    if len( self.m_lProjects ) > 0 :
+      oProject = self.__nextProject()
+      if oProject is not None :
+        for _, lSubdirs, _ in os.walk( oProject.dir ) :
+          break
+        if ".hg" in lSubdirs :
+          self.__statusScanHg( oProject )
+        else :
+          oProject.commited = 'error'
+        pmq.post( 'm_project_status_updated', oProject )
     if not self.isShutdown() :
       pmq.post( 'm_project_status_scan', delay = 1.0 )
 
