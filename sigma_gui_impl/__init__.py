@@ -42,7 +42,7 @@ def start() :
   oRoot = WndEditor()
   WndToc( oRoot )
   WndProjects( oRoot )
-  WndProjectFiles()
+  WndProjectFiles( oRoot )
   WndSettings( oRoot )
   pmq.start( pu.mainLoop, pu.mainLoopStop )
 

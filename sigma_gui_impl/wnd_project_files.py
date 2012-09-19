@@ -53,8 +53,8 @@ class Find( object ) :
 
 class WndProjectFiles( WndEditorIntegrated, Find ) :
 
-  def __init__( self ) :
-    WndEditorIntegrated.__init__( self )
+  def __init__( self, parent = None ) :
+    WndEditorIntegrated.__init__( self, parent = parent )
     Find.__init__( self )
     with pu.Rack( parent = self ) :
       with pu.Stack( name = 'switch' ) :
@@ -80,6 +80,7 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     self.o( 'info' ).setText( "Current project not under VCS" )
 
   def m_project_files( self, i_lFiles ) :
+    self.show()
     self.m_lFiles = i_lFiles
     sCurrent = pmq.request( 'm_project_file_get' )
     self.o( 'status' ).setText( "Files: {0}".format( len( self.m_lFiles ) ) )

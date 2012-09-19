@@ -25,6 +25,8 @@ class WndEditor( pu.Wnd ) :
           pd.o.setText( "Open (C-O)" )
       with pu.Menu() :
         pd.o.setText( "Tools" )
+        with pu.MenuItem( name = 'workspace' ) :
+          pd.o.setText( "Workspace (C-S-F1)" )
         with pu.MenuItem( name = 'toc' ) :
           pd.o.setText( "TOC (C-S-F3)" )
         with pu.MenuItem( name = 'projects' ) :
@@ -36,6 +38,7 @@ class WndEditor( pu.Wnd ) :
         with pu.Grip() : pass
     self.__updateCaption()
     self.bind( '<Control-o>', lambda _ : self.m_on_fopen() )
+    self.bind( '<Control-Shift-F1>', lambda _ : self.m_on_workspace() )
     self.bind( '<Control-Shift-F3>', lambda _ : self.m_on_toc() )
     self.bind( '<Control-Shift-F9>', lambda _ : self.m_on_projects() )
     ##  Name of last opened file.
@@ -77,6 +80,9 @@ class WndEditor( pu.Wnd ) :
     sName = pu.askOpenFileName()
     if sName :
       pmq.post( 'm_fopen', sName )
+
+  def m_on_workspace( self ) :
+    pmq.post( 'm_cmd_project_files' )
 
   def m_on_toc( self ) :
     sText = self.o( 'text' ).getText()
