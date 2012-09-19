@@ -99,7 +99,6 @@ class WndEditor( pu.Wnd ) :
     oProject = pmq.request( 'm_project_get' )
     if oProject is not None :
       self.m_fopen( os.path.join( oProject.dir, subpath ) )
-      self.o( 'text' ).setFocus()
 
   def m_fopen( self, i_sFilename ) :
     try :
