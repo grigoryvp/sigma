@@ -115,3 +115,20 @@ bar
 ##}
 """.strip()
 
+assert sigma.preprocess( """
+#!/usr/bin/python
+
+##{\tprint(
+##\t\t"foo"
+##\t)
+##}
+""".strip() ) == """
+#!/usr/bin/python
+
+##{\tprint(
+##\t\t"foo"
+##\t)
+foo
+##}
+""".strip()
+

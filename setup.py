@@ -12,7 +12,7 @@ setup(
   author_email = "grigory.v.p@gmail.com",
   url = "http://bitbucket.org/eyeofhell/sigma",
   packages = [ 'sigma_impl', 'sigma_gui_impl' ],
-  scripts = [ 'sigma.py', 'sigma_gui.py' ],
+  scripts = [ 'sigma.py', 'sigma_gui.pyw' ],
   classifiers=[
     'Development Status :: 1 - Prototype',
     'Environment :: Console',
