@@ -63,6 +63,9 @@ class ProjectStatusScan( pmq.Actor ) :
     except subprocess.CalledProcessError as oEx :
       sOut = oEx.output
     lOut = sOut.split( "\n" )
+    for sLine in lOut[ : ] :
+      if sLine.startswith( "real URL is" ) :
+        lOut.remove( sLine )
     if len( lOut ) >= 3 and "no changes found" in lOut[ 2 ] :
       b_oProject.pushed = 'yes'
     elif len( lOut ) > 3 :
@@ -79,6 +82,9 @@ class ProjectStatusScan( pmq.Actor ) :
     except subprocess.CalledProcessError as oEx :
       sOut = oEx.output
     lOut = sOut.split( "\n" )
+    for sLine in lOut[ : ] :
+      if sLine.startswith( "real URL is" ) :
+        lOut.remove( sLine )
     if len( lOut ) >= 3 and "no changes found" in lOut[ 2 ] :
       b_oProject.pulled = 'yes'
     elif len( lOut ) > 3 :
