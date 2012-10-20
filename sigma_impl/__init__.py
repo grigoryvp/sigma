@@ -50,10 +50,22 @@ ABOUT_TYPES = [
     'SHEBANGS' : []
   }
 ]
-ANCHOR_CODE_BEGIN = "{ "
-ANCHOR_CODE_END   = "}"
-ANCHOR_MULTILINE  = "  "
-ANCHOR_TOC        = "@ "
+
+##! A bit of functional programming.
+def tap( f, * v, ** k ) : return [ f.__call__( * v, ** k ), f.__self__ ][ 1 ]
+def reduce_collections( acc, cur ) : return tap( acc.extend, list( cur ) )
+def extend( * v ) : return reduce( reduce_collections, v, [] )
+def startswith( p, l ) : return [ s for s in l if s.startswith( p ) ]
+
+ANCHORS = set( startswith( 'ANCHORS_', globals().keys() ) )
+##! Tuple, since it compatible with |basestring.startswith()|.
+ANCHORS_CODE_BEGIN = ("{ ", "{\t")
+ANCHORS_CODE_END   = ("}",)
+ANCHORS_MULTILINE  = ("  ", "\t")
+ANCHORS_TOC        = ("@ ", )
+##  List of all anchors, auto generated based on tuples above.
+ANCHORS = set( startswith( 'ANCHORS_', globals().keys() ) ) - ANCHORS
+ANCHORS = tuple( extend( * [ globals()[ s ] for s in ANCHORS ] ) )
 
 ##@ preprocessFile
 
@@ -139,21 +151,21 @@ def parse( i_sTxt, i_sType = None ) :
         ##  Remove anchor.
         sCur = sCur[ len( sAnchor ) : ]
         ##  Code block start?
-        if sCur.startswith( ANCHOR_CODE_BEGIN ) :
+        if sCur.startswith( ANCHORS_CODE_BEGIN ) :
           if oTags.current().isCode() :
             raise Exception( "Unterminated code block" )
           nLine = oTags.lastLine() + 1
           oTags.newCurrent( TagCode( anchor = sAnchor, line = nLine ) )
-        elif sCur.startswith( ANCHOR_CODE_END ) :
+        elif sCur.startswith( ANCHORS_CODE_END ) :
           if not oTags.current().isCode() :
             raise Exception( "Code block without start" )
           oTags.addRawLine( sLine )
           oTags.completeCurrent()
           continue
-        elif sCur.startswith( ANCHOR_TOC ) :
+        elif sCur.startswith( ANCHORS_TOC ) :
           nLine = oTags.lastLine() + 1
           oTags.newCurrent( TagToc( anchor = sAnchor, line = nLine ) )
-        elif sCur.startswith( ANCHOR_MULTILINE ) : pass
+        elif sCur.startswith( ANCHORS_MULTILINE ) : pass
         ##  Ordinary comment?
         else :
           oTags.noTagInLine()
@@ -264,7 +276,9 @@ class Tag( object ) :
     self.m_nLine = line
     self.m_sVal = ""
     self.m_sAnchor = anchor
-    self.m_lRaw = raw[:]
+    self.m_lRaw = []
+    for s in raw :
+      self.addRawLine( s )
 
   def isTxt( self ) : return False
   def isCode( self ) : return False
@@ -282,18 +296,31 @@ class Tag( object ) :
 
   def addRawLine( self, i_sLine ) :
     self.m_lRaw.append( i_sLine )
-    nOffset = len( self.anchor() or "" ) + len( ANCHOR_MULTILINE )
-    if len( self.m_sVal ) > 0 :
-      self.m_sVal += "\n"
-    self.m_sVal += i_sLine.strip()[ nOffset : ]
+    sLine = i_sLine.strip()
+    ##  Starts with anchor like '##'?
+    if self.anchor() and i_sLine.startswith( self.anchor() ) :
+      sLine = sLine[ len( self.anchor() ) : ]
+      for sAnchor in ANCHORS :
+        ##  Starts with any anchor?
+        if sLine.startswith( sAnchor ) :
+          if len( self.m_sVal ) > 0 :
+            self.m_sVal += "\n"
+          ##  Add text without left (anchor) part into 'value' - this can be
+          ##  something sensible to formatting like Python code or some
+          ##  markup language like Xi, so spaces before text are important.
+          self.m_sVal += sLine[ len( sAnchor ) : ]
+      ##! Don't add line that starts with anchor (like '##') but
+      ##  is not continued with known anchor (like '{ ' or '{\t') -
+      ##  this is not Sigma, just some code whose comment looks like
+      ##  anchor comment.
 
   def rawLines( self ) :
     return self.m_lRaw
 
   def __str__( self ) :
     sDescr = "Tag of type {0}. Raw lines:".format( type( self ) )
-    for sLine in self.m_lRaw :
-      sDescr += "\n  {0}".format( sLine )
+    for nIndex, sLine in enumerate( self.m_lRaw ) :
+      sDescr += "\n  {0}: \"{1}\"".format( nIndex, sLine )
     return sDescr
 
   def __cmp__( self, other ) :
@@ -320,6 +347,8 @@ class TagCode( Tag ) :
     self.m_lRawLinesPrefix = []
     ##  Raw lines of sigma "code" tag after generated code.
     self.m_lRawLinesPostfix = []
+    for s in raw :
+      self.addRawLine( s )
 
   def isCode( self ) : return True
 
@@ -329,12 +358,13 @@ class TagCode( Tag ) :
     sLine = i_sLine.strip()
     if sLine.startswith( self.anchor() ) :
       sLine = sLine[ len( self.anchor() ) : ]
-      for sAnchor in [ ANCHOR_CODE_BEGIN, ANCHOR_MULTILINE ] :
+      gAnchors = tuple( ANCHORS_CODE_BEGIN ) + tuple( ANCHORS_MULTILINE )
+      for sAnchor in gAnchors :
         if sLine.startswith( sAnchor ) :
           self.m_lRawLinesPrefix.append( i_sLine )
           self.m_lCodeLines.append( sLine[ len( sAnchor ) : ] )
           return
-      if sLine.startswith( ANCHOR_CODE_END ) :
+      if sLine.startswith( ANCHORS_CODE_END ) :
         self.m_lRawLinesPostfix.append( i_sLine )
         return
 

@@ -59,6 +59,19 @@ foo
 assert sigma.preprocess( """
 #!/usr/bin/python
 
+##{\tprint( "foo" )
+##}
+""".strip() ) == """
+#!/usr/bin/python
+
+##{\tprint( "foo" )
+foo
+##}
+""".strip()
+
+assert sigma.preprocess( """
+#!/usr/bin/python
+
 ##{ print( "foo" )
 foo
 ##}
@@ -81,6 +94,40 @@ bar
 #!/usr/bin/python
 
 ##{ print( "foo" )
+foo
+##}
+""".strip()
+
+assert sigma.preprocess( """
+#!/usr/bin/python
+
+##{ print( "foo" )
+##\tprint( "bar" )
+baz
+##}
+""".strip() ) == """
+#!/usr/bin/python
+
+##{ print( "foo" )
+##\tprint( "bar" )
+foo
+bar
+##}
+""".strip()
+
+assert sigma.preprocess( """
+#!/usr/bin/python
+
+##{\tprint(
+##\t\t"foo"
+##\t)
+##}
+""".strip() ) == """
+#!/usr/bin/python
+
+##{\tprint(
+##\t\t"foo"
+##\t)
 foo
 ##}
 """.strip()
