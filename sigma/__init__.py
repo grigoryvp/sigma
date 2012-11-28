@@ -387,3 +387,10 @@ class TagUnknown( Tag ) :
 
   def isUnknown( self ) : return True
 
+def main() :
+  import argparse
+  oParser = argparse.ArgumentParser( description = "Sigma" )
+  oParser.add_argument( 'file', help = "File to preprocess." )
+  oArgs = oParser.parse_args()
+  preprocessFile( oArgs.file )
+
