@@ -14,6 +14,8 @@ if sys.platform == 'linux2' :
 import pmq
 import pyuser as pu
 
+pu.setBackend( 'tk' )
+
 from shutdown             import Shutdown
 from cfg                  import Cfg
 from wnd_editor           import WndEditor
