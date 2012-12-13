@@ -16,7 +16,7 @@ class WndEditorIntegrated( pu.Wnd ) :
 
   def __init__( self, parent = None ) :
     pu.Wnd.__init__( self, parent = parent )
-    self.bind( '<Escape>', lambda _ : self.close() )
+    self.hotkeyAdd( 'escape', self.close )
     ##  Used with external editor.
     self.m_fEditor = False
 
@@ -30,7 +30,7 @@ class WndEditorIntegrated( pu.Wnd ) :
       self.center()
 
   ##x Overloads |pu.Wnd|.
-  def show( self, i_fShow = True ) :
+  def show( self, f_show = True ) :
     if self.m_fEditor :
       gGeometry = pmq.request( 'm_editor_geometry_get' )
       if gGeometry is not None :
@@ -41,7 +41,7 @@ class WndEditorIntegrated( pu.Wnd ) :
         nY = nParentY + (nParentCy - nCy) / 2
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
     else :
-      if i_fShow :
+      if f_show :
         nCx = self.dparent.width() / 2
         nCy = self.dparent.height() / 2
         nX = self.dparent.x() + (self.dparent.width() - nCx) / 2
@@ -50,9 +50,9 @@ class WndEditorIntegrated( pu.Wnd ) :
         self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
       else :
         self.transient( master = None )
-    super( WndEditorIntegrated, self ).show( i_fShow )
+    super( WndEditorIntegrated, self ).show( f_show )
     ##  On OSX window will not get focus.
-    if i_fShow and sys.platform == 'darwin' :
+    if f_show and sys.platform == 'darwin' :
       Tkinter._default_root.update()
       Cocoa.NSApp.activateIgnoringOtherApps_( Cocoa.YES )
 

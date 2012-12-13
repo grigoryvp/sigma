@@ -47,15 +47,15 @@ class WndSettings( pu.Wnd ) :
       self.o( 'keys_emacs' ).setSelected()
 
   ##x Overrides |pu.Wnd.show()|.
-  def show( self, i_fShow = True ) :
-    if i_fShow :
+  def show( self, f_show = True ) :
+    if f_show :
       self.center()
       self.grab_set()
       self.transient( master = self.dparent )
     else :
       self.grab_release()
       self.transient( master = None )
-    super( WndSettings, self ).show( i_fShow )
+    super( WndSettings, self ).show( f_show )
 
   def m_wndsettings_close( self ) :
     self.show( False )

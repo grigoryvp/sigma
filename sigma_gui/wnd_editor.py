@@ -12,7 +12,7 @@ class WndEditor( pu.Wnd ) :
 
   def __init__( self ) :
     super( WndEditor, self ).__init__()
-    with pu.Menu( parent = self ) :
+    with pu.MenuBar( parent = self ) :
       with pu.Menu() :
         pd.o.setText( "App" )
         with pu.MenuItem( name = 'settings' ) :
@@ -37,10 +37,10 @@ class WndEditor( pu.Wnd ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.__updateCaption()
-    self.bind( '<Control-o>', lambda _ : self.m_on_fopen() )
-    self.bind( '<Control-Shift-F1>', lambda _ : self.m_on_workspace() )
-    self.bind( '<Control-Shift-F3>', lambda _ : self.m_on_toc() )
-    self.bind( '<Control-Shift-F9>', lambda _ : self.m_on_projects() )
+    self.hotkeyAdd( 'ctrl-o', self.m_on_fopen )
+    self.hotkeyAdd( 'ctrl-shift-f1', self.m_on_workspace )
+    self.hotkeyAdd( 'ctrl-shift-f3', self.m_on_toc )
+    self.hotkeyAdd( 'ctrl-shift-f9', self.m_on_projects )
     ##  Name of last opened file.
     self.m_sFilename = None
     self.o( 'text' ).setFocus()

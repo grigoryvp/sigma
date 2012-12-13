@@ -24,7 +24,7 @@ class WndToc( WndEditorIntegrated  ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: TOC" )
-    self.bind( '<Return>', self.__onEnter )
+    self.hotkeyAdd( 'return', self.__onEnter )
 
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
@@ -38,7 +38,7 @@ class WndToc( WndEditorIntegrated  ) :
     self.m_oStack.setCurrent( 'content' )
     self.m_oItems.setFocus()
 
-  def __onEnter( self, i_oEvent ) :
+  def __onEnter( self ) :
     lItems = self.m_oItems.selection()
     if len( lItems ) :
       pmq.post( 'm_toc_select', self.m_oItems.idToBaton( lItems[ 0 ] ) )

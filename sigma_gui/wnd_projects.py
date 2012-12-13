@@ -26,7 +26,7 @@ class WndProjects( WndEditorIntegrated ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Projects" )
-    self.bind( '<Return>', self.__onEnter )
+    self.hotkeyAdd( 'return', self.__onEnter )
     self.m_mImg = {}
     lOut = [ 'pushed', 'unpushed', 'uncommited' ]
     lIn = [ 'pulled', 'unpulled' ]
@@ -40,7 +40,7 @@ class WndProjects( WndEditorIntegrated ) :
     lIds.append( 'uncommited_unknown' )
     for sId in lIds :
       sFile = os.path.join( sys.path[ -1 ], 'res', '{0}.gif'.format( sId ) )
-      oImg = Tkinter.PhotoImage( file = sFile )
+      oImg = pu.Image( s_file = sFile )
       self.m_mImg[ sId ] = oImg
       self.o( 'content' ).tag_configure( sId, image = oImg )
 
@@ -83,7 +83,7 @@ class WndProjects( WndEditorIntegrated ) :
           sStatus = 'pushed_pulled'
     oContent.itemTagSet( baton = i_oProject, tag = sStatus )
 
-  def __onEnter( self, i_oEvent ) :
+  def __onEnter( self ) :
     lItems = self.o( 'content' ).selection()
     if len( lItems ) :
       sName = self.o( 'content' ).idToBaton( lItems[ 0 ] )
