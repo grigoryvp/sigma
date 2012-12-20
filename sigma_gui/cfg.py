@@ -8,7 +8,7 @@ import pmq
 
 class Cfg( pmq.Actor ) :
 
-  CFG_FILE_NAME = "~/.sigma_gui"
+  CFG_FILE_NAME = "~/.sigmag"
 
   def __init__( self ) :
     super( Cfg, self ).__init__()

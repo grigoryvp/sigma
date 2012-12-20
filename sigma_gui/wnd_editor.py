@@ -49,6 +49,11 @@ class WndEditor( pu.Wnd ) :
     sName = "geometry_{0}".format( self.dname )
     sGeometry = pmq.request( 'm_cfg_get', sName )
     if sGeometry :
+      print( self.geometry )
+      print
+      print
+      print
+      print
       self.geometry( sGeometry )
     else :
       self.setSize( 512, 384 )

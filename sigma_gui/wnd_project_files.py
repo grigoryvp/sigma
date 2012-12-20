@@ -13,9 +13,8 @@ class Find( object ) :
 
   def __init__( self ) :
     self.m_sPattern  = None
-    self.bind( '<Control-f>', self.__onFind )
-    self.bind( '<BackSpace>', self.__onBackspace )
-    self.bind( '<Key>', self.__onKey )
+    self.hotkeyAdd( 'ctrl-f', self.__onFind )
+    self.hotkeyAdd( 'Backspace', self.__onBackspace )
 
   def __onFind( self, i_oEvent ) :
     ##  Not VIM keybindings?
@@ -27,20 +26,23 @@ class Find( object ) :
     self.m_sPattern = self.m_sPattern[ : -1 ]
     self.__redrawList()
 
-  def __onKey( self, i_oEvent ) :
+  def m_find_on_key( self, o_wnd, o_event ) :
     ##  Not in find mode?
     if self.m_sPattern is None :
       ##  VIM keybindings?
       if pmq.request( 'm_cfg_get', 'keys' ) == 'vim' :
         ##  In VIM mode '/' char enters search mode.
-        if i_oEvent.char == '/' :
+        if o_event.char == '/' :
           self.m_sPattern  = ""
           self.o( 'status' ).setText( "/" )
     ##  In find mode?
     else :
-      if i_oEvent.char :
+      if o_event.char :
         self.m_sPattern += i_oEvent.char
         self.__redrawList()
+      else :
+        if o_event.isEnter() :
+          self.__onEnter()
 
   def __redrawList( self ) :
     self.o( 'status' ).setText( "/{0}".format( self.m_sPattern ) )
@@ -67,7 +69,6 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Project files" )
-    self.bind( '<Return>', self.__onEnter )
 
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).

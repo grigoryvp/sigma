@@ -42,7 +42,6 @@ class WndProjects( WndEditorIntegrated ) :
       sFile = os.path.join( sys.path[ -1 ], 'res', '{0}.gif'.format( sId ) )
       oImg = pu.Image( s_file = sFile )
       self.m_mImg[ sId ] = oImg
-      self.o( 'content' ).tag_configure( sId, image = oImg )
 
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
