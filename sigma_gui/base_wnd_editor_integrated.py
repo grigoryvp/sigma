@@ -22,9 +22,9 @@ class WndEditorIntegrated( pu.Wnd ) :
 
   def m_start( self ) :
     sName = "geometry_{0}".format( self.dname )
-    sGeometry = pmq.request( 'm_cfg_get', sName )
-    if sGeometry :
-      self.geometry( sGeometry )
+    lGeometry = pmq.request( 'm_cfg_get', sName )
+    if lGeometry :
+      self.setGeometry( * lGeometry )
     else :
       self.setSize( 256, 256 )
       self.center()
@@ -39,7 +39,7 @@ class WndEditorIntegrated( pu.Wnd ) :
         nCy = nParentCy / 2
         nX = nParentX + (nParentCx - nCx) / 2
         nY = nParentY + (nParentCy - nCy) / 2
-        self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
+        self.setGeometry( nX, nY, nCx, nCy )
     else :
       if f_show :
         nCx = self.dparent.width() / 2
@@ -47,7 +47,7 @@ class WndEditorIntegrated( pu.Wnd ) :
         nX = self.dparent.x() + (self.dparent.width() - nCx) / 2
         nY = self.dparent.y() + (self.dparent.height() - nCy) / 2
         self.transient( master = self.dparent )
-        self.geometry( "{0}x{1}+{2}+{3}".format( nCx, nCy, nX, nY ) )
+        self.setGeometry( nX, nY, nCx, nCy )
       else :
         self.transient( master = None )
     super( WndEditorIntegrated, self ).show( f_show )

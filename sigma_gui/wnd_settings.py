@@ -36,9 +36,9 @@ class WndSettings( pu.Wnd ) :
 
   def m_start( self ) :
     sName = "geometry_{0}".format( self.dname )
-    sGeometry = pmq.request( 'm_cfg_get', sName )
-    if sGeometry :
-      self.geometry( sGeometry )
+    lGeometry = pmq.request( 'm_cfg_get', sName )
+    if lGeometry :
+      self.setGeometry( * lGeometry )
     else :
       self.setSize( 256 + 128, 256 )
     if 'vim' == pmq.request( 'm_cfg_get', 'keys' ) :
