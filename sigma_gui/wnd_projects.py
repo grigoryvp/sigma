@@ -51,9 +51,11 @@ class WndProjects( WndEditorIntegrated ) :
     self.show()
     oCurrent = pmq.request( 'm_project_get' )
     oContent = self.o( 'content' )
+    oContent.clear()
     for oProject in i_lProjects :
       oContent.append( text = oProject.name, baton = oProject )
-      oContent.itemTagSet( baton = oProject, tag = 'nonscanned' )
+      oImg = self.m_mImg[ 'nonscanned' ]
+      oContent.itemImageSet( oContent.batonToId( oProject ), oImg )
       if oProject == oCurrent :
         oContent.selectByBaton( oProject )
     self.o( 'stack' ).setCurrent( 'content' )
@@ -80,7 +82,8 @@ class WndProjects( WndEditorIntegrated ) :
           sStatus = 'pushed_unpulled'
         elif i_oProject.pulled == 'yes' :
           sStatus = 'pushed_pulled'
-    oContent.itemTagSet( baton = i_oProject, tag = sStatus )
+    oImg = self.m_mImg[ sStatus ]
+    oContent.itemImageSet( oContent.batonToId( i_oProject ), oImg )
 
   def __onEnter( self ) :
     lItems = self.o( 'content' ).selection()

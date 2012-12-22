@@ -86,8 +86,9 @@ class WndEditor( pu.Wnd ) :
 
   def m_on_toc( self ) :
     sText = self.o( 'text' ).getText()
-    lTags = [ o for o in sigma.parse( sText ) if o.isToc() ]
-    pmq.post( 'm_toc', lTags )
+    if sText :
+      lTags = [ o for o in sigma.parse( sText ) if o.isToc() ]
+      pmq.post( 'm_toc', lTags )
 
   def m_on_projects( self ) :
     pmq.post( 'm_cmd_projects' )

@@ -46,10 +46,10 @@ class WndEditorIntegrated( pu.Wnd ) :
         nCy = self.dparent.height() / 2
         nX = self.dparent.x() + (self.dparent.width() - nCx) / 2
         nY = self.dparent.y() + (self.dparent.height() - nCy) / 2
-        self.transient( master = self.dparent )
+        self.setModal()
         self.setGeometry( nX, nY, nCx, nCy )
       else :
-        self.transient( master = None )
+        self.setModal( False )
     super( WndEditorIntegrated, self ).show( f_show )
     ##  On OSX window will not get focus.
     if f_show and sys.platform == 'darwin' :
