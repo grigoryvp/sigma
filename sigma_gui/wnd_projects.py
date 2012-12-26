@@ -26,7 +26,7 @@ class WndProjects( WndEditorIntegrated ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: Projects" )
-    self.hotkeyAdd( 'return', self.__onEnter )
+    self.keysSetHandler( 'return', self.__onEnter )
     self.m_mImg = {}
     lOut = [ 'pushed', 'unpushed', 'uncommited' ]
     lIn = [ 'pulled', 'unpulled' ]

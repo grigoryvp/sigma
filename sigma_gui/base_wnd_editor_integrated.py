@@ -16,7 +16,7 @@ class WndEditorIntegrated( pu.Wnd ) :
 
   def __init__( self, parent = None ) :
     pu.Wnd.__init__( self, parent = parent )
-    self.hotkeyAdd( 'escape', self.close )
+    self.keysSetHandler( 'escape', self.close )
     ##  Used with external editor.
     self.m_fEditor = False
 

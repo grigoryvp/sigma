@@ -37,10 +37,10 @@ class WndEditor( pu.Wnd ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.__updateCaption()
-    self.hotkeyAdd( 'ctrl-o', self.m_on_fopen )
-    self.hotkeyAdd( 'ctrl-shift-f1', self.m_on_workspace )
-    self.hotkeyAdd( 'ctrl-shift-f3', self.m_on_toc )
-    self.hotkeyAdd( 'ctrl-shift-f9', self.m_on_projects )
+    self.keysSetHandler( 'ctrl-o', self.m_on_fopen )
+    self.keysSetHandler( 'ctrl-shift-f1', self.m_on_workspace )
+    self.keysSetHandler( 'ctrl-shift-f3', self.m_on_toc )
+    self.keysSetHandler( 'ctrl-shift-f9', self.m_on_projects )
     ##  Name of last opened file.
     self.m_sFilename = None
     self.o( 'text' ).setFocus()

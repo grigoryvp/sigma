@@ -13,8 +13,8 @@ class Find( object ) :
 
   def __init__( self ) :
     self.m_sPattern  = None
-    self.hotkeyAdd( 'ctrl-f', self.__onFind )
-    self.hotkeyAdd( 'Backspace', self.__onBackspace )
+    self.keysSetHandler( 'ctrl-f', self.__onFind )
+    self.keysSetHandler( 'Backspace', self.__onBackspace )
 
   def __onFind( self, i_oEvent ) :
     ##  Not VIM keybindings?

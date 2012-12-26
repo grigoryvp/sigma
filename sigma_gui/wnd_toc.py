@@ -24,7 +24,7 @@ class WndToc( WndEditorIntegrated  ) :
         with pu.Spacer() : pass
         with pu.Grip() : pass
     self.setCaption( "Sigma: TOC" )
-    self.hotkeyAdd( 'return', self.__onEnter )
+    self.keysSetHandler( 'return', self.__onEnter )
 
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
