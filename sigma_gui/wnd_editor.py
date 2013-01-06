@@ -33,9 +33,7 @@ class WndEditor( pu.Wnd ) :
           pd.o.setText( "Projects (C-S-F9)" )
     with pu.Rack( parent = self ) :
       with pu.Text( name = 'text' ) : pass
-      with pu.Shelf() :
-        with pu.Spacer() : pass
-        with pu.Grip() : pass
+      with pu.StatusBar() : pass
     self.__updateCaption()
     self.keysSetHandler( 'ctrl-o', self.m_on_fopen )
     self.keysSetHandler( 'ctrl-shift-f1', self.m_on_workspace )

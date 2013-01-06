@@ -64,10 +64,7 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
           pd.o.setText( "Loading ..." )
           pd.o.alignCenter()
         with pu.List( name = 'content' ) : pass
-      with pu.Shelf() :
-        with pu.Label( name = 'status' ) : pass
-        with pu.Spacer() : pass
-        with pu.Grip() : pass
+      with pu.StatusBar( name = 'status' ) : pass
     self.setCaption( "Sigma: Project files" )
 
   def m_start( self ) :

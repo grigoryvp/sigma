@@ -22,9 +22,7 @@ class WndProjects( WndEditorIntegrated ) :
           pd.o.setText( "Loading ..." )
           pd.o.alignCenter()
         with pu.List( name = 'content' ) : pass
-      with pu.Shelf() :
-        with pu.Spacer() : pass
-        with pu.Grip() : pass
+      with pu.StatusBar() : pass
     self.setCaption( "Sigma: Projects" )
     self.keysSetHandler( 'return', self.__onEnter )
     self.m_mImg = {}

@@ -29,9 +29,7 @@ class WndSettings( pu.Wnd ) :
           pd.o.setText( "Cancel" )
         with pu.Button( 'settings_apply' ) :
           pd.o.setText( "Apply" )
-      with pu.Shelf() :
-        with pu.Spacer() : pass
-        with pu.Grip() : pass
+      with pu.StatusBar() : pass
     self.setCaption( "Sigma: Settings" )
 
   def m_start( self ) :

@@ -20,9 +20,7 @@ class WndToc( WndEditorIntegrated  ) :
           pd.o.alignCenter()
         with pu.List( name = 'content' ) :
           self.m_oItems = pd.o
-      with pu.Shelf() :
-        with pu.Spacer() : pass
-        with pu.Grip() : pass
+      with pu.StatusBar() : pass
     self.setCaption( "Sigma: TOC" )
     self.keysSetHandler( 'return', self.__onEnter )
 
