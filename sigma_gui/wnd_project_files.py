@@ -49,22 +49,22 @@ class Find( object ) :
     self.o( 'content' ).clear()
     for sFile in self.m_lFiles :
       if self.m_sPattern in sFile :
-        self.o( 'content' ).append( text = sFile, baton = sFile )
+        self.o( 'content' ).append( s_text = sFile, u_baton = sFile )
         if not self.o( 'content' ).selection() :
           self.o( 'content' ).selectByBaton( sFile )
 
 class WndProjectFiles( WndEditorIntegrated, Find ) :
 
-  def __init__( self, parent = None ) :
-    WndEditorIntegrated.__init__( self, parent = parent )
+  def __init__( self, o_parent = None ) :
+    WndEditorIntegrated.__init__( self, o_parent = o_parent )
     Find.__init__( self )
-    with pu.Rack( parent = self ) :
-      with pu.Stack( name = 'switch' ) :
-        with pu.Label( name = 'info' ) :
+    with pu.Rack( o_parent = self ) :
+      with pu.Stack( s_name = 'switch' ) :
+        with pu.Label( s_name = 'info' ) :
           pd.o.setText( "Loading ..." )
           pd.o.alignCenter()
-        with pu.List( name = 'content' ) : pass
-      with pu.StatusBar( name = 'status' ) : pass
+        with pu.List( s_name = 'content' ) : pass
+      with pu.StatusBar( s_name = 'status' ) : pass
     self.setCaption( "Sigma: Project files" )
 
   def m_start( self ) :
@@ -83,7 +83,7 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     sCurrent = pmq.request( 'm_project_file_get' )
     self.o( 'status' ).setText( "Files: {0}".format( len( self.m_lFiles ) ) )
     for sFile in self.m_lFiles :
-      self.o( 'content' ).append( text = sFile, baton = sFile )
+      self.o( 'content' ).append( s_text = sFile, u_baton = sFile )
       if sFile == sCurrent :
         self.o( 'content' ).selectByBaton( sFile )
     self.o( 'switch' ).setCurrent( 'content' )

@@ -11,14 +11,14 @@ import pyuser as pu
 
 class WndToc( WndEditorIntegrated  ) :
 
-  def __init__( self, parent = None ) :
-    WndEditorIntegrated.__init__( self, parent = parent )
-    with pu.Rack( parent = self ) :
+  def __init__( self, o_parent = None ) :
+    WndEditorIntegrated.__init__( self, o_parent = o_parent )
+    with pu.Rack( o_parent = self ) :
       with pu.Stack() as self.m_oStack :
-        with pu.Label( name = 'info' ) :
+        with pu.Label( s_name = 'info' ) :
           pd.o.setText( "Loading ..." )
           pd.o.alignCenter()
-        with pu.List( name = 'content' ) :
+        with pu.List( s_name = 'content' ) :
           self.m_oItems = pd.o
       with pu.StatusBar() : pass
     self.setCaption( "Sigma: TOC" )
@@ -32,7 +32,7 @@ class WndToc( WndEditorIntegrated  ) :
     self.m_oItems.clear()
     self.show()
     for oTag in i_lTags :
-      self.m_oItems.append( text = oTag.value(), baton = oTag )
+      self.m_oItems.append( s_text = oTag.value(), u_baton = oTag )
     self.m_oStack.setCurrent( 'content' )
     self.m_oItems.setFocus()
 

@@ -14,14 +14,14 @@ import pyuser as pu
 
 class WndProjects( WndEditorIntegrated ) :
 
-  def __init__( self, parent = None ) :
-    WndEditorIntegrated.__init__( self, parent = parent )
-    with pu.Rack( parent = self ) :
-      with pu.Stack( name = 'stack' ) :
-        with pu.Label( name = 'info' ) :
+  def __init__( self, o_parent = None ) :
+    WndEditorIntegrated.__init__( self, o_parent = o_parent )
+    with pu.Rack( o_parent = self ) :
+      with pu.Stack( s_name = 'stack' ) :
+        with pu.Label( s_name = 'info' ) :
           pd.o.setText( "Loading ..." )
           pd.o.alignCenter()
-        with pu.List( name = 'content' ) : pass
+        with pu.List( s_name = 'content' ) : pass
       with pu.StatusBar() : pass
     self.setCaption( "Sigma: Projects" )
     self.keysSetHandler( 'return', self.__onEnter )
@@ -51,7 +51,7 @@ class WndProjects( WndEditorIntegrated ) :
     oContent = self.o( 'content' )
     oContent.clear()
     for oProject in i_lProjects :
-      oContent.append( text = oProject.name, baton = oProject )
+      oContent.append( s_text = oProject.name, u_baton = oProject )
       oImg = self.m_mImg[ 'nonscanned' ]
       oContent.itemImageSet( oContent.batonToId( oProject ), oImg )
       if oProject == oCurrent :

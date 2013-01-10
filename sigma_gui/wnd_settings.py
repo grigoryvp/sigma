@@ -7,20 +7,20 @@ import pyuser as pu
 
 class WndSettings( pu.Wnd ) :
 
-  def __init__( self, parent = None ) :
-    pu.Wnd.__init__( self, parent = parent )
-    with pu.Rack( parent = self ) :
+  def __init__( self, o_parent = None ) :
+    pu.Wnd.__init__( self, o_parent = o_parent )
+    with pu.Rack( o_parent = self ) :
       with pu.Shelf() :
         with pu.List() :
           pd.o.append( "keybindings", 'keybindings' )
           pd.o.selectByBaton( 'keybindings' )
-          pd.o.setGrow( pu.Grow( cx = False, cy = True ) )
-          pd.o.setWidth( pixels = pd.o.maxWidth() )
+          pd.o.setGrow( pu.Grow( f_cx = False, f_cy = True ) )
+          pd.o.setWidth( n_pixels = pd.o.maxWidth() )
         with pu.Stack() :
           with pu.Rack( 'keybindings') :
-            with pu.Radio( name = 'keys_emacs' ) :
+            with pu.Radio( s_name = 'keys_emacs' ) :
               pd.o.setText( "Emacs" )
-            with pu.Radio( name = 'keys_vim' ) :
+            with pu.Radio( s_name = 'keys_vim' ) :
               pd.o.setText( "Vim" )
           pd.o.setCurrent( 'keybindings' )
       with pu.Shelf() :

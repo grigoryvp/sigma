@@ -14,8 +14,8 @@ import pmq
 ##  third-party editor (like 'toc' or 'projects').
 class WndEditorIntegrated( pu.Wnd ) :
 
-  def __init__( self, parent = None ) :
-    pu.Wnd.__init__( self, parent = parent )
+  def __init__( self, o_parent = None ) :
+    pu.Wnd.__init__( self, o_parent = o_parent )
     self.keysSetHandler( 'escape', self.close )
     ##  Used with external editor.
     self.m_fEditor = False

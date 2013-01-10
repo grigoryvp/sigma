@@ -12,27 +12,27 @@ class WndEditor( pu.Wnd ) :
 
   def __init__( self ) :
     super( WndEditor, self ).__init__()
-    with pu.MenuBar( parent = self ) :
+    with pu.MenuBar( o_parent = self ) :
       with pu.Menu() :
         pd.o.setText( "App" )
-        with pu.MenuItem( name = 'settings' ) :
+        with pu.MenuItem( s_name = 'settings' ) :
           pd.o.setText( "Settings" )
-        with pu.MenuItem( name = 'exit' ) :
+        with pu.MenuItem( s_name = 'exit' ) :
           pd.o.setText( "Exit" )
       with pu.Menu() :
         pd.o.setText( "File" )
-        with pu.MenuItem( name = 'fopen' ) :
+        with pu.MenuItem( s_name = 'fopen' ) :
           pd.o.setText( "Open (C-O)" )
       with pu.Menu() :
         pd.o.setText( "Tools" )
-        with pu.MenuItem( name = 'workspace' ) :
+        with pu.MenuItem( s_name = 'workspace' ) :
           pd.o.setText( "Workspace (C-S-F1)" )
-        with pu.MenuItem( name = 'toc' ) :
+        with pu.MenuItem( s_name = 'toc' ) :
           pd.o.setText( "TOC (C-S-F3)" )
-        with pu.MenuItem( name = 'projects' ) :
+        with pu.MenuItem( s_name = 'projects' ) :
           pd.o.setText( "Projects (C-S-F9)" )
-    with pu.Rack( parent = self ) :
-      with pu.Text( name = 'text' ) : pass
+    with pu.Rack( o_parent = self ) :
+      with pu.Text( s_name = 'text' ) : pass
       with pu.StatusBar() : pass
     self.__updateCaption()
     self.keysSetHandler( 'ctrl-o', self.m_on_fopen )
