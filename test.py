@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# sigma
-# Copyright 2011-2012 Grigory Petrov
+# sigma tests.
+# Copyright 2013 Grigory Petrov
 # See LICENSE for details.
 
-##  Simple tests.
 
 import sys
 sys.dont_write_bytecode = True
 
 import sigma
+
 
 assert sigma.parse( """
 #!/usr/bin/python

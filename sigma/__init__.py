@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# sigma
-# Copyright 2011 Grigory Petrov
+# sigma implementation.
+# Copyright 2013 Grigory Petrov
 # See LICENSE for details.
 
 import os
@@ -12,7 +12,8 @@ import copy
 import __builtin__
 import StringIO
 
-##@ Globals.
+import info
+
 
 ABOUT_TYPES = [
   { 'TYPE' : 'py',
@@ -57,6 +58,7 @@ def reduce_collections( acc, cur ) : return tap( acc.extend, list( cur ) )
 def extend( * v ) : return reduce( reduce_collections, v, [] )
 def startswith( p, l ) : return [ s for s in l if s.startswith( p ) ]
 
+
 ANCHORS = set( startswith( 'ANCHORS_', globals().keys() ) )
 ##! Tuple, since it compatible with |basestring.startswith()|.
 ANCHORS_CODE_BEGIN = ("{ ", "{\t")
@@ -67,43 +69,39 @@ ANCHORS_TOC        = ("@ ", )
 ANCHORS = set( startswith( 'ANCHORS_', globals().keys() ) ) - ANCHORS
 ANCHORS = tuple( extend( * [ globals()[ s ] for s in ANCHORS ] ) )
 
-##@ preprocessFile
 
-def preprocessFile( i_sFilename, i_sEncoding = None, ** kargs ) :
-  with open( i_sFilename ) as oFile :
+def preprocessFile( s_filename, s_encoding = None, ** m_args ) :
+  with open( s_filename ) as oFile :
     sData = oFile.read()
-  if i_sEncoding is None :
-    i_sEncoding = tryDetectEncoding( sData )
-  sType = tryDetectType( sData, i_sFilename, i_sEncoding )
+  if s_encoding is None :
+    s_encoding = tryDetectEncoding( sData )
+  sType = tryDetectType( sData, s_filename, s_encoding )
   ##  Preprocess file text, call python code.
-  sNewData = preprocess( sData.decode( i_sEncoding ), sType, ** kargs )
+  sNewData = preprocess( sData.decode( s_encoding ), sType, ** m_args )
   ##  Write back changed text.
-  oFile = open( i_sFilename, "w+" )
-  oFile.write( sNewData.encode( i_sEncoding ) )
+  oFile = open( s_filename, "w+" )
+  oFile.write( sNewData.encode( s_encoding ) )
   oFile.close()
 
-##@ parseFile
 
-def parseFile( i_sFilename, i_sEncoding = None, ** kargs ) :
-  with open( i_sFilename ) as oFile :
+def parseFile( s_filename, s_encoding = None, ** m_args ) :
+  with open( s_filename ) as oFile :
     sData = oFile.read()
-  if i_sEncoding is None :
-    i_sEncoding = tryDetectEncoding( sData )
-  sType = tryDetectType( sData, i_sFilename, i_sEncoding )
-  return parse( sData.decode( i_sEncoding ), sType, ** kargs )
+  if s_encoding is None :
+    s_encoding = tryDetectEncoding( sData )
+  sType = tryDetectType( sData, s_filename, s_encoding )
+  return parse( sData.decode( s_encoding ), sType, ** m_args )
 
-##@ preprocess
-
-def preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
+def preprocess( s_text, s_type = None, u_baton = None, ** m_args ) :
   lOut = []
-  for oTag in parse( i_sTxt, i_sType ) :
+  for oTag in parse( s_text, s_type ) :
     if oTag.isCode() :
       lOut += oTag.rawLinesPrefix()
       lCode = oTag.codeLines()
-      for sName, uVal in kargs.items() :
+      for sName, uVal in m_args.items() :
         ##! This allows to pass context from script calling Sigma back
         ##  to script functions called by Sigma.
-        lCode.insert( 0, "{0}.baton = baton".format( sName ) )
+        lCode.insert( 0, "{0}.baton = u_baton".format( sName ) )
         ##! This allows code executed by sigma to call methods from code
         ##  importing this module.
         if hasattr( __builtin__, sName ) :
@@ -114,9 +112,9 @@ def preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
       ##  like redirect it to stdout that will persist after its termination.
       sys.stderr = StringIO.StringIO()
       try :
-        exec "\n".join( lCode ) in dict( globals(), baton = baton )
+        exec "\n".join( lCode ) in dict( globals(), u_baton = u_baton )
       finally :
-        for sName, uVal in kargs.items() :
+        for sName, uVal in m_args.items() :
           delattr( __builtin__, sName )
       sOutput = sys.stdout.getvalue()
       sys.stdout = sys.__stdout__
@@ -130,13 +128,12 @@ def preprocess( i_sTxt, i_sType = None, baton = None, ** kargs ) :
       lOut += oTag.rawLines()
   return "\n".join( lOut )
 
-##@ parse
 
 ##x Evaluates to a list of sigma tags found in file.
-def parse( i_sTxt, i_sType = None ) :
+def parse( s_text, s_type = None ) :
   oTags = TagAccumulator()
-  oTags.setAnchorForType( i_sType )
-  for sLine in i_sTxt.split( "\n" ) :
+  oTags.setAnchorForType( s_type )
+  for sLine in s_text.split( "\n" ) :
     sCur = sLine.strip()
     ##  Need autodetect file type?
     if not oTags.anchor() :
@@ -182,8 +179,9 @@ def parse( i_sTxt, i_sType = None ) :
   oTags.completeCurrent()
   return oTags
 
-def tryDetectEncoding( i_sData ) :
-  oMatch = re.search( r'-\*-\s+coding: ([^\s]+)\s+-\*-', i_sData )
+
+def tryDetectEncoding( s_data ) :
+  oMatch = re.search( r'-\*-\s+coding: ([^\s]+)\s+-\*-', s_data )
   if oMatch :
     ##! Match with index 1 is firt captured match.
     sEncoding = oMatch.group( 1 )
@@ -191,13 +189,14 @@ def tryDetectEncoding( i_sData ) :
     sEncoding = 'utf-8'
   return sEncoding
 
-def tryDetectType( i_sData, i_sFilename, i_sEncoding ) :
+
+def tryDetectType( s_data, s_filename, s_encoding ) :
   ##  File type to detect.
   sType = None
   ##  File extension without dot or empty string.
-  sExtFile = os.path.splitext( i_sFilename )[ 1 ][ 1 : ]
+  sExtFile = os.path.splitext( s_filename )[ 1 ][ 1 : ]
   ##  Try to detect type from filename.
-  sNameOnly = os.path.basename( i_sFilename )
+  sNameOnly = os.path.basename( s_filename )
   for mType in ABOUT_TYPES :
     for sName in mType[ 'FILENAMES' ] :
       if sNameOnly == sName :
@@ -210,122 +209,145 @@ def tryDetectType( i_sData, i_sFilename, i_sEncoding ) :
           return mType[ 'TYPE' ]
   return None
 
-##@ Tags
 
 class TagAccumulator( list ) :
 
+
   def __init__( self ) :
     list.__init__( self )
-    self.m_oTagCur = None
-    self.m_sAnchor = None
+    self.__oTagCur = None
+    self.__sAnchor = None
     ##  1-based line number.
-    self.m_nLastLine = 0
+    self.__nLastLine = 0
 
-  def setAnchor( self, i_sAnchor ) :
-    self.m_sAnchor = i_sAnchor
+
+  def setAnchor( self, s_anchor ) :
+    self.__sAnchor = s_anchor
+
 
   def anchor( self ) :
-    return self.m_sAnchor
+    return self.__sAnchor
+
 
   def lastLine( self ) :
-    return self.m_nLastLine
+    return self.__nLastLine
 
-  def setAnchorForType( self, i_sType ) :
+
+  def setAnchorForType( self, s_type ) :
     for mType in ABOUT_TYPES :
-      if mType[ 'TYPE' ] == i_sType :
-        self.m_sAnchor = mType[ 'ANCHOR' ]
+      if mType[ 'TYPE' ] == s_type :
+        self.__sAnchor = mType[ 'ANCHOR' ]
         return
 
-  def setAnchorForShebang( self, i_sShebang ) :
-    i_sShebang = i_sShebang[ len( "#!" ) : ]
+
+  def setAnchorForShebang( self, s_shebang ) :
+    s_shebang = s_shebang[ len( "#!" ) : ]
     for mType in ABOUT_TYPES :
       for sShebang in mType[ 'SHEBANGS' ] :
-        if i_sShebang.startswith( sShebang ) :
-          self.m_sAnchor = mType[ 'ANCHOR' ]
+        if s_shebang.startswith( sShebang ) :
+          self.__sAnchor = mType[ 'ANCHOR' ]
           return
 
-  def newCurrent( self, i_oTag ) :
-    if self.m_oTagCur is not None :
-      self.append( self.m_oTagCur )
-    self.m_oTagCur = i_oTag
+
+  def newCurrent( self, o_tag ) :
+    if self.__oTagCur is not None :
+      self.append( self.__oTagCur )
+    self.__oTagCur = o_tag
+
 
   def current( self ) :
-    return self.m_oTagCur
+    return self.__oTagCur
+
 
   def addRawLine( self, i_sLine ) :
-    self.m_nLastLine += 1
-    if self.m_oTagCur is None :
-      nLine = self.m_nLastLine
-      self.m_oTagCur = TagTxt( anchor = self.m_sAnchor, line = nLine )
-    self.m_oTagCur.addRawLine( i_sLine )
+    self.__nLastLine += 1
+    if self.__oTagCur is None :
+      nLine = self.__nLastLine
+      self.__oTagCur = TagTxt( anchor = self.__sAnchor, line = nLine )
+    self.__oTagCur.addRawLine( i_sLine )
+
 
   def completeCurrent( self ) :
     self.newCurrent( None )
 
+
   ##x Line contains no sigma tag - if some non-text tag is set as current -
   ##  add it to list.
   def noTagInLine( self ) :
-    if self.m_oTagCur is not None and not self.m_oTagCur.isTxt() :
-      self.append( self.m_oTagCur )
-      self.m_oTagCur = None
+    if self.__oTagCur is not None and not self.__oTagCur.isTxt() :
+      self.append( self.__oTagCur )
+      self.__oTagCur = None
+
 
 class Tag( object ) :
 
+
   def __init__( self, anchor, line = None, raw = [] ) :
     ##  1-based line number of tag start.
-    self.m_nLine = line
-    self.m_sVal = ""
-    self.m_sAnchor = anchor
-    self.m_lRaw = []
+    self.__nLine = line
+    self.__sVal = ""
+    self.__sAnchor = anchor
+    self.__lRaw = []
     for s in raw :
       self.addRawLine( s )
 
+
   def isTxt( self ) : return False
+
+
   def isCode( self ) : return False
+
+
   def isToc( self ) : return False
+
+
   def isUnknown( self ) : return False
 
+
   def value( self ) :
-    return self.m_sVal
+    return self.__sVal
+
 
   def anchor( self ) :
-    return self.m_sAnchor
+    return self.__sAnchor
+
 
   def line( self ) :
-    return self.m_nLine
+    return self.__nLine
 
-  def addRawLine( self, i_sLine ) :
-    self.m_lRaw.append( i_sLine )
-    sLine = i_sLine.strip()
+
+  def addRawLine( self, s_line ) :
+    self.__lRaw.append( s_line )
+    sLine = s_line.strip()
     ##  Starts with anchor like '##'?
-    if self.anchor() and i_sLine.startswith( self.anchor() ) :
+    if self.anchor() and s_line.startswith( self.anchor() ) :
       sLine = sLine[ len( self.anchor() ) : ]
       for sAnchor in ANCHORS :
         ##  Starts with any anchor?
         if sLine.startswith( sAnchor ) :
-          if len( self.m_sVal ) > 0 :
-            self.m_sVal += "\n"
+          if len( self.__sVal ) > 0 :
+            self.__sVal += "\n"
           ##  Add text without left (anchor) part into 'value' - this can be
           ##  something sensible to formatting like Python code or some
           ##  markup language like Xi, so spaces before text are important.
-          self.m_sVal += sLine[ len( sAnchor ) : ]
+          self.__sVal += sLine[ len( sAnchor ) : ]
       ##! Don't add line that starts with anchor (like '##') but
       ##  is not continued with known anchor (like '{ ' or '{\t') -
       ##  this is not Sigma, just some code whose comment looks like
       ##  anchor comment.
 
   def rawLines( self ) :
-    return self.m_lRaw
+    return self.__lRaw
 
   def __str__( self ) :
     sDescr = "Tag of type {0}. Raw lines:".format( type( self ) )
-    for nIndex, sLine in enumerate( self.m_lRaw ) :
+    for nIndex, sLine in enumerate( self.__lRaw ) :
       sDescr += "\n  {0}: \"{1}\"".format( nIndex, sLine )
     return sDescr
 
   def __cmp__( self, other ) :
     if isinstance( other, Tag ) :
-      if type( self ) == type( other ) and self.m_lRaw == other.m_lRaw :
+      if type( self ) == type( other ) and self.__lRaw == other.__lRaw :
         return 0
       return 1
     assert False
@@ -341,55 +363,61 @@ class TagCode( Tag ) :
   def __init__( self, anchor, line = None, raw = [] ) :
     Tag.__init__( self, anchor, raw )
     ##  Lines with code extracted from sigma "code" tag.
-    self.m_lCodeLines = []
+    self.__lCodeLines = []
     ##  Raw lines of sigma "code" tag before generated code.
-    ##  |self.m_lCodeLines| is extracted from this for speed.
-    self.m_lRawLinesPrefix = []
+    ##  |self.__lCodeLines| is extracted from this for speed.
+    self.__lRawLinesPrefix = []
     ##  Raw lines of sigma "code" tag after generated code.
-    self.m_lRawLinesPostfix = []
+    self.__lRawLinesPostfix = []
     for s in raw :
       self.addRawLine( s )
 
   def isCode( self ) : return True
 
   ##x Overloads |Tag|.
-  def addRawLine( self, i_sLine ) :
-    super( TagCode, self ).addRawLine( i_sLine )
-    sLine = i_sLine.strip()
+  def addRawLine( self, s_line ) :
+    super( TagCode, self ).addRawLine( s_line )
+    sLine = s_line.strip()
     if sLine.startswith( self.anchor() ) :
       sLine = sLine[ len( self.anchor() ) : ]
       gAnchors = tuple( ANCHORS_CODE_BEGIN ) + tuple( ANCHORS_MULTILINE )
       for sAnchor in gAnchors :
         if sLine.startswith( sAnchor ) :
-          self.m_lRawLinesPrefix.append( i_sLine )
-          self.m_lCodeLines.append( sLine[ len( sAnchor ) : ] )
+          self.__lRawLinesPrefix.append( s_line )
+          self.__lCodeLines.append( sLine[ len( sAnchor ) : ] )
           return
       if sLine.startswith( ANCHORS_CODE_END ) :
-        self.m_lRawLinesPostfix.append( i_sLine )
+        self.__lRawLinesPostfix.append( s_line )
         return
 
+
   def rawLinesPrefix( self ) :
-    return self.m_lRawLinesPrefix
+    return self.__lRawLinesPrefix
+
 
   def codeLines( self ) :
-    return self.m_lCodeLines
+    return self.__lCodeLines
+
 
   def rawLinesPostfix( self ) :
-    return self.m_lRawLinesPostfix
+    return self.__lRawLinesPostfix
 
 
 class TagToc( Tag ) :
+
 
   def isToc( self ) : return True
 
 
 class TagUnknown( Tag ) :
 
+
   def isUnknown( self ) : return True
+
 
 def main() :
   import argparse
-  oParser = argparse.ArgumentParser( description = "Sigma" )
+  oParser = argparse.ArgumentParser( description = info.DESCR )
   oParser.add_argument( 'file', help = "File to preprocess." )
   oArgs = oParser.parse_args()
   preprocessFile( oArgs.file )
