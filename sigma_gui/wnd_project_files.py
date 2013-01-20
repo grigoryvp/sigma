@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: 'Project files' window implementation.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import sys
 
 from base_wnd_editor_integrated import WndEditorIntegrated
@@ -9,51 +13,59 @@ import pmq
 from pyedsl import pd
 import pyuser as pu
 
+
 class Find( object ) :
 
+
   def __init__( self ) :
-    self.m_sPattern  = None
+    self.__sPattern  = None
     self.keysSetHandler( 'ctrl-f', self.__onFind )
     self.keysSetHandler( 'Backspace', self.__onBackspace )
 
-  def __onFind( self, i_oEvent ) :
+
+  def __onFind( self, o_event ) :
     ##  Not VIM keybindings?
     if pmq.request( 'm_cfg_get', 'keys' ) != 'vim' :
-      self.m_sPattern  = ""
+      self.__sPattern  = ""
       self.o( 'status' ).setText( "/" )
 
-  def __onBackspace( self, i_oEvent ) :
-    self.m_sPattern = self.m_sPattern[ : -1 ]
+
+  def __onBackspace( self, o_event ) :
+    self.__sPattern = self.__sPattern[ : -1 ]
     self.__redrawList()
+
 
   def m_find_on_key( self, o_wnd, o_event ) :
     ##  Not in find mode?
-    if self.m_sPattern is None :
+    if self.__sPattern is None :
       ##  VIM keybindings?
       if pmq.request( 'm_cfg_get', 'keys' ) == 'vim' :
         ##  In VIM mode '/' char enters search mode.
         if o_event.char == '/' :
-          self.m_sPattern  = ""
+          self.__sPattern  = ""
           self.o( 'status' ).setText( "/" )
     ##  In find mode?
     else :
       if o_event.char :
-        self.m_sPattern += i_oEvent.char
+        self.__sPattern += o_event.char
         self.__redrawList()
       else :
         if o_event.isEnter() :
           self.__onEnter()
 
+
   def __redrawList( self ) :
-    self.o( 'status' ).setText( "/{0}".format( self.m_sPattern ) )
+    self.o( 'status' ).setText( "/{0}".format( self.__sPattern ) )
     self.o( 'content' ).clear()
     for sFile in self.m_lFiles :
-      if self.m_sPattern in sFile :
+      if self.__sPattern in sFile :
         self.o( 'content' ).append( s_text = sFile, u_baton = sFile )
         if not self.o( 'content' ).selection() :
           self.o( 'content' ).selectByBaton( sFile )
 
+
 class WndProjectFiles( WndEditorIntegrated, Find ) :
+
 
   def __init__( self, o_parent = None ) :
     WndEditorIntegrated.__init__( self, o_parent = o_parent )
@@ -67,15 +79,19 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
       with pu.StatusBar( s_name = 'status' ) : pass
     self.setCaption( "Sigma: Project files" )
 
+
   def m_start( self ) :
     ##  Set keybindings mode (VIM, Emacs etc).
     self.o( 'content' ).setKeys( pmq.request( 'm_cfg_get', 'keys' ) )
 
+
   def m_no_project_set( self ) :
     self.o( 'info' ).setText( "Current project not selected" )
 
+
   def m_project_no_vcs( self ) :
     self.o( 'info' ).setText( "Current project not under VCS" )
+
 
   def m_project_files( self, i_lFiles ) :
     self.show()
@@ -89,13 +105,14 @@ class WndProjectFiles( WndEditorIntegrated, Find ) :
     self.o( 'switch' ).setCurrent( 'content' )
     self.o( 'content' ).setFocus()
 
-  def __onEnter( self, i_oEvent ) :
+
+  def __onEnter( self, o_event ) :
     ##  VIM keybindings?
     if pmq.request( 'm_cfg_get', 'keys' ) == 'vim' :
       ##  In search mode?
-      if self.m_sPattern is not None :
+      if self.__sPattern is not None :
         ##  If search mode, Enter exits it.
-        self.m_sPattern  = None
+        self.__sPattern  = None
         self.o( 'status' ).setText( "" )
         return
     nId = (self.o( 'content' ).selection() + [ None ])[ 0 ]

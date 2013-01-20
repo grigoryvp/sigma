@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: internal representation for 'project' entity.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
+
 class Project( object ) :
+
 
   def __init__( self ) :
     self.name = None
-    self.m_sDir = None
+    self.__sDir = None
     ##  Version Control System type: 'hg', 'git' or 'svn', same as
     ##  folder name in |dir|, ex '.hg'.
     self.vcs = None
@@ -16,19 +22,22 @@ class Project( object ) :
     ##  'yes', 'no', 'unknown' or 'error'.
     self.pulled = 'unknown'
 
+
   ##@ Project directory. None or non-empty unicode path.
   @property
   def dir( self ) :
-    return self.m_sDir
+    return self.__sDir
+
 
   @dir.setter
-  def dir( self, i_sDir ) :
-    assert type( i_sDir ) is unicode
-    i_sDir = i_sDir.strip().rstrip( u"\\/" )
-    if not i_sDir :
-      self.m_sDir = None
+  def dir( self, s_dir ) :
+    assert type( s_dir ) is unicode
+    s_dir = s_dir.strip().rstrip( u"\\/" )
+    if not s_dir :
+      self.__sDir = None
     else :
-      self.m_sDir = i_sDir
+      self.__sDir = s_dir
+
 
   def __eq__( self, other ) :
     if other is None :

@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma user interface entry.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import sys
 import time
 import threading
@@ -13,6 +17,7 @@ if sys.platform == 'linux2' :
 
 import pmq
 import pyuser as pu
+
 
 pu.setBackend( 'wx' )
 

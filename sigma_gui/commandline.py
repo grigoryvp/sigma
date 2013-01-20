@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma command-line processing.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import sys
 import argparse
 
 import pmq
 
+
 class Commandline( pmq.Actor ) :
+
 
   def m_start( self ) :
     ##  Without command-line just display editor window.
@@ -35,15 +41,18 @@ class Commandline( pmq.Actor ) :
     pmq.post( 'm_editor_use', oArgs.editor )
     oArgs.handler( oArgs )
 
-  def __toc( self, i_oArgs ) :
-    pmq.post( 'm_wndtoc_show' )
-    pmq.post( 'm_cmd_toc', i_oArgs.file )
 
-  def __projects( self, i_oArgs ) :
+  def __toc( self, o_args ) :
+    pmq.post( 'm_wndtoc_show' )
+    pmq.post( 'm_cmd_toc', o_args.file )
+
+
+  def __projects( self, o_args ) :
     pmq.post( 'm_wndprojects_show' )
     pmq.post( 'm_cmd_projects' )
 
-  def __projectfiles( self, i_oArgs ) :
+
+  def __projectfiles( self, o_args ) :
     pmq.post( 'm_wndprojectfiles_show' )
     pmq.post( 'm_cmd_project_files' )
 

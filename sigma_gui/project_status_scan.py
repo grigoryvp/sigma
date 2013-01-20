@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: project status scan implementation.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import sys
 import os
 import subprocess
@@ -10,20 +14,24 @@ import pmq
 
 class ProjectStatusScan( pmq.Actor ) :
 
+
   def __init__( self ) :
     pmq.Actor.__init__( self )
-    self.m_lProjects = []
+    self.__lProjects = []
     ##  Current project index in |m_lProjects|.
-    self.m_nCurrentProject = None
+    self.__nCurrentProject = None
+
 
   def m_start( self ) :
     pmq.post( 'm_project_status_scan', delay = 1.0 )
 
-  def m_projects( self, i_lProjects ) :
-    self.m_lProjects = i_lProjects
+
+  def m_projects( self, l_projects ) :
+    self.__lProjects = l_projects
+
 
   def m_project_status_scan( self ) :
-    if len( self.m_lProjects ) > 0 :
+    if len( self.__lProjects ) > 0 :
       oProject = self.__nextProject()
       if oProject is not None :
         for _, lSubdirs, _ in os.walk( oProject.dir ) :
@@ -36,27 +44,30 @@ class ProjectStatusScan( pmq.Actor ) :
     if not self.isShutdown() :
       pmq.post( 'm_project_status_scan', delay = 1.0 )
 
-  def __statusScanHg( self, b_oProject ) :
-    self.__statusScanHgCommit( b_oProject )
-    self.__statusScanHgPush( b_oProject )
-    self.__statusScanHgPull( b_oProject )
 
-  def __statusScanHgCommit( self, b_oProject ) :
+  def __statusScanHg( self, o_project ) :
+    self.__statusScanHgCommit( o_project )
+    self.__statusScanHgPush( o_project )
+    self.__statusScanHgPull( o_project )
+
+
+  def __statusScanHgCommit( self, o_project ) :
     ##! subprocess can't handle unicode.
-    sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
+    sDir = o_project.dir.encode( sys.getfilesystemencoding() )
     lCmd = [ "hg", "diff", "-R", sDir ]
     try :
       sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
       if len( sOut.strip() ) > 0 :
-        b_oProject.commited = 'no'
+        o_project.commited = 'no'
       else :
-        b_oProject.commited = 'yes'
+        o_project.commited = 'yes'
     except subprocess.CalledProcessError :
-      b_oProject.commited = 'error'
+      o_project.commited = 'error'
 
-  def __statusScanHgPush( self, b_oProject ) :
+
+  def __statusScanHgPush( self, o_project ) :
     ##! subprocess can't handle unicode.
-    sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
+    sDir = o_project.dir.encode( sys.getfilesystemencoding() )
     lCmd = [ "hg", "outgoing", "-R", sDir ]
     try :
       sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
@@ -67,15 +78,16 @@ class ProjectStatusScan( pmq.Actor ) :
       if sLine.startswith( "real URL is" ) :
         lOut.remove( sLine )
     if len( lOut ) >= 3 and "no changes found" in lOut[ 2 ] :
-      b_oProject.pushed = 'yes'
+      o_project.pushed = 'yes'
     elif len( lOut ) > 3 :
-      b_oProject.pushed = 'no'
+      o_project.pushed = 'no'
     else :
-      b_oProject.pushed = 'error'
+      o_project.pushed = 'error'
 
-  def __statusScanHgPull( self, b_oProject ) :
+
+  def __statusScanHgPull( self, o_project ) :
     ##! subprocess can't handle unicode.
-    sDir = b_oProject.dir.encode( sys.getfilesystemencoding() )
+    sDir = o_project.dir.encode( sys.getfilesystemencoding() )
     lCmd = [ "hg", "incoming", "-R", sDir ]
     try :
       sOut = subprocess.check_output( lCmd, stderr = subprocess.STDOUT )
@@ -86,21 +98,22 @@ class ProjectStatusScan( pmq.Actor ) :
       if sLine.startswith( "real URL is" ) :
         lOut.remove( sLine )
     if len( lOut ) >= 3 and "no changes found" in lOut[ 2 ] :
-      b_oProject.pulled = 'yes'
+      o_project.pulled = 'yes'
     elif len( lOut ) > 3 :
-      b_oProject.pulled = 'no'
+      o_project.pulled = 'no'
     else :
-      b_oProject.pulled = 'error'
+      o_project.pulled = 'error'
+
 
   ##  Round robin next project pickup.
   def __nextProject( self ) :
-    if self.m_nCurrentProject is None :
-      self.m_nCurrentProject = 0
+    if self.__nCurrentProject is None :
+      self.__nCurrentProject = 0
     else :
-      self.m_nCurrentProject += 1
-    if self.m_nCurrentProject >= len( self.m_lProjects ) :
-      self.m_nCurrentProject = 0
-    if self.m_nCurrentProject < len( self.m_lProjects ) :
-      return self.m_lProjects[ self.m_nCurrentProject ]
+      self.__nCurrentProject += 1
+    if self.__nCurrentProject >= len( self.__lProjects ) :
+      self.__nCurrentProject = 0
+    if self.__nCurrentProject < len( self.__lProjects ) :
+      return self.__lProjects[ self.__nCurrentProject ]
     return None
 

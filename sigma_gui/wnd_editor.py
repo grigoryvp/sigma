@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: 'Editor' window implementation.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import os
 
 import pmq
@@ -8,7 +12,9 @@ import sigma
 from pyedsl import pd
 import pyuser as pu
 
+
 class WndEditor( pu.Wnd ) :
+
 
   def __init__( self ) :
     super( WndEditor, self ).__init__()
@@ -40,8 +46,9 @@ class WndEditor( pu.Wnd ) :
     self.keysSetHandler( 'ctrl-shift-f3', self.m_on_toc )
     self.keysSetHandler( 'ctrl-shift-f9', self.m_on_projects )
     ##  Name of last opened file.
-    self.m_sFilename = None
+    self.__sFilename = None
     self.o( 'text' ).setFocus()
+
 
   def m_start( self ) :
     sName = "geometry_{0}".format( self.dname )
@@ -52,35 +59,41 @@ class WndEditor( pu.Wnd ) :
       self.setSize( 512, 384 )
       self.center()
     ##  Try to reopen last file.
-    self.m_sFilename = pmq.request( 'm_cfg_get', 'editor_file' )
-    if self.m_sFilename is not None :
-      if os.path.isfile( self.m_sFilename ) :
-        pmq.post( 'm_fopen', self.m_sFilename )
+    self.__sFilename = pmq.request( 'm_cfg_get', 'editor_file' )
+    if self.__sFilename is not None :
+      if os.path.isfile( self.__sFilename ) :
+        pmq.post( 'm_fopen', self.__sFilename )
       else :
         pmq.post( 'm_cfg_set', 'editor_file', None )
+
 
   def m_shutdown( self ) :
     sName = "geometry_{0}".format( self.dname )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
-    if self.m_sFilename is not None :
-      pmq.post( 'm_cfg_set', 'editor_file', self.m_sFilename )
+    if self.__sFilename is not None :
+      pmq.post( 'm_cfg_set', 'editor_file', self.__sFilename )
+
 
   def m_on_exit( self ) :
     pmq.stop()
 
-  def __updateCaption( self, file = None ) :
-    if file is None :
+
+  def __updateCaption( self, s_file = None ) :
+    if s_file is None :
       self.setCaption( "Sigma: Editor" )
     else :
-      self.setCaption( "Sigma: Editor: \"{0}\"".format( file ) )
+      self.setCaption( "Sigma: Editor: \"{0}\"".format( s_file ) )
+
 
   def m_on_fopen( self ) :
     sName = pu.askOpenFileName()
     if sName :
       pmq.post( 'm_fopen', sName )
 
+
   def m_on_workspace( self ) :
     pmq.post( 'm_cmd_project_files' )
+
 
   def m_on_toc( self ) :
     sText = self.o( 'text' ).getText()
@@ -88,23 +101,27 @@ class WndEditor( pu.Wnd ) :
       lTags = [ o for o in sigma.parse( sText ) if o.isToc() ]
       pmq.post( 'm_toc', lTags )
 
+
   def m_on_projects( self ) :
     pmq.post( 'm_cmd_projects' )
 
-  def m_toc_select( self, i_oTag ) :
-    self.o( 'text' ).mark_set( "insert", "{0}.1".format( i_oTag.line() ) )
 
-  def m_project_file_set( self, subpath ) :
+  def m_toc_select( self, o_tag ) :
+    self.o( 'text' ).mark_set( "insert", "{0}.1".format( o_tag.line() ) )
+
+
+  def m_project_file_set( self, s_subpath ) :
     oProject = pmq.request( 'm_project_get' )
     if oProject is not None :
-      self.m_fopen( os.path.join( oProject.dir, subpath ) )
+      self.__fopen( os.path.join( oProject.dir, s_subpath ) )
 
-  def m_fopen( self, i_sFilename ) :
+
+  def m_fopen( self, s_filename ) :
     try :
-      with open( i_sFilename ) as oFile :
+      with open( s_filename ) as oFile :
         self.o( 'text' ).setText( oFile.read() )
-        self.__updateCaption( i_sFilename )
-        self.m_sFilename = i_sFilename
+        self.__updateCaption( s_filename )
+        self.__sFilename = s_filename
         self.o( 'text' ).setCaret( 0, 0 )
         self.o( 'text' ).setFocus()
     except IOError :

@@ -19,9 +19,9 @@ assert sigma.parse( """
 ##}
 ##@ This is TOC.
 """.strip() ) == [
-  sigma.TagTxt( anchor = "##", raw = [ "#!/usr/bin/python", "" ] ),
-  sigma.TagCode( anchor = "##", raw = [ "##{ print( \"foo\" )", "##}" ] ),
-  sigma.TagToc( anchor = "##", raw = [ "##@ This is TOC." ] )
+  sigma.TagTxt( s_anchor = "##", l_raw = [ "#!/usr/bin/python", "" ] ),
+  sigma.TagCode( s_anchor = "##", l_raw = [ "##{ print( \"foo\" )", "##}" ] ),
+  sigma.TagToc( s_anchor = "##", l_raw = [ "##@ This is TOC." ] )
 ]
 
 assert sigma.parse( """

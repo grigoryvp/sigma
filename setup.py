@@ -9,7 +9,7 @@ import os
 import setuptools
 import subprocess
 
-from autowsgiserver.info import NAME_SHORT, DESCR, VER_MAJOR, VER_MINOR
+from sigma.info import NAME_SHORT, DESCR, VER_MAJOR, VER_MINOR
 
 ##  Get version from VCS.
 VER_BUILD = 0

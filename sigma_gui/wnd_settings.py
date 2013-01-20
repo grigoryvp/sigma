@@ -1,11 +1,17 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: 'Settings' window implementation.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import pmq
 from pyedsl import pd
 import pyuser as pu
 
+
 class WndSettings( pu.Wnd ) :
+
 
   def __init__( self, o_parent = None ) :
     pu.Wnd.__init__( self, o_parent = o_parent )
@@ -32,6 +38,7 @@ class WndSettings( pu.Wnd ) :
       with pu.StatusBar() : pass
     self.setCaption( "Sigma: Settings" )
 
+
   def m_start( self ) :
     sName = "geometry_{0}".format( self.dname )
     lGeometry = pmq.request( 'm_cfg_get', sName )
@@ -44,6 +51,7 @@ class WndSettings( pu.Wnd ) :
     else :
       self.o( 'keys_emacs' ).setSelected()
 
+
   ##x Overrides |pu.Wnd.show()|.
   def show( self, f_show = True ) :
     if f_show :
@@ -53,15 +61,19 @@ class WndSettings( pu.Wnd ) :
       self.setModal( False )
     super( WndSettings, self ).show( f_show )
 
+
   def m_wndsettings_close( self ) :
     self.show( False )
+
 
   def m_shutdown( self ) :
     sName = "geometry_{0}".format( self.dname )
     pmq.post( 'm_cfg_set', sName, self.geometry() )
 
+
   def m_on_settings_cancel( self ) :
     self.show( False )
+
 
   def m_on_settings_apply( self ) :
     if self.o( 'keys_vim' ).isSelected() :

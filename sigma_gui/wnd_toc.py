@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: 'Table of content' window implementation.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import sys
 
 from base_wnd_editor_integrated import WndEditorIntegrated

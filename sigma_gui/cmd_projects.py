@@ -1,20 +1,28 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: 'projects' command implementation.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import os
 import sys
 
 import pmq
 from model_project import Project
 
+
 ABOUT_VCS = [ "hg", "git", "svn" ]
 
+
 class CmdProjects( pmq.Actor ) :
+
 
   def __init__( self ) :
     pmq.Actor.__init__( self )
     ##  Current project, for fast access.
-    self.m_oProject = None
+    self.__oProject = None
+
 
   def m_cmd_projects( self ) :
     lProjects = []
@@ -50,13 +58,15 @@ class CmdProjects( pmq.Actor ) :
       break
     pmq.post( 'm_projects', lProjects )
 
-  def m_project_set( self, i_oProject ) :
-    pmq.post( 'm_cfg_set', 'current_project', i_oProject.name )
-    self.m_oProject = i_oProject
+
+  def m_project_set( self, o_project ) :
+    pmq.post( 'm_cfg_set', 'current_project', o_project.name )
+    self.__oProject = o_project
+
 
   def m_project_get( self ) :
-    if self.m_oProject :
-      pmq.response( self.m_oProject )
+    if self.__oProject :
+      pmq.response( self.__oProject )
       return
     sName = pmq.request( 'm_cfg_get', 'current_project' )
     if not sName :
@@ -70,7 +80,7 @@ class CmdProjects( pmq.Actor ) :
     for sVcs in ABOUT_VCS :
       if os.path.isdir( os.path.join( oProject.dir, "." + sVcs ) ) :
         oProject.vcs = sVcs
-        self.m_oProject = oProject
+        self.__oProject = oProject
         pmq.response( oProject )
         break
     else :

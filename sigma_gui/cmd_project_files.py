@@ -1,17 +1,24 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: 'project files' command implementation.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import os
 import sys
 import subprocess
 
 import pmq
 
+
 class CmdProjectFiles( pmq.Actor ) :
+
 
   def __init__( self ) :
     pmq.Actor.__init__( self )
-    self.m_oFile = None
+    self.__oFile = None
+
 
   def m_cmd_project_files( self ) :
     oProject = pmq.request( 'm_project_get' )
@@ -39,9 +46,11 @@ class CmdProjectFiles( pmq.Actor ) :
     else :
       pmq.post( 'm_no_project_set' )
 
-  def m_project_file_get( self ) :
-    pmq.response( self.m_oFile )
 
-  def m_project_file_set( self, i_oFile ) :
-    self.m_oFile = i_oFile
+  def m_project_file_get( self ) :
+    pmq.response( self.__oFile )
+
+
+  def m_project_file_set( self, o_file ) :
+    self.__oFile = o_file
 

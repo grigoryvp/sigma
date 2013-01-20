@@ -92,6 +92,7 @@ def parseFile( s_filename, s_encoding = None, ** m_args ) :
   sType = tryDetectType( sData, s_filename, s_encoding )
   return parse( sData.decode( s_encoding ), sType, ** m_args )
 
+
 def preprocess( s_text, s_type = None, u_baton = None, ** m_args ) :
   lOut = []
   for oTag in parse( s_text, s_type ) :
@@ -152,7 +153,7 @@ def parse( s_text, s_type = None ) :
           if oTags.current().isCode() :
             raise Exception( "Unterminated code block" )
           nLine = oTags.lastLine() + 1
-          oTags.newCurrent( TagCode( anchor = sAnchor, line = nLine ) )
+          oTags.newCurrent( TagCode( s_anchor = sAnchor, n_line = nLine ) )
         elif sCur.startswith( ANCHORS_CODE_END ) :
           if not oTags.current().isCode() :
             raise Exception( "Code block without start" )
@@ -161,7 +162,7 @@ def parse( s_text, s_type = None ) :
           continue
         elif sCur.startswith( ANCHORS_TOC ) :
           nLine = oTags.lastLine() + 1
-          oTags.newCurrent( TagToc( anchor = sAnchor, line = nLine ) )
+          oTags.newCurrent( TagToc( s_anchor = sAnchor, n_line = nLine ) )
         elif sCur.startswith( ANCHORS_MULTILINE ) : pass
         ##  Ordinary comment?
         else :
@@ -259,12 +260,12 @@ class TagAccumulator( list ) :
     return self.__oTagCur
 
 
-  def addRawLine( self, i_sLine ) :
+  def addRawLine( self, s_line ) :
     self.__nLastLine += 1
     if self.__oTagCur is None :
       nLine = self.__nLastLine
-      self.__oTagCur = TagTxt( anchor = self.__sAnchor, line = nLine )
-    self.__oTagCur.addRawLine( i_sLine )
+      self.__oTagCur = TagTxt( s_anchor = self.__sAnchor, n_line = nLine )
+    self.__oTagCur.addRawLine( s_line )
 
 
   def completeCurrent( self ) :
@@ -282,13 +283,13 @@ class TagAccumulator( list ) :
 class Tag( object ) :
 
 
-  def __init__( self, anchor, line = None, raw = [] ) :
+  def __init__( self, s_anchor, n_line = None, l_raw = [] ) :
     ##  1-based line number of tag start.
-    self.__nLine = line
+    self.__nLine = n_line
     self.__sVal = ""
-    self.__sAnchor = anchor
+    self.__sAnchor = s_anchor
     self.__lRaw = []
-    for s in raw :
+    for s in l_raw :
       self.addRawLine( s )
 
 
@@ -336,14 +337,17 @@ class Tag( object ) :
       ##  this is not Sigma, just some code whose comment looks like
       ##  anchor comment.
 
+
   def rawLines( self ) :
     return self.__lRaw
+
 
   def __str__( self ) :
     sDescr = "Tag of type {0}. Raw lines:".format( type( self ) )
     for nIndex, sLine in enumerate( self.__lRaw ) :
       sDescr += "\n  {0}: \"{1}\"".format( nIndex, sLine )
     return sDescr
+
 
   def __cmp__( self, other ) :
     if isinstance( other, Tag ) :
@@ -355,13 +359,15 @@ class Tag( object ) :
 
 class TagTxt( Tag ) :
 
+
   def isTxt( self ) : return True
 
 
 class TagCode( Tag ) :
 
-  def __init__( self, anchor, line = None, raw = [] ) :
-    Tag.__init__( self, anchor, raw )
+
+  def __init__( self, s_anchor, n_line = None, l_raw = [] ) :
+    Tag.__init__( self, s_anchor, l_raw )
     ##  Lines with code extracted from sigma "code" tag.
     self.__lCodeLines = []
     ##  Raw lines of sigma "code" tag before generated code.
@@ -369,10 +375,12 @@ class TagCode( Tag ) :
     self.__lRawLinesPrefix = []
     ##  Raw lines of sigma "code" tag after generated code.
     self.__lRawLinesPostfix = []
-    for s in raw :
+    for s in l_raw :
       self.addRawLine( s )
 
+
   def isCode( self ) : return True
+
 
   ##x Overloads |Tag|.
   def addRawLine( self, s_line ) :

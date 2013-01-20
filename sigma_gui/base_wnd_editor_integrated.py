@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma user interface: common code for windows that integrates with editors.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import sys
 import Tkinter
 
@@ -10,15 +14,18 @@ if sys.platform == 'darwin' :
 import pyuser as pu
 import pmq
 
+
 ##c Code that is shared among windows that can be used as pop-up atop
 ##  third-party editor (like 'toc' or 'projects').
 class WndEditorIntegrated( pu.Wnd ) :
+
 
   def __init__( self, o_parent = None ) :
     pu.Wnd.__init__( self, o_parent = o_parent )
     self.keysSetHandler( 'escape', self.close )
     ##  Used with external editor.
-    self.m_fEditor = False
+    self.__fEditor = False
+
 
   def m_start( self ) :
     sName = "geometry_{0}".format( self.dname )
@@ -29,9 +36,10 @@ class WndEditorIntegrated( pu.Wnd ) :
       self.setSize( 256, 256 )
       self.center()
 
+
   ##x Overloads |pu.Wnd|.
   def show( self, f_show = True ) :
-    if self.m_fEditor :
+    if self.__fEditor :
       gGeometry = pmq.request( 'm_editor_geometry_get' )
       if gGeometry is not None :
         nParentX, nParentY, nParentCx, nParentCy = gGeometry
@@ -56,8 +64,10 @@ class WndEditorIntegrated( pu.Wnd ) :
       Tkinter._default_root.update()
       Cocoa.NSApp.activateIgnoringOtherApps_( Cocoa.YES )
 
+
   def m_editor_use( self ) :
-    self.m_fEditor = True
+    self.__fEditor = True
+
 
   def m_shutdown( self ) :
     sName = "geometry_{0}".format( self.dname )

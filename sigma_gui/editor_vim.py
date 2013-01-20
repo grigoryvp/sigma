@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # coding:utf-8 vi:et:ts=2
 
+# sigma: code for VIM editor integration.
+# Copyright 2013 Grigory Petrov
+# See LICENSE for details.
+
 import sys
 import os
 import ctypes
@@ -16,33 +20,39 @@ if sys.platform == 'darwin' :
 import pmq
 import os
 
+
 ##c Communication with VIM editor.
 class EditorVim( pmq.Actor ) :
 
-  m_oGuard = threading.Lock()
+
+  __oGuard = threading.Lock()
   ##  Maps python object ID for object reference to be used as batons in
   ##  native callback. For performance - where is no fast reverse to |id()|.
-  m_mObjects = {}
+  __mObjects = {}
+
 
   def __init__( self ) :
     pmq.Actor.__init__( self )
-    self.m_fUse = False
-    self.m_gEditorGeometry = None
+    self.__fUse = False
+    self.__gEditorGeometry = None
 
-  def m_editor_use( self, i_sEditor ) :
-    if i_sEditor is not None and "vim" in i_sEditor.strip() :
-      self.m_fUse = True
+
+  def m_editor_use( self, s_editor ) :
+    if s_editor is not None and "vim" in s_editor.strip() :
+      self.__fUse = True
+
 
   def m_editor_geometry_get( self ) :
-    if self.m_fUse :
-      pmq.response( self.m_gEditorGeometry )
+    if self.__fUse :
+      pmq.response( self.__gEditorGeometry )
 
-  def m_toc_select( self, i_oTag ) :
-    if self.m_fUse :
+
+  def m_toc_select( self, o_tag ) :
+    if self.__fUse :
       sVimCode = u"".join( [ s.strip() for s in u"""
         <ESC>
         :{line}<CR>
-        """.split( u"\n" ) ] ).format( line = i_oTag.line() )
+        """.split( u"\n" ) ] ).format( line = o_tag.line() )
       if sys.platform == 'win32' :
         sCmd = "gvim --servername GVIM --remote-send \"{0}\""
       elif sys.platform == 'darwin' :
@@ -57,9 +67,10 @@ class EditorVim( pmq.Actor ) :
       subprocess.Popen( sCmd, shell = True )
       pmq.stop()
 
-  def m_project_file_set( self, i_sFile ) :
-    if self.m_fUse :
-      sFile = os.path.join( pmq.request( 'm_project_get' ).dir, i_sFile )
+
+  def m_project_file_set( self, s_file ) :
+    if self.__fUse :
+      sFile = os.path.join( pmq.request( 'm_project_get' ).dir, s_file )
       sVimCode = u"".join( [ s.strip() for s in u"""
         <ESC>
         :e {file}<CR>
@@ -78,30 +89,32 @@ class EditorVim( pmq.Actor ) :
       subprocess.Popen( sCmd, shell = True )
       pmq.stop()
 
+
   def m_startup( self ) :
     ##  Get window geometry here - it blocks GUI mainloop.
-    self.m_gEditorGeometry = self.__wndGeometry()
+    self.__gEditorGeometry = self.__wndGeometry()
+
 
   def __wndGeometry( self ) :
     if sys.platform == 'win32' :
       @ctypes.WINFUNCTYPE( ctypes.c_int, ctypes.c_int, ctypes.c_int )
       def enumWindowsCallback( i_hWindow, i_nBaton ) :
-        with EditorVim.m_oGuard :
-          if i_nBaton in EditorVim.m_mObjects :
+        with EditorVim.__oGuard :
+          if i_nBaton in EditorVim.__mObjects :
             nId = int( i_nBaton )
-            EditorVim.m_mObjects[ nId ].enumWindowsCallback( i_hWindow )
+            EditorVim.__mObjects[ nId ].enumWindowsCallback( i_hWindow )
         return 1
       ##  VIM window handle.
-      self.m_hWindow = None
+      self.__hWindow = None
       nId = id( self )
-      with EditorVim.m_oGuard :
-        EditorVim.m_mObjects[ nId ] = self
+      with EditorVim.__oGuard :
+        EditorVim.__mObjects[ nId ] = self
       ##  |enumWindowsCallback()| will be called for each window.
       ctypes.windll.user32.EnumWindows( enumWindowsCallback, nId )
-      if self.m_hWindow is not None :
+      if self.__hWindow is not None :
         oRect = WinapiRect()
         pRect = ctypes.pointer( oRect )
-        ctypes.windll.user32.GetWindowRect( self.m_hWindow, pRect )
+        ctypes.windll.user32.GetWindowRect( self.__hWindow, pRect )
         nCx = oRect.right - oRect.left
         nCy = oRect.bottom - oRect.top
         return oRect.left, oRect.top, nCx, nCy
@@ -136,7 +149,7 @@ class EditorVim( pmq.Actor ) :
       aName,
       ctypes.c_int( nNameMax ) )
     if aName.value.endswith( "- GVIM" ) :
-      self.m_hWindow = i_hWindow
+      self.__hWindow = i_hWindow
 
 
 class WinapiRect( ctypes.Structure ) :
