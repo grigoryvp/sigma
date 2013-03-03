@@ -56,7 +56,7 @@ class EditorVim( pmq.Actor ) :
       if sys.platform == 'win32' :
         sCmd = "gvim --servername GVIM --remote-send \"{0}\""
       elif sys.platform == 'darwin' :
-        ##* Must implement some engine to find executable same way window
+        ##? Must implement some engine to find executable same way window
         ##  is searched. Window information has PID that can be used to
         ##  find a file.
         sCmd =  "~/apps/MacVim.app/Contents/MacOS/Vim"
@@ -78,7 +78,7 @@ class EditorVim( pmq.Actor ) :
       if sys.platform == 'win32' :
         sCmd = u"gvim --servername GVIM --remote-send \"{0}\""
       elif sys.platform == 'darwin' :
-        ##* Must implement some engine to find executable same way window
+        ##? Must implement some engine to find executable same way window
         ##  is searched. Window information has PID that can be used to
         ##  find a file.
         sCmd =  u"~/apps/MacVim.app/Contents/MacOS/Vim"

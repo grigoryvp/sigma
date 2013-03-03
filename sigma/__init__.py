@@ -139,7 +139,7 @@ def parse( s_text, s_type = None ) :
     ##  Need autodetect file type?
     if not oTags.anchor() :
       ##  Shebang?
-      ##* This must be first check in tryDetectType()
+      ##? This must be first check in tryDetectType()
       if sCur.startswith( "#!" ) :
         oTags.setAnchorForShebang( sCur )
     else :
