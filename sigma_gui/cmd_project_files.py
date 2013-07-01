@@ -12,45 +12,45 @@ import subprocess
 import pmq
 
 
-class CmdProjectFiles( pmq.Actor ) :
+class CmdProjectFiles( pmq.Actor ):
 
 
-  def __init__( self ) :
+  def __init__( self ):
     pmq.Actor.__init__( self )
-    self.__oFile = None
+    self._file_o = None
 
 
-  def m_cmd_project_files( self ) :
+  def m_cmd_project_files( self ):
     oProject = pmq.request( 'm_project_get' )
-    if oProject is not None :
+    if oProject is not None:
       ##! subprocess can't handle unicode.
       sDir = oProject.dir.encode( sys.getfilesystemencoding() )
-      for _, lSubdirs, _ in os.walk( oProject.dir ) :
+      for _, lSubdirs, _ in os.walk( oProject.dir ):
         break
-      if ".hg" in lSubdirs :
+      if ".hg" in lSubdirs:
         lCmd = [ "hg", "status", "-A", "-R", sDir ]
-        try :
+        try:
           sOut = subprocess.check_output( lCmd )
-        except subprocess.CalledProcessError :
+        except subprocess.CalledProcessError:
           return
         lFiles = []
-        for sLine in [ s.strip() for s in sOut.split( "\n" ) ] :
+        for sLine in [ s.strip() for s in sOut.split( "\n" ) ]:
           ##  First two characters are modification status flag.
-          if len( sLine ) > 2 :
+          if len( sLine ) > 2:
             ##  Not ignored?
-            if 'I' != sLine[ 0 ] :
-              lFiles.append( sLine[ 2 : ] )
-      else :
+            if 'I' != sLine[ 0 ]:
+              lFiles.append( sLine[ 2: ] )
+      else:
         return pmq.post( 'm_project_no_vcs' )
       pmq.post( 'm_project_files', lFiles )
-    else :
+    else:
       pmq.post( 'm_no_project_set' )
 
 
-  def m_project_file_get( self ) :
-    pmq.response( self.__oFile )
+  def m_project_file_get( self ):
+    pmq.response( self._file_o )
 
 
-  def m_project_file_set( self, o_file ) :
-    self.__oFile = o_file
+  def m_project_file_set( self, o_file ):
+    self._file_o = o_file
 

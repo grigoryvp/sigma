@@ -11,7 +11,7 @@ import threading
 
 import sys
 import os
-if sys.platform == 'linux2' :
+if sys.platform == 'linux2':
   ##! Import before Tkinter, otherwise warnings will arise.
   import gtk.gdk
 
@@ -36,7 +36,8 @@ from editor_vim           import EditorVim
 from windows              import Windows
 from project_status_scan  import ProjectStatusScan
 
-def main() :
+
+def main():
   ##  Allows |sigma_gui_impl| to search files in |./res| subfolder.
   sys.path.append( os.path.dirname( os.path.abspath( __file__ ) ) )
   Shutdown()

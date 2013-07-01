@@ -8,34 +8,34 @@
 import pmq
 
 
-class Shutdown( pmq.Actor ) :
+class Shutdown( pmq.Actor ):
 
 
-  def __init__( self ) :
+  def __init__( self ):
     pmq.Actor.__init__( self )
     ##  True if working as GUI for some external editor.
-    self.__fEditor = False
+    self._editor_f = False
 
 
-  def m_wndeditor_close( self ) :
+  def m_wndeditor_close( self ):
     pmq.stop()
 
 
-  def m_wndtoc_close( self ) :
-    if self.__fEditor :
+  def m_wndtoc_close( self ):
+    if self._editor_f:
       pmq.stop()
 
 
-  def m_wndprojects_close( self ) :
-    if self.__fEditor :
+  def m_wndprojects_close( self ):
+    if self._editor_f:
       pmq.stop()
 
 
-  def m_wndprojectfiles_close( self ) :
-    if self.__fEditor :
+  def m_wndprojectfiles_close( self ):
+    if self._editor_f:
       pmq.stop()
 
 
-  def m_editor_use( self ) :
-    self.__fEditor = True
+  def m_editor_use( self ):
+    self._editor_f = True
 

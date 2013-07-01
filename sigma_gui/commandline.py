@@ -11,12 +11,12 @@ import argparse
 import pmq
 
 
-class Commandline( pmq.Actor ) :
+class Commandline( pmq.Actor ):
 
 
-  def m_start( self ) :
+  def m_start( self ):
     ##  Without command-line just display editor window.
-    if 1 == len( sys.argv ) or (2 == len( sys.argv ) and '-d' in sys.argv) :
+    if 1 == len( sys.argv ) or (2 == len( sys.argv ) and '-d' in sys.argv):
       pmq.post( 'm_wndeditor_show' )
       return
 
@@ -29,30 +29,30 @@ class Commandline( pmq.Actor ) :
     oSubparsers = oParser.add_subparsers( title = "Commands" )
     sHelp = "Display file table of content based on tags"
     oSubparser = oSubparsers.add_parser( "toc", help = sHelp )
-    oSubparser.set_defaults( handler = self.__toc )
+    oSubparser.set_defaults( handler = self._toc )
     sHelp = "Display list of projects in workspace directory"
     oSubparser = oSubparsers.add_parser( "projects", help = sHelp )
-    oSubparser.set_defaults( handler = self.__projects )
+    oSubparser.set_defaults( handler = self._projects )
     sHelp = "Display list of files in current project"
     oSubparser = oSubparsers.add_parser( "projectfiles", help = sHelp )
-    oSubparser.set_defaults( handler = self.__projectfiles )
+    oSubparser.set_defaults( handler = self._projectfiles )
 
     oArgs = oParser.parse_args()
     pmq.post( 'm_editor_use', oArgs.editor )
     oArgs.handler( oArgs )
 
 
-  def __toc( self, o_args ) :
+  def _toc( self, o_args ):
     pmq.post( 'm_wndtoc_show' )
     pmq.post( 'm_cmd_toc', o_args.file )
 
 
-  def __projects( self, o_args ) :
+  def _projects( self, o_args ):
     pmq.post( 'm_wndprojects_show' )
     pmq.post( 'm_cmd_projects' )
 
 
-  def __projectfiles( self, o_args ) :
+  def _projectfiles( self, o_args ):
     pmq.post( 'm_wndprojectfiles_show' )
     pmq.post( 'm_cmd_project_files' )
 

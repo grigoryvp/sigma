@@ -9,10 +9,10 @@ import pmq
 import sigma
 
 
-class CmdToc( pmq.Actor ) :
+class CmdToc( pmq.Actor ):
 
 
-  def m_cmd_toc( self, s_file ) :
+  def m_cmd_toc( self, s_file ):
     lTags = [ o for o in sigma.parseFile( s_file ) if o.isToc() ]
     pmq.post( 'm_toc', lTags )
 
